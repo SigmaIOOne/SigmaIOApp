@@ -57,9 +57,14 @@ import QRscanner from '../components/public/QRscanner'; //转账 -> 扫描二维
 import moreInfo from '../components/node/moreInfo'; //矿机信息
 
 import Login from '../components/sigm/login/login'; // SIGM -> 登录
+import FindPsd from '../components/sigm/login/findPsd'; // SIGM -> 登录 -> 忘记密码
+import SetNewPsd from '../components/sigm/login/setNewPsd'; // SIGM -> 登录 -> 设置新密码
+import Registry from '../components/sigm/login/registry'; // SIGM -> 登录 -> 立即注册
 import AccountDetail from '../components/sigm/accountDetail'; // SIGM -> 账户详情
 import SigmTransactionRecord from '../components/sigm/transactionRecord'; // SIGM -> 账户详情 -> 交易记录
 import MiningPart from '../components/sigm/miningPart'; // SIGM -> 挖矿账户 -> 挖矿
+import GetDeposit from '../components/sigm/getDeposit'; // SIGM -> 挖矿账户 -> 获取算力
+import BindCar from '../components/sigm/bindCar'; // SIGM -> 挖矿账户 -> 获取算力 -> 绑定车辆信息
 
 //rely
 import Storage from 'react-native-storage';
@@ -398,6 +403,24 @@ const RootNavigator = createStackNavigator(
 		        header: null
             }
         },
+        FindPsd: {
+            screen: FindPsd,
+            navigationOptions: {
+                header: null
+            }
+        },
+        SetNewPsd: {
+            screen: SetNewPsd,
+            navigationOptions: {
+                header: null
+            }
+        },
+        Registry: {
+            screen: Registry,
+            navigationOptions: {
+                header: null
+            }
+        },
         AccountDetail: {
 		    screen: AccountDetail,
             navigationOptions: {
@@ -414,6 +437,18 @@ const RootNavigator = createStackNavigator(
             screen: MiningPart,
             navigationOptions: {
                 headerTitle: I18n.t('sigm.miningPart._title')
+            }
+        },
+        GetDeposit: {
+            screen: GetDeposit,
+            navigationOptions: {
+                headerTitle: I18n.t('sigm.miningPart.getDeposit')
+            }
+        },
+        BindCar: {
+            screen: BindCar,
+            navigationOptions: {
+                headerTitle: I18n.t('sigm.miningPart.getDeposit.bindCar')
             }
         }
 	},

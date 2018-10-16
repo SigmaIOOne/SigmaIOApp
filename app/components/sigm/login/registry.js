@@ -11,39 +11,60 @@ import {
 // import { Input, Button } from 'native-base';
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
-import Toast from 'react-native-easy-toast';
 
 import { I18n } from '../../../../language/i18n';
 import { scaleSize } from '../../../utils/ScreenUtil';
-import { checkAccount, checkPwd } from '../../../utils/valiServices';
+import { checkAccount, checkCode, checkImgCode } from '../../../utils/valiServices';
+import Toast from '../../../utils/myToast';
 
-export default class Login extends React.Component {
+export default class Registry extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             account: '',
-            psd: ''
+            imgTargetCode: '', // 存放随机生成的验证码
+            imgCode: '',
+            phoneCode: ''
         }
     }
-    _clickToLogin = () => {
-        const { account, psd } = this.state;
+    componentWillMount() {
+        this._createRandomCode();
+    }
+    _clickToregister = () => {
+        const { account, imgCode, imgTargetCode, phoneCode } = this.state;
         checkAccount(account)
-            .then(() => checkPwd(psd))
+            .then(() => checkImgCode(imgTargetCode, imgCode))
+            .then(() => checkCode(phoneCode))
             .then(() => {
-
+                this.props.navigation.navigate('SetNewPsd');
             })
             .catch(err => {
                 this.toast.show(err);
             });
     }
+    // 不找生成图片二维码的插件了，因为有手机验证码了，这个没必要弄,自己随便写个好了
+    _createRandomCode = () => {
+        const result = [];
+        for(let i=0;i<4;i++) {
+            const temp = [];
+            temp[0]= String.fromCharCode(Math.floor(Math.random()*26+65)); //存放大写字母
+            temp[1]= String.fromCharCode(Math.floor(Math.random()*26+97)); //存放小写字母
+            temp[2]= String.fromCharCode(Math.floor(Math.random()*10+48)); //存放数字
+            const n = Math.floor(Math.random()*3);
+            result[i] = temp[n];
+        }
+        this.setState({
+            imgTargetCode: result.join('')
+        });
+    }
     render() {
-        const { account, psd } = this.state;
+        const { account, imgCode, imgTargetCode, phoneCode } = this.state;
         return (
             <ScrollView>
                 <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
                     <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.phonePlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.registryPart.accountPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
                             <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/phone_icon.png')}/>
@@ -52,38 +73,65 @@ export default class Login extends React.Component {
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         value={account}
-                        onChange={(account) => this.setState({account})}
+                        onChangeText={(account) => { this.setState({account}) }}
                     />
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.psdPlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.registryPart.imgCode')}
+                        placeholderTextColor="rgba(255, 255, 255, .6)"
+                        leftIcon={
+                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/img_code.png')}/>
+                        }
+                        leftIconContainerStyle={styles.leftIconContainerStyle}
+                        rightIcon={
+                            <TouchableOpacity>
+                                <View style={styles.imgCode}>
+                                    <Text style={styles.imgCodeTxt}>{imgTargetCode}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        }
+                        rightIconContainerStyle={styles.imgRightIconContainerStyle}
+                        inputContainerStyle={styles.inputContainerStyle}
+                        inputStyle={styles.inputStyle}
+                        value={imgCode}
+                        onChangeText={(imgCode) => this.setState({imgCode})}
+                    />
+                    <Input
+                        placeholder={I18n.t('sigm.loginPart.registryPart.phoneCode')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
                             <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/psd_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
+                        rightIcon={
+                            <TouchableOpacity>
+                                <View>
+                                    <Text style={styles.codeTxt}>{I18n.t('sigm.loginPart.findPsdPart.getCode')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        }
+                        rightIconContainerStyle={styles.rightIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
-                        secureTextEntry={true}
-                        value={psd}
-                        onChange={(psd) => this.setState({psd})}
+                        value={phoneCode}
+                        onChangeText={(phoneCode) => this.setState({phoneCode})}
                     />
                     <Button
-                        title={I18n.t('sigm.loginPart.loginBtn')}
-                        // "立即登录"
+                        title={I18n.t('sigm.loginPart.registryPart.registryBtn')}
+                        // "下一步"
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
-                        onPress={() => this._clickToLogin}
+                        onPress={() => this._clickToregister()}
                     />
                     <View style={[styles.flexRow]}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.findPsdBtn')}</Text>
                         </TouchableOpacity>
                         <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Registry')}>
+                        <TouchableOpacity>
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Toast ref={toast => this.toast = toast} position="center" />
+                    <Toast onRef={toast => this.toast = toast} position="center" />
                 </ImageBackground>
             </ScrollView>
         );
@@ -93,7 +141,6 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
     flexRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     imgBg: {
         width: Dimensions.get('window').width,
@@ -113,6 +160,28 @@ const styles = StyleSheet.create({
     },
     leftIconContainerStyle: {
         // width: scaleSize(28),
+    },
+    rightIconContainerStyle: {
+        marginRight: scaleSize(24),
+        width: scaleSize(180),
+    },
+    codeTxt: {
+        color: '#FFFFFF',
+        fontSize: scaleSize(34),
+    },
+    imgRightIconContainerStyle: {
+        marginRight: scaleSize(24),
+        width: scaleSize(100),
+    },
+    imgCode: {
+        borderColor: '#FFFFFF',
+        borderWidth: scaleSize(2),
+        borderRadius: scaleSize(4),
+        padding: scaleSize(4),
+    },
+    imgCodeTxt: {
+        color: '#FFFFFF',
+        fontSize: scaleSize(30),
     },
     inputStyle: {
         fontSize: scaleSize(32),

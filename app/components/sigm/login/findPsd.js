@@ -11,13 +11,13 @@ import {
 // import { Input, Button } from 'native-base';
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
-import Toast from 'react-native-easy-toast';
 
 import { I18n } from '../../../../language/i18n';
 import { scaleSize } from '../../../utils/ScreenUtil';
-import { checkAccount, checkPwd } from '../../../utils/valiServices';
+import { checkAccount } from '../../../utils/valiServices';
+import Toast from '../../../utils/myToast';
 
-export default class Login extends React.Component {
+export default class FindPsd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,12 +25,11 @@ export default class Login extends React.Component {
             psd: ''
         }
     }
-    _clickToLogin = () => {
+    _clickToNext = () => {
         const { account, psd } = this.state;
         checkAccount(account)
-            .then(() => checkPwd(psd))
             .then(() => {
-
+                this.props.navigation.navigate('SetNewPsd');
             })
             .catch(err => {
                 this.toast.show(err);
@@ -43,7 +42,7 @@ export default class Login extends React.Component {
                 <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
                     <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.phonePlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.findPsdPart.accountPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
                             <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/phone_icon.png')}/>
@@ -52,38 +51,36 @@ export default class Login extends React.Component {
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         value={account}
-                        onChange={(account) => this.setState({account})}
+                        onChangeText={(account) => { console.log('@ ', account); this.setState({account}) }}
                     />
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.psdPlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.findPsdPart.codePlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
                             <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/psd_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
+                        rightIcon={
+                            <TouchableOpacity>
+                                <View>
+                                    <Text style={styles.codeTxt}>{I18n.t('sigm.loginPart.findPsdPart.getCode')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        }
+                        rightIconContainerStyle={styles.rightIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
-                        secureTextEntry={true}
                         value={psd}
-                        onChange={(psd) => this.setState({psd})}
+                        onChangeText={(psd) => this.setState({psd})}
                     />
                     <Button
-                        title={I18n.t('sigm.loginPart.loginBtn')}
-                        // "立即登录"
+                        title={I18n.t('public.next')}
+                        // "下一步"
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
-                        onPress={() => this._clickToLogin}
+                        onPress={() => this._clickToNext()}
                     />
-                    <View style={[styles.flexRow]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
-                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.findPsdBtn')}</Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Registry')}>
-                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Toast ref={toast => this.toast = toast} position="center" />
+                    <Toast onRef={toast => this.toast = toast} position="center" />
                 </ImageBackground>
             </ScrollView>
         );
@@ -93,7 +90,6 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
     flexRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     imgBg: {
         width: Dimensions.get('window').width,
@@ -114,6 +110,14 @@ const styles = StyleSheet.create({
     leftIconContainerStyle: {
         // width: scaleSize(28),
     },
+    rightIconContainerStyle: {
+        marginRight: scaleSize(24),
+        width: scaleSize(180),
+    },
+    codeTxt: {
+        color: '#FFFFFF',
+        fontSize: scaleSize(34),
+    },
     inputStyle: {
         fontSize: scaleSize(32),
         color: 'rgba(255, 255, 255, 0.6)'
@@ -133,14 +137,5 @@ const styles = StyleSheet.create({
         borderRadius: scaleSize(24),
         marginTop: Dimensions.get('window').height / 2 - scaleSize(180),
         marginBottom: scaleSize(24),
-    },
-    loginBottomText: {
-        color: '#FFFFFF',
-        lineHeight: scaleSize(84),
-        fontSize: scaleSize(32),
-    },
-    splitLine: {
-        marginLeft: scaleSize(40),
-        marginRight: scaleSize(40),
     }
 });

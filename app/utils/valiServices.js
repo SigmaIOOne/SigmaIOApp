@@ -3,7 +3,7 @@ import { I18n } from '../../language/i18n';
 export function checkAccount(account) {
   const phone = /^1\d{10}$/;
   const email = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
-  return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve, reject) {
     if (account.length > 0 && ( phone.test(account) || email.test(account))) {
       resolve(account);
     } else if (account.length === 0) {
@@ -101,6 +101,22 @@ export function checkCode(code) {
       reject('验证码是六位数');
     }
   })
+}
+
+// 验证图片验证码
+export function checkImgCode(targetCode, code) {
+    return new Promise(function (resolve, reject) {
+        code = code.trim();
+        if (code.length === 0) {
+            reject('图片验证码不能为空');
+        } else if (code.length !== 4) {
+            reject('图片验证码是四位数');
+        } else if (targetCode !== code){
+            reject('图片验证码输入不对');
+        } else {
+            resolve();
+        }
+    })
 }
 
 // 验证昵称，昵称仅仅支持中英文、数字

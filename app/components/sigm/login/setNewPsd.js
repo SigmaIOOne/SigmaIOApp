@@ -11,13 +11,13 @@ import {
 // import { Input, Button } from 'native-base';
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
-import Toast from 'react-native-easy-toast';
 
 import { I18n } from '../../../../language/i18n';
 import { scaleSize } from '../../../utils/ScreenUtil';
 import { checkAccount, checkPwd } from '../../../utils/valiServices';
+import Toast from '../../../utils/myToast';
 
-export default class Login extends React.Component {
+export default class SetNewPsd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +25,7 @@ export default class Login extends React.Component {
             psd: ''
         }
     }
-    _clickToLogin = () => {
+    _clickToFinish = () => {
         const { account, psd } = this.state;
         checkAccount(account)
             .then(() => checkPwd(psd))
@@ -43,46 +43,29 @@ export default class Login extends React.Component {
                 <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
                     <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.phonePlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.findPsdPart.newPsdPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
-                        leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/phone_icon.png')}/>
-                        }
-                        leftIconContainerStyle={styles.leftIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         value={account}
-                        onChange={(account) => this.setState({account})}
+                        onChangeText={(account) => this.setState({account})}
                     />
                     <Input
-                        placeholder={I18n.t('sigm.loginPart.psdPlaceholder')}
+                        placeholder={I18n.t('sigm.loginPart.findPsdPart.checkPsdPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
-                        leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/psd_icon.png')}/>
-                        }
-                        leftIconContainerStyle={styles.leftIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         secureTextEntry={true}
                         value={psd}
-                        onChange={(psd) => this.setState({psd})}
+                        onChangeText={(psd) => this.setState({psd})}
                     />
                     <Button
-                        title={I18n.t('sigm.loginPart.loginBtn')}
-                        // "立即登录"
+                        title={I18n.t('sigm.loginPart.findPsdPart.finishBtn')}
+                        // "完成"
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
-                        onPress={() => this._clickToLogin}
+                        onPress={() => this._clickToFinish()}
                     />
-                    <View style={[styles.flexRow]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
-                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.findPsdBtn')}</Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Registry')}>
-                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
-                        </TouchableOpacity>
-                    </View>
                     <Toast ref={toast => this.toast = toast} position="center" />
                 </ImageBackground>
             </ScrollView>
@@ -93,7 +76,6 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
     flexRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     imgBg: {
         width: Dimensions.get('window').width,
@@ -106,13 +88,6 @@ const styles = StyleSheet.create({
         height: scaleSize(208),
         marginTop: scaleSize(80),
         marginBottom: scaleSize(80),
-    },
-    inputIcon: {
-        width: scaleSize(32),
-        height: scaleSize(36),
-    },
-    leftIconContainerStyle: {
-        // width: scaleSize(28),
     },
     inputStyle: {
         fontSize: scaleSize(32),
@@ -134,13 +109,4 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height / 2 - scaleSize(180),
         marginBottom: scaleSize(24),
     },
-    loginBottomText: {
-        color: '#FFFFFF',
-        lineHeight: scaleSize(84),
-        fontSize: scaleSize(32),
-    },
-    splitLine: {
-        marginLeft: scaleSize(40),
-        marginRight: scaleSize(40),
-    }
 });
