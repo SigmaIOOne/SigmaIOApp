@@ -65,6 +65,11 @@ import SigmTransactionRecord from '../components/sigm/transactionRecord'; // SIG
 import MiningPart from '../components/sigm/miningPart'; // SIGM -> 挖矿账户 -> 挖矿
 import GetDeposit from '../components/sigm/getDeposit'; // SIGM -> 挖矿账户 -> 获取算力
 import BindCar from '../components/sigm/bindCar'; // SIGM -> 挖矿账户 -> 获取算力 -> 绑定车辆信息
+import InviteFriends from '../components/sigm/inviteFriends'; // SIGM -> 挖矿账户 -> 获取算力 -> 邀请好友
+
+import MessageCenter from '../components/my/messageCenter'; // 我的 -> 消息中心
+import MyOrders from '../components/my/myOrders'; // 我的 -> 我的订单
+import OrderDetails from '../components/my/orderDetails'; // 我的 -> 我的订单 -> 订单详情
 
 //rely
 import Storage from 'react-native-storage';
@@ -448,7 +453,31 @@ const RootNavigator = createStackNavigator(
         BindCar: {
             screen: BindCar,
             navigationOptions: {
-                headerTitle: I18n.t('sigm.miningPart.getDeposit.bindCar')
+                headerTitle: I18n.t('sigm.miningPart.getDepositPart.bindCar')
+            }
+        },
+        InviteFriends: {
+            screen: InviteFriends,
+            navigationOptions: {
+                headerTitle: I18n.t('sigm.miningPart.getDepositPart.inviteFriends')
+            }
+        },
+        MessageCenter: {
+            screen: MessageCenter,
+            navigationOptions: {
+                headerTitle: I18n.t('my.message')
+            }
+        },
+        MyOrders: {
+            screen: MyOrders,
+            navigationOptions: {
+                headerTitle: I18n.t('my.order')
+            }
+        },
+        OrderDetails: {
+            screen: OrderDetails,
+            navigationOptions: {
+                headerTitle: I18n.t('my.orderDetails._title')
             }
         }
 	},

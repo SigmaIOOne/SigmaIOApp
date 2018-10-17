@@ -84,7 +84,7 @@ export default class GetDeposit extends React.Component {
                             description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
                             btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
                             disabled: false,
-                            pressFunc: () => { console.log('****'); }
+                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
                         })
                     }
                     {/* 认证身份 */}
@@ -96,7 +96,7 @@ export default class GetDeposit extends React.Component {
                             description2: 'sigm.miningPart.getDepositPart.certificateDescription2',
                             btnTxt: 'sigm.miningPart.getDepositPart.certificateBtn1',
                             disabled: false,
-                            pressFunc: () => { console.log('****'); }
+                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
                         })
                     }
                     {/* 注册用户 */}

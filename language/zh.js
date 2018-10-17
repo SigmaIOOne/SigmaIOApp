@@ -42,7 +42,7 @@ export default {
 		node: '挖矿',
 		my: '我的'
 	},
-	my: {
+	myOld: {
         _title: '我的',
 		home: {
 			walletManagement: '钱包管理',
@@ -410,6 +410,49 @@ export default {
                 area: '地区',
                 areaPlaceholder: '请输入地区',
                 btn: '确认',
+            },
+            inviteFriends: {
+                code: '邀请码',
+                copy: '复制',
+                leftBtn: '分享邀请链接',
+                rightBtn: '分享邀请海报',
+            }
+        }
+    },
+    my: {
+	    logout: '退出登录',
+        message: '消息中心',
+        order: '我的订单',
+        applyCompensation: '申请理赔',
+        uploadRecord: '数据上传记录',
+        security: '安全中心',
+        aboutUs: '关于我们',
+        suggest: '意见反馈',
+        noRecord: '暂无记录',
+        paySuccess: '支付完成',
+        orderDetails: {
+	        _title: '订单详情',
+            insurance: '账户安全险',
+            guaranteeAmount: '保障金额',
+            buyer: '购买人',
+            id: '身份证号码',
+            email: '邮箱',
+            guaranteeDeadline: '保障期限',
+            phone: '手机号码',
+            orderAmount: '订单金额',
+            guaranteeAddress: '保障地址',
+            applyCompensationContent: {
+	            _title: '理赔流程',
+	            title1: '(一)报案环节:',
+                text1_1: '1、被保障人或其代表应在保障事故发生之日起 24 小时内通知SigmaIO,否则对于无法确定的部分,SigmaIO不承担赔偿责任;',
+                text1_2: '2、为更好的保证案件处理的及时性及核定损失的准确性,报案时需提供事故当事人或知情人的联络方式。',
+                title2: '(二)查勘环节:',
+                text2_1: '1、客户将相片上传至我司后,查勘定损岗第一时间审核相关资料相片,通过审核相片和询问案情;',
+                text2_2: '2、根据案件具体情况确定查勘工作内容,例如查勘现场。被保障人须配合查勘工作。',
+                title3: '(三)提交理赔资料: ',
+                text3: '发送损失照片(需标注被保障人姓名)至客服邮箱 sigmaio.one@gmail.com；',
+                title4: '(四)领取保障金:',
+                text4: '对符合保障责任的,资料审核通过后一般赔案 3 个工作日内通知支付赔款、情形复杂赔案 7 个工作日内通知支付赔款。',
             }
         }
     },

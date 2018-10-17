@@ -38,7 +38,6 @@ class Sigm extends React.Component {
 
     }
     render() {
-        console.log('@@@   ', this.props.wallet);
         return (
             <View style={styles.container}>
                 <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>

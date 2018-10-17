@@ -35,11 +35,11 @@ export default class transactionRecord extends React.Component {
         return (
             <View style={styles.container}>
                 {
-                    !!list.length
+                    list.length
                         ? list.map(data => this._renderListItem(data))
                         : <View style={styles.noRecordPage}>
                             <Image style={styles.noRecordImg} source={require('../../assets/images/sigm/no_record.png')}/>
-                            <Text>{I18n.t('sigm.accountDetail.transactionRecordPart.noRecord')}</Text>
+                            <Text style={styles.noRecordTxt}>{I18n.t('sigm.accountDetail.transactionRecordPart.noRecord')}</Text>
                         </View>
                 }
             </View>

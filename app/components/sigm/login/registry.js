@@ -83,11 +83,11 @@ export default class Registry extends React.Component {
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
-                            <TouchableOpacity>
+                            <View>
                                 <View style={styles.imgCode}>
                                     <Text style={styles.imgCodeTxt}>{imgTargetCode}</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </View>
                         }
                         rightIconContainerStyle={styles.imgRightIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}

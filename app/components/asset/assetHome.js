@@ -53,7 +53,6 @@ class AssetHome extends React.Component {
     }
 
     render() {
-        console.log('!!!!!!!!!  ', this.props.wallet);
         return (
             <View style={styles.container}>
                 { !!this.state.login

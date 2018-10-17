@@ -65,7 +65,7 @@ export default class Login extends React.Component {
                         inputStyle={styles.inputStyle}
                         secureTextEntry={true}
                         value={psd}
-                        onChange={(psd) => this.setState({psd})}
+                        onChangeText={(psd) => this.setState({psd})}
                     />
                     <Button
                         title={I18n.t('sigm.loginPart.loginBtn')}
