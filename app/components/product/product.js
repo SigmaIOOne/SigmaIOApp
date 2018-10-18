@@ -1,3 +1,6 @@
+/**
+ * 产品
+ */
 import React, { Component } from 'react';
 import {
     View,
@@ -11,11 +14,13 @@ import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 
-class AboutUs extends Component {
+class Product extends Component {
     render() {
         return (
-            <View><Text>llll</Text></View>
-        );
+            <View style={styles.container}>
+                <Text>hhahahh</Text>
+            </View>
+        )
     }
 }
 
@@ -23,8 +28,11 @@ export default connect(
     state => ({
         wallet: state.wallet
     })
-)(AboutUs)
+)(Product)
 
 const styles = StyleSheet.create({
-
+    container: {
+        height: Dimensions.get('window').height,
+        backgroundColor: '#FFFFFF',
+    },
 });

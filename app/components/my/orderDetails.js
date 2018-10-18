@@ -102,22 +102,22 @@ export default class OrderDetails extends Component {
                     ref={myModal => this.myModal = myModal}
                 >
                     <View style={styles.modalTitle}>
-                        <Text style={styles.modalTitleTxt}>{I18n.t('my.orderDetails.applyCompensationContent._title')}</Text>
+                        <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>
                         <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
                             <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.modalContent}>
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.title1')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text1_1')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text1_2')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.title2')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text2_1')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text2_2')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.title3')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text3')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.title4')}
-                        {this._renderModalTxt('my.orderDetails.applyCompensationContent.text4')}
+                        {this._renderModalTxt('my.applyCompensationContent.title1')}
+                        {this._renderModalTxt('my.applyCompensationContent.text1_1')}
+                        {this._renderModalTxt('my.applyCompensationContent.text1_2')}
+                        {this._renderModalTxt('my.applyCompensationContent.title2')}
+                        {this._renderModalTxt('my.applyCompensationContent.text2_1')}
+                        {this._renderModalTxt('my.applyCompensationContent.text2_2')}
+                        {this._renderModalTxt('my.applyCompensationContent.title3')}
+                        {this._renderModalTxt('my.applyCompensationContent.text3')}
+                        {this._renderModalTxt('my.applyCompensationContent.title4')}
+                        {this._renderModalTxt('my.applyCompensationContent.text4')}
                     </View>
                 </Modal>
             </View>

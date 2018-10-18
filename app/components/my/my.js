@@ -5,12 +5,11 @@ import {
     Image,
     StyleSheet,
     Dimensions,
-    TouchableOpacity, } from 'react-native';
+    TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import MessageCenter from "./messageCenter";
-import MyOrders from "./myOrders";
 
 class My extends Component {
     _renderSelectItem = (data) => {
@@ -65,7 +64,7 @@ class My extends Component {
                     this._renderSelectItem({
                         icon: require('../../assets/images/my/apply.png'),
                         title: 'my.applyCompensation',
-                        pressFunc: () => {}
+                        pressFunc: () => this.props.navigation.navigate('ApplyCompensation')
                     })
                 }
                 {/* 数据上传记录 */}
@@ -73,7 +72,7 @@ class My extends Component {
                     this._renderSelectItem({
                         icon: require('../../assets/images/my/upload.png'),
                         title: 'my.uploadRecord',
-                        pressFunc: () => {}
+                        pressFunc: () => this.props.navigation.navigate('UploadRecord')
                     })
                 }
                 {/* 安全中心 */}
@@ -81,7 +80,7 @@ class My extends Component {
                     this._renderSelectItem({
                         icon: require('../../assets/images/my/security.png'),
                         title: 'my.security',
-                        pressFunc: () => {}
+                        pressFunc: () => this.props.navigation.navigate('SecurityCenter')
                     })
                 }
                 {/* 关于我们 */}
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     },
     itemIcon: {
         width: scaleSize(36),
-        height: scaleSize(40),
+        height: scaleSize(36),
         // marginTop: scaleSize(30),
         marginRight: scaleSize(28),
         // marginBottom: scaleSize(30),

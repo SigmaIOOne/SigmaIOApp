@@ -9,6 +9,7 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
+    ScrollView,
 } from 'react-native';
 // import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
@@ -47,16 +48,18 @@ export default class MyOrders extends Component {
         );
         // const list = [];
         return (
-            <View style={styles.container}>
-                {
-                    list.length
-                        ? list.map((data, index) => this._renderPerOrder(data, index))
-                        : <View style={styles.noRecordPage}>
-                            <Image style={styles.noRecordImg} source={require('../../assets/images/my/no_record.png')}/>
-                            <Text style={styles.noRecordTxt}>{I18n.t('my.noRecord')}</Text>
-                        </View>
-                }
-            </View>
+            <ScrollView>
+                <View style={styles.container}>
+                    {
+                        list.length
+                            ? list.map((data, index) => this._renderPerOrder(data, index))
+                            : <View style={styles.noRecordPage}>
+                                <Image style={styles.noRecordImg} source={require('../../assets/images/my/no_record.png')}/>
+                                <Text style={styles.noRecordTxt}>{I18n.t('my.noRecord')}</Text>
+                            </View>
+                    }
+                </View>
+            </ScrollView>
         );
     }
 }

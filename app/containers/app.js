@@ -13,8 +13,9 @@ import { reduxifyNavigator, createReactNavigationReduxMiddleware, createNavigati
 import Splash from '../pages/Splash'; // app开屏画面
 // import Assets from '../components/asset/asset'; // 底部：资产
 import AssetHome from '../components/asset/assetHome'; // 底部：资产
-import Sigm from '../components/sigm/sigm';
-import Node_item from '../components/node/node'; //底部：节点
+import Sigm from '../components/sigm/sigm'; // 底部：Sigm
+import Product from '../components/product/product'; // 底部：产品
+// import Node_item from '../components/node/node'; //底部：节点
 import My_item from '../components/my/my'; //底部： 我的
 
 //Router
@@ -34,7 +35,6 @@ import SysLanguage from '../components/my/sysLanguage'; //我的 -> 系统设置
 // import WebSetting from '../components/my/webSetting'; //我的 -> 系统设置 -> web3设置
 import HelperCenter from '../components/my/helpercenter'; // 我的 -> 帮助中心
 import KnowledgePoint from '../components/my/knowledgePoint'; // 我的 -> 帮助中心 -> 内容详情页
-import AboutUs from '../components/my/aboutus'; //我的 -> 关于我们
 import UserPolicy from '../components/my/userpolicy'; //我的 -> 关于我们 -> 用户协议
 import Versions from '../components/my/versions'; //我的 -> 关于我们 -> 版本日志
 
@@ -70,6 +70,13 @@ import InviteFriends from '../components/sigm/inviteFriends'; // SIGM -> 挖矿�
 import MessageCenter from '../components/my/messageCenter'; // 我的 -> 消息中心
 import MyOrders from '../components/my/myOrders'; // 我的 -> 我的订单
 import OrderDetails from '../components/my/orderDetails'; // 我的 -> 我的订单 -> 订单详情
+import ApplyCompensation from '../components/my/applyCompensation'; // 我的 -> 申请理赔
+import UploadRecord from '../components/my/uploadRecord'; // 我的 -> 数据上传记录
+import SecurityCenter from '../components/my/securityCenter'; // 我的 -> 安全中心
+import BindPhone from '../components/my/bindPhone'; // 我的 -> 安全中心 -> 绑定手机
+import Certificate from '../components/my/certificate'; // 我的 -> 安全中心 -> 认证身份
+import ServerPolicies from '../components/my/serverPolicies'; // 我的 -> 隐私条款
+import AboutUs from '../components/my/aboutUs'; //我的 -> 关于我们
 
 //rely
 import Storage from 'react-native-storage';
@@ -149,27 +156,6 @@ storage
 		
 	});
 
-const Node = createStackNavigator({
-	Node: {
-		screen: Node_item,
-		navigationOptions: () => ({
-			title: I18n.t('tab.node'),
-			headerBackTitle: null,
-			header: null,
-			headerStyle: {
-				backgroundColor: '#ffffff',
-				borderBottomWidth: 0
-			},
-			headerTitleStyle: {
-				color: 'rgba(13,14,21,1)',
-				fontSize: 18
-			},
-			headerTintColor: '#000',
-			borderWidth: 0
-		})
-	}
-});
-
 const My = createStackNavigator({
 	My: {
 		screen: My_item,
@@ -216,14 +202,14 @@ const TabBarPage = createBottomTabNavigator(
                 // tabBarIcon: ({ focused, tintColor }) => <Icon name="icon-zichan" size={30} color={tintColor} />
             }
         },
-		Node: {
-			screen: Node,
+        Product: {
+			screen: Product,
 			navigationOptions: {
 				tabBarLabel: ({ tintColor, focused }) => (
 					<Text style={{ color: tintColor, fontSize: 12, textAlign: 'center' }}></Text>
 				),
 				tabBarIcon: ({ focused }) => (
-					<Image style={{ width: scaleSize(70), height: scaleSize(70), marginTop: scaleSize(16) }} source={focused ? require('../assets/images/common/node_selected.png') : require('../assets/images/common/node.png')} />
+					<Image style={{ width: scaleSize(48), height: scaleSize(74), marginTop: scaleSize(16) }} source={focused ? require('../assets/images/common/product_selected.png') : require('../assets/images/common/product.png')} />
 				  ),
 				// tabBarOnPress: ({ navigation, defaultHandler }) => {
 				// 	storage
@@ -478,6 +464,42 @@ const RootNavigator = createStackNavigator(
             screen: OrderDetails,
             navigationOptions: {
                 headerTitle: I18n.t('my.orderDetails._title')
+            }
+        },
+        ApplyCompensation: {
+            screen: ApplyCompensation,
+            navigationOptions: {
+                headerTitle: I18n.t('my.applyCompensation')
+            }
+        },
+        UploadRecord: {
+            screen: UploadRecord,
+            navigationOptions: {
+                headerTitle: I18n.t('my.uploadRecord')
+            }
+        },
+        SecurityCenter: {
+            screen: SecurityCenter,
+            navigationOptions: {
+                headerTitle: I18n.t('my.security')
+            }
+        },
+        BindPhone: {
+            screen: BindPhone,
+            navigationOptions: {
+                headerTitle: I18n.t('my.securityPart.bindPhone')
+            }
+        },
+        Certificate: {
+            screen: Certificate,
+            navigationOptions: {
+                headerTitle: I18n.t('my.securityPart.certificate')
+            }
+        },
+        ServerPolicies: {
+            screen: ServerPolicies,
+            navigationOptions: {
+                headerTitle: I18n.t('my.serverPoliciesPart._title')
             }
         }
 	},
