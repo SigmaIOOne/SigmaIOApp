@@ -96,7 +96,7 @@ class My extends Component {
                     this._renderSelectItem({
                         icon: require('../../assets/images/my/suggest.png'),
                         title: 'my.suggest',
-                        pressFunc: () => {}
+                        pressFunc: () => this.props.navigation.navigate('Suggest')
                     })
                 }
 			</View>

@@ -76,7 +76,10 @@ import SecurityCenter from '../components/my/securityCenter'; // 我的 -> 安�
 import BindPhone from '../components/my/bindPhone'; // 我的 -> 安全中心 -> 绑定手机
 import Certificate from '../components/my/certificate'; // 我的 -> 安全中心 -> 认证身份
 import ServerPolicies from '../components/my/serverPolicies'; // 我的 -> 隐私条款
+import Protocols from '../components/my/protocols'; // 我的 -> 使用协议
 import AboutUs from '../components/my/aboutUs'; //我的 -> 关于我们
+import Release from '../components/my/release'; //我的 -> 关于我们 -> 版本日志
+import Suggest from '../components/my/suggest'; //我的 -> 意见反馈
 
 //rely
 import Storage from 'react-native-storage';
@@ -321,7 +324,7 @@ const RootNavigator = createStackNavigator(
 		AboutUs: {
 			screen: AboutUs,
 			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('my.home.aboutUs._title')}</Text>
+				headerTitle: () => <Text>{I18n.t('my.aboutUs')}</Text>
 			}
 		},
 		UserPolicy: {
@@ -500,6 +503,24 @@ const RootNavigator = createStackNavigator(
             screen: ServerPolicies,
             navigationOptions: {
                 headerTitle: I18n.t('my.serverPoliciesPart._title')
+            }
+        },
+        Protocols: {
+            screen: Protocols,
+            navigationOptions: {
+                headerTitle: I18n.t('my.protocolsPart._title')
+            }
+        },
+        Release: {
+            screen: Release,
+            navigationOptions: {
+                headerTitle: I18n.t('my.aboutUsPart.release')
+            }
+        },
+        Suggest: {
+            screen: Suggest,
+            navigationOptions: {
+                headerTitle: I18n.t('my.suggest')
             }
         }
 	},
