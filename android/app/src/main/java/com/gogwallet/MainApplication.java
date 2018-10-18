@@ -1,4 +1,4 @@
-package com.gogwallet;
+package com.sigmalO;
 
 import android.app.Application;
 
