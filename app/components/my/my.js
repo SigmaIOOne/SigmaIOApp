@@ -88,7 +88,7 @@ class My extends Component {
                     this._renderSelectItem({
                         icon: require('../../assets/images/my/about.png'),
                         title: 'my.aboutUs',
-                        pressFunc: () => {}
+                        pressFunc: () => this.props.navigation.navigate('AboutUs')
                     })
                 }
                 {/* 意见反馈 */}
