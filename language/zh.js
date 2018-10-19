@@ -419,6 +419,55 @@ export default {
             }
         }
     },
+    product: {
+	    _title: '产品',
+	    home: {
+	        insuranceProduct: '保险产品',
+        },
+        productDetail: {
+	        _title: '产品详情',
+            buyBtn: '立即购买',
+            productInsuranceTips: '*仅限SigmaIO平台账户',
+            productNavigationTips: '*仅限中华人民共和国（不含港澳台）境内民航定期航班',
+            productRainingTips: '*本保险需提前至少10天购买，最多购买20份',
+            productInsuranceDetails: {
+	            _title: '保障详情',
+                content1: '保障钱包用户因网络账户或网络账户相关信息遗失、被盗用或被胁迫透露网络账户相关信息，导致的在正式挂失或冻结网络账户前72小时内的资金损失。',
+                content2: '注：您兑换的保障合约生效时间以投保通知短信为准（24小时内）',
+                note: '（单次事故免赔额200SIGM）'
+            },
+            productNavigationDetails: {
+	            _title: '详情',
+                content1: '国内航班延误最高获得',
+                content2: '延误一分钟即获得',
+                content3: '延误超过2小时再获得',
+            },
+            writeOrder: {
+	            _title: '填写订单',
+                tips0: '*请输入投保信息',
+                tips1: '*购买人年龄需在18-80周岁之间',
+                address: '钱包地址',
+                buyer: '购买人姓名',
+                buyerPlaceholder: '请输入购买人姓名',
+                id: '身份证号',
+                idPlaceholder: '请输入身份证号码',
+                email: '邮箱',
+                emailPlaceholder: '请输入邮箱号码',
+                deadline: '保障期限',
+                deadlinePlaceholder1: '365天',
+                deadlinePlaceholder2: '一个月',
+                phone: '手机号码',
+                phonePlaceholder: '请输入手机号码',
+                flightData: '航班日期',
+                flightDataPlaceholder: '请输入航班日期（年/月/日）',
+                flightDataId: '航班号',
+                flightDataIdPlaceholder: '请输入航班号',
+                // credentialsType: ''
+                credentialsId: '证件号码',
+                credentialsIdPlaceholder: '请输入证件号码',
+            }
+        }
+    },
     my: {
 	    logout: '退出登录',
         message: '消息中心',

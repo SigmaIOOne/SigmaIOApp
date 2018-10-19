@@ -81,6 +81,8 @@ import AboutUs from '../components/my/aboutUs'; //我的 -> 关于我们
 import Release from '../components/my/release'; //我的 -> 关于我们 -> 版本日志
 import Suggest from '../components/my/suggest'; //我的 -> 意见反馈
 
+import ProductDetail from '../components/product/productDetail'; //产品 -> 产品详情
+
 //rely
 import Storage from 'react-native-storage';
 // import Icon from '../pages/iconSets';
@@ -521,6 +523,12 @@ const RootNavigator = createStackNavigator(
             screen: Suggest,
             navigationOptions: {
                 headerTitle: I18n.t('my.suggest')
+            }
+        },
+        ProductDetail: {
+            screen: ProductDetail,
+            navigationOptions: {
+                headerTitle: I18n.t('product.productDetail._title')
             }
         }
 	},

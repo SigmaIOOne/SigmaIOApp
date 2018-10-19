@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         width: scaleSize(686),
         minHeight: scaleSize(334),
         borderRadius: scaleSize(16),
-        borderWidth: scaleSize(1),
+        borderWidth: scaleSize(2),
         borderColor: '#BEBEBE',
         padding: scaleSize(40),
         textAlignVertical: 'top',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         width: scaleSize(686),
         height: scaleSize(84),
         borderRadius: scaleSize(16),
-        borderWidth: scaleSize(1),
+        borderWidth: scaleSize(2),
         borderColor: '#BEBEBE',
     },
     btnStyle: {
