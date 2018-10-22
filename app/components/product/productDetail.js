@@ -112,35 +112,85 @@ export default class ProductDetail extends Component {
     }
     // 渲染降雨险选择列表
     _renderProductRaining = () => {
-        const { buyNum } = this.state;
+        const list = [
+            {
+                // 选择省份
+                title: 'chooseProvince', right: this._renderProvinceSelector,
+            },
+            {
+                // 选择城市
+                title: 'chooseCity', right: this._renderCitySelector,
+            },
+            {
+                // 保障月份
+                title: 'guaranteeMonth', right: this._renderMonthSelector,
+            },
+            {
+                // 保障金额
+                title: 'guaranteeMoney', value: '920 SIGM/天',
+            },
+            {
+                // 赔付阈值
+                title: 'threshold', value: '中雨1小时累计降水量>2.5mm',
+            },
+            {
+                // 购买份数
+                title: 'buyNum',  right: this._renderBuyNumSelector, noBorderBottom: true,
+            },
+        ];
         return (
-            <View style={[styles.details, styles.marginBottom24]}>
-                <View style={[styles.productRainingListRow, styles.borderBottom]}>
-                    <Text style={styles.detailsContentTxt30}>选择城市</Text>
-                    <View></View>
-                </View>
-                <View style={[styles.productRainingListRow, styles.borderBottom]}>
-                    <Text style={styles.detailsContentTxt30}>保障金额</Text>
-                    <Text style={styles.detailsContentTxt30}>920 SIGM/天</Text>
-                </View>
-                <View style={[styles.productRainingListRow, styles.borderBottom]}>
-                    <Text style={styles.detailsContentTxt30}>赔付阈值</Text>
-                    <Text style={styles.detailsContentTxt30}>中雨1小时累计降水量>2.5mm</Text>
-                </View>
-                <View style={[styles.productRainingListRow, styles.borderBottom]}>
-                    <Text style={styles.detailsContentTxt30}>购买份数</Text>
-                    <View style={styles.rainingNumRight}>
-                        <TouchableOpacity onPress={() => this._handleBuyNum('minus')}>
-                            <Image style={styles.rainingNumBtn} source={require('../../assets/images/product/minus.png')} />
-                        </TouchableOpacity>
-                        <Text style={styles.buyNum}>{buyNum}</Text>
-                        <TouchableOpacity onPress={() => this._handleBuyNum('plus')}>
-                            <Image style={styles.rainingNumBtn} source={require('../../assets/images/product/plus.png')} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            <View style={[styles.details, styles.marginBottom42]}>
+                {
+                    list.map((data, index) => this._renderProductRainingItem(data, index))
+                }
             </View>
         )
+    }
+    // 渲染降雨险选择列表选项
+    _renderProductRainingItem = (data, index) => {
+        return (
+            <View key={index} style={[styles.productRainingListRow, data.noBorderBottom ? {} : styles.borderBottom]}>
+                <Text style={styles.detailsContentTxt30}>{I18n.t('product.productDetail.productRainingList.' + data.title)}</Text>
+                {
+                    data.right
+                    ? data.right()
+                    : <Text style={styles.detailsContentTxt30}>{data.value}</Text>
+                }
+            </View>
+        )
+    }
+    // 渲染省份选择器
+    _renderProvinceSelector = () => {
+        return (
+            <View></View>
+        );
+    }
+    // 渲染城市选择器
+    _renderCitySelector = () => {
+        return (
+            <View></View>
+        );
+    }
+    // 渲染月份选择器
+    _renderMonthSelector = () => {
+        return (
+            <View></View>
+        );
+    }
+    // 渲染份数数量选择器
+    _renderBuyNumSelector = () => {
+        const { buyNum } = this.state;
+        return (
+            <View style={styles.rainingNumRight}>
+                <TouchableOpacity onPress={() => this._handleBuyNum('minus')}>
+                    <Image style={styles.rainingNumBtn} source={require('../../assets/images/product/minus.png')} />
+                </TouchableOpacity>
+                <Text style={styles.buyNum}>{buyNum}</Text>
+                <TouchableOpacity onPress={() => this._handleBuyNum('plus')}>
+                    <Image style={styles.rainingNumBtn} source={require('../../assets/images/product/plus.png')} />
+                </TouchableOpacity>
+            </View>
+        );
     }
     // 购买份数操作
     _handleBuyNum = (type) => {
@@ -237,6 +287,7 @@ const styles = StyleSheet.create({
         width: scaleSize(666),
         backgroundColor: 'rgba(242, 242, 245, .55)',
         borderRadius: scaleSize(8),
+        marginTop: scaleSize(32),
     },
     detailsTop: {
         width: scaleSize(666),
@@ -307,6 +358,9 @@ const styles = StyleSheet.create({
     },
     marginBottom24: {
         marginBottom: scaleSize(24),
+    },
+    marginBottom42: {
+        marginBottom: scaleSize(42),
     },
     marginBottom8: {
         marginBottom: scaleSize(8),

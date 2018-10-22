@@ -22,7 +22,7 @@ class Product extends Component {
     _renderInsuranceProduct = (data, index) => {
         return (
             <TouchableOpacity style={styles.insuranceProduct} key={index} onPress={() => this.props.navigation.navigate('ProductDetail', {type: data.type})}>
-                <Image style={styles.insuranceProductImg} source={data.img} />
+                <Image style={styles.insuranceProductImg} source={data.img}/>
                 <View style={styles.insuranceProductLeft}>
                     <Text style={styles.insuranceProductTitle}>{data.title}</Text>
                     <Text style={styles.insuranceProductNotes}>{data.notes}</Text>

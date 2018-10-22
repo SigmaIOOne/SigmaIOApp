@@ -77,12 +77,13 @@ import BindPhone from '../components/my/bindPhone'; // 我的 -> 安全中心 ->
 import Certificate from '../components/my/certificate'; // 我的 -> 安全中心 -> 认证身份
 import ServerPolicies from '../components/my/serverPolicies'; // 我的 -> 隐私条款
 import Protocols from '../components/my/protocols'; // 我的 -> 使用协议
-import AboutUs from '../components/my/aboutUs'; //我的 -> 关于我们
+import AboutUs from '../components/my/aboutus'; //我的 -> 关于我们
 import Release from '../components/my/release'; //我的 -> 关于我们 -> 版本日志
 import Suggest from '../components/my/suggest'; //我的 -> 意见反馈
 
 import ProductDetail from '../components/product/productDetail'; //产品 -> 产品详情
 import WriteOrder from '../components/product/writeOrder'; //产品 -> 产品详情 -> 填写订单
+import PayCompleted from '../components/product/payCompleted'; //产品 -> 产品详情 -> 填写订单 -> 支付完成
 
 //rely
 import Storage from 'react-native-storage';
@@ -536,6 +537,12 @@ const RootNavigator = createStackNavigator(
             screen: WriteOrder,
             navigationOptions: {
                 headerTitle: I18n.t('product.productDetail.writeOrder._title')
+            }
+        },
+        PayCompleted: {
+            screen: PayCompleted,
+            navigationOptions: {
+                headerTitle: I18n.t('product.productDetail.payCompleted._title')
             }
         }
 	},
