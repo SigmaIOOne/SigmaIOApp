@@ -152,6 +152,12 @@ export default class ProductDetail extends Component {
             this.setState({buyNum: ++buyNum});
         }
     }
+    // 立即购买
+    _buyProduct = () => {
+        const { type } = this.props.navigation.state.params;
+        console.log('type   ', type);
+        this.props.navigation.navigate('WriteOrder', {type})
+    }
     render() {
         const tips = [
             // 安全险
@@ -197,7 +203,7 @@ export default class ProductDetail extends Component {
                         // "立即购买"
                         buttonStyle={styles.buyBtnStyle}
                         titleStyle={{color: '#FFFFFF', fontSize: scaleSize(30)}}
-                        onPress={() => {}}
+                        onPress={() => this._buyProduct()}
                     />
                 </Footer>
             </Container>
