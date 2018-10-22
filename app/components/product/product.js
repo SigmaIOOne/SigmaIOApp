@@ -13,12 +13,26 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import Banner from '../public/banner';
 
 class Product extends Component {
     // 渲染保险产品
+    constructor(props) {
+		super(props);
+		this.navigate = this.props.navigation.navigate;
+		this.state = {
+
+		};
+	}
+    _renderItem ({item, index}) {
+        return (
+            <View style={styles.slide}>
+                <Image style={styles.insuranceProductImg1} source={item.img} />
+            </View>
+        );
+    }
     _renderInsuranceProduct = (data, index) => {
         return (
             <TouchableOpacity style={styles.insuranceProduct} key={index} onPress={() => this.props.navigation.navigate('ProductDetail', {type: data.type})}>
@@ -61,10 +75,13 @@ class Product extends Component {
         ];
         return (
             <ScrollView>
+                
                 <View style={styles.container}>
                     {/* 轮播图三张图片, 对应下面的保险的三个产品 */}
-                    <View style={styles.bannerView}></View>
+                    <Banner />
+                    {/* <View style={styles.bannerView}></View> */}
                     {/* 产品模块 */}
+                    
                     <View>
                         <View style={styles.sectionTitle}><Text style={styles.sectionTitleTxt}>{I18n.t('product.home.insuranceProduct')}</Text></View>
                         {
@@ -72,6 +89,7 @@ class Product extends Component {
                         }
                     </View>
                 </View>
+                
             </ScrollView>
         )
     }
@@ -147,5 +165,8 @@ const styles = StyleSheet.create({
     insuranceProductUnit: {
         color: '#B2B1B6',
         fontSize: scaleSize(26),
+    },
+    slide: {
+        marginTop: scaleSize(50)
     }
 });
