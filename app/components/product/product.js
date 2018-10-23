@@ -14,8 +14,10 @@ import {
 import { connect } from 'react-redux';
 
 import { I18n } from '../../../language/i18n';
-import { scaleSize } from '../../utils/ScreenUtil';
+import { scaleSize, ifIphoneX } from '../../utils/ScreenUtil';
 import Banner from '../public/banner';
+
+const headerTop = ifIphoneX(40, 20 , 0)
 
 class Product extends Component {
     // 渲染保险产品
@@ -74,8 +76,10 @@ class Product extends Component {
             },
         ];
         return (
-            <ScrollView>
-                
+            <ScrollView style={{ backgroundColor: '#FFFFFF' }}>
+                <View style={styles.header}>
+                    <Text style={{ fontSize: 16, textAlign: 'center', color: '#555555'}}>产品</Text>
+                </View>
                 <View style={styles.container}>
                     {/* 轮播图三张图片, 对应下面的保险的三个产品 */}
                     <Banner />
@@ -106,6 +110,14 @@ const styles = StyleSheet.create({
         minHeight: Dimensions.get('window').height,
         backgroundColor: '#FFFFFF',
     },
+    header: {
+        backgroundColor: '#FFFFFF',
+        height: scaleSize(88),
+        justifyContent: 'center',
+        borderBottomColor: '#E8E8E8',
+        borderBottomWidth: scaleSize(1),
+        marginTop: headerTop
+    },
     bannerView: {
         width: scaleSize(750),
         height: scaleSize(416),
@@ -116,7 +128,7 @@ const styles = StyleSheet.create({
         width: scaleSize(666),
         borderBottomColor: '#BEBEBE',
         borderBottomWidth: scaleSize(1),
-        paddingTop: scaleSize(20),
+        // paddingTop: scaleSize(20),
         paddingBottom: scaleSize(20),
         marginBottom: scaleSize(20),
     },

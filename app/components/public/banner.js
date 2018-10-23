@@ -62,7 +62,7 @@ export default class Banner extends Component {
     render() {
         
         return (
-            <View style={{ height: scaleSize(520) }}>
+            <View style={{ height: scaleSize(514) }}>
                 <Carousel
                     layout={'default'}
                     ref={(c) => { this._carousel = c; }}
@@ -70,6 +70,9 @@ export default class Banner extends Component {
                     renderItem={this._renderBannerItem}
                     sliderWidth={scaleSize(750)}
                     itemWidth={scaleSize(666)}
+                    autoplay={true}
+                    autoplayInterval={2000}
+                    loop={true}
                     onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                     />
                 <Pagination dotsLength={this.state.bannerList.length} activeDotIndex={this.state.activeSlide}/>
