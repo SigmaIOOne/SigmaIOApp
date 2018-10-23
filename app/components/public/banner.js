@@ -29,7 +29,7 @@ export default class Banner extends Component {
                 {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/2.jpg'},
                 {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/3.jpg'},
             ],
-            activeSlide: 1
+            activeSlide: 0
 		};
     }
     get pagination () {
@@ -37,32 +37,15 @@ export default class Banner extends Component {
             <Pagination
                 dotsLength={this.state.bannerList.length}
                 activeDotIndex={this.state.activeSlide}
-                containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
-                dotStyle={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 5,
-                    marginHorizontal: 8,
-                    backgroundColor: 'rgba(255, 255, 255, 0.92)'
-                }}
-                inactiveDotStyle={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 5,
-                    marginHorizontal: 8,
-                    backgroundColor: 'rgba(255, 235, 25, 0)'
-                }}
-                dotColor={'red'}
-                inactiveDotColor={'yellow'}
+                containerStyle={{ backgroundColor: '#fff' }}
+                dotColor={'rgba(232,232,232,1)'}
+                inactiveDotColor={'rgba(155,155,155,1)'}
                 dotContainerStyle={{
-                    width: 10,
-                    height: 10,
+                    width: 5,
+                    height: 5,
                     borderRadius: 5,
                     marginHorizontal: 8,
-                    backgroundColor: 'rgba(23, 253, 215, 0)'
                 }}
-                inactiveDotOpacity={0.4}
-                inactiveDotScale={0.6}
                 />
         );
     }
@@ -79,7 +62,7 @@ export default class Banner extends Component {
     render() {
         
         return (
-            <View>
+            <View style={{ height: scaleSize(500) }}>
                 <Carousel
                     layout={'default'}
                     ref={(c) => { this._carousel = c; }}
@@ -89,7 +72,7 @@ export default class Banner extends Component {
                     itemWidth={scaleSize(666)}
                     onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                     />
-                { this.pagination }
+                <Pagination dotsLength={this.state.bannerList.length} activeDotIndex={this.state.activeSlide}/>
             </View>
         )
     }
@@ -103,8 +86,8 @@ const styles = StyleSheet.create({
     },
     bannerView: {
         width: scaleSize(750),
-        height: scaleSize(416),
-        marginTop: scaleSize(60),
+        height: scaleSize(406),
+        marginTop: scaleSize(40),
     },
     bannerImg: {
         width: scaleSize(666),
