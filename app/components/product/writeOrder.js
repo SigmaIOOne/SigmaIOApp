@@ -13,10 +13,12 @@ import {
 import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox';
 import { Button, CheckBox, Input } from 'react-native-elements';
+
+import Toast from '../../utils/myToast';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 
-class writeOrder extends Component {
+class WriteOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,6 +34,8 @@ class writeOrder extends Component {
             credentialsId: '', // 证件号码
             mnemonisAgree: false, // 条款那个对勾按钮
             showSelectView: false, // 是否显示证件类型下拉框
+            modalTitle: '', // 弹窗标题
+            modalImg: '', // 内容图片
         };
     }
 
@@ -175,9 +179,57 @@ class writeOrder extends Component {
         );
     }
 
+    // 打开弹窗
+    _openModal = (title, imgSrc) => {
+        this.setState({
+            modalTitle: title,
+            modalImg: imgSrc
+        });
+        this.myModal.open();
+    };
+
+    // 确定所填写的订单
+    _checkOrder = () => {
+        const { type } = this.props.navigation.state.params;
+        // 0：安全险，1：航空险，2：降雨险
+        // 安全险
+        if (type === 0) {
+            // const {buyer, id, email, deadline, phone} = this.state;
+            // if (!buyer
+            //     || !id
+            //     || !email
+            //     || !deadline
+            //     || !phone) {
+            //     this.toast.show('您当前的信息未填写完全');
+            // }
+            this.props.navigation.navigate('PayCompleted', {payStatus: 0, product: 0});
+        } else if (type === 1) {
+            // const {buyer, id, flightData, flightDataId, phone} = this.state;
+            // if (!buyer
+            //     || !id
+            //     || !flightData
+            //     || !flightDataId
+            //     || !phone) {
+            //     this.toast.show('您当前的信息未填写完全');
+            // }
+            this.props.navigation.navigate('PayCompleted', {payStatus: 1, product: 1});
+        } else {
+            // 证件类型要不要传，看接口怎么说吧
+            // const {buyer, id, flightData, flightDataId, phone} = this.state;
+            // if (!buyer
+            //     || !id
+            //     || !flightData
+            //     || !flightDataId
+            //     || !phone) {
+            //     this.toast.show('您当前的信息未填写完全');
+            // }
+            this.props.navigation.navigate('PayCompleted', {payStatus: 0, product: 2});
+        }
+    }
+
     render() {
         const { type } = this.props.navigation.state.params;
-        const { mnemonisAgree } = this.state;
+        const { mnemonisAgree, modalTitle } = this.state;
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -198,15 +250,21 @@ class writeOrder extends Component {
                             }}
                         />
                         <Text style={styles.color_999}>
-                            {I18n.t('wallet.iAgreeTerm')}
-                            {/* 我已阅读并同意 */}
-                            <Text
-                                style={styles.color_aff}
-                                onPress={() => this.props.navigation.navigate('ServerPolicies')}
-                            >
-                                {I18n.t('public.serverPolicies')}
-                                {/* 《服务条款》 */}
-                            </Text>
+                            {I18n.t('product.productDetail.writeOrder.IAgree')}
+                            {/* 我同意 */}
+                            {
+                                type === 1 &&
+                                <View>
+                                    <Text
+                                        style={styles.color_aff}
+                                        onPress={() => this._openModal()}
+                                    >
+                                        {I18n.t('product.productDetail.writeOrder.buyShouldKnow')}
+                                        {/* 《购买须知》 */}
+                                    </Text>
+                                </View>
+                            }
+
                         </Text>
                     </View>
                     <Button
@@ -214,9 +272,25 @@ class writeOrder extends Component {
                         title={I18n.t('public.OK')}
                         titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
                         buttonStyle={styles.checkBtnStyle}
-                        onPress={() => {}}
+                        onPress={() => this._checkOrder()}
                     />
                 </View>
+                <Modal
+                    style={styles.modal}
+                    position={'center'}
+                    coverScreen={true}
+                    ref={myModal => this.myModal = myModal}
+                >
+                    <View style={styles.modalTitle}>
+                        <Text style={styles.modalTitleTxt}>{I18n.t('product.productDetail.writeOrder.' + modalTitle)}</Text>
+                        <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
+                            <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.modalContent}>
+                    </View>
+                </Modal>
+                <Toast onRef={toast => this.toast = toast}/>
             </ScrollView>
 
         );
@@ -227,7 +301,7 @@ export default connect(
     state => ({
         wallet: state.wallet
     })
-)(writeOrder)
+)(WriteOrder)
 
 const styles = StyleSheet.create({
     positionRelative: {
@@ -377,5 +451,34 @@ const styles = StyleSheet.create({
     },
     color_aff: {
         color: '#5077BC',
-    }
+    },
+    modal: {
+        width: scaleSize(670),
+        height: scaleSize(1078),
+        backgroundColor: '#FFFFFF',
+        borderRadius: scaleSize(24),
+        alignItems: 'center',
+    },
+    modalTitle: {
+        flexDirection: 'row',
+        borderBottomWidth: scaleSize(1),
+        borderBottomColor: '#BEBEBE',
+        paddingBottom: scaleSize(26),
+        width: scaleSize(670),
+        paddingTop: scaleSize(26),
+    },
+    modalTitleTxt: {
+        color: '#555555',
+        fontSize: scaleSize(28),
+        marginLeft: scaleSize(280),
+    },
+    closeBtnT: {
+        width: scaleSize(44),
+        height: scaleSize(44),
+        marginLeft: scaleSize(206),
+    },
+    closeBtnImg: {
+        width: scaleSize(32),
+        height: scaleSize(32),
+    },
 });

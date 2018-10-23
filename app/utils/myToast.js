@@ -22,6 +22,7 @@ export default class MyToast extends React.Component {
                 {...this.props}
                 ref={toast => this.toast = toast}
                 style={styles.toastStyle}
+                position="center"
                 textStyle={{color: '#4A90E2', fontSize: scaleSize(34)}}/>
         );
     }

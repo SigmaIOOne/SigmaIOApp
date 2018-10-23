@@ -424,6 +424,9 @@ export default {
 	    home: {
 	        insuranceProduct: '保险产品',
         },
+        productInsurance: '账户安全险',
+        productNavigation: '航延宝',
+        productRaining: '上下班降雨险',
         productDetail: {
 	        _title: '产品详情',
             buyBtn: '立即购买',
@@ -441,6 +444,14 @@ export default {
                 content1: '国内航班延误最高获得',
                 content2: '延误一分钟即获得',
                 content3: '延误超过2小时再获得',
+            },
+            productRainingList: {
+	            chooseProvince: '选择省份',
+                chooseCity: '选择城市',
+                guaranteeMonth: '保障月份',
+                guaranteeMoney: '保障金额',
+                threshold: '赔付阈值',
+                buyNum: '购买份数',
             },
             writeOrder: {
 	            _title: '填写订单',
@@ -469,29 +480,18 @@ export default {
                 credentialsId: '证件号码',
                 credentialsIdPlaceholder: '请输入证件号码',
                 IAgree: '我同意',
-                buyShouldKnow: {
-	                _title: '购买须知',
-                    content1: '1 被保障人年龄:20周岁-60周岁(含);',
-                    content2: '2 购买人与被保障人须是同一人; ',
-                    content3: '3 同一产品同一保险期限内,同一被保障人最高可购买份数详见产品约定;',
-                    content4: '4 保单生效日期: 上下班降雨保障目前保险期限为每个自然月的第一天到最后一天,故需在保障的自然月之前至少提前10天购买; ',
-                    content5: '5 起保时间:约定起保日00:00:00；',
-                    content6: '6 赔付条件：周一至周五每日5:00-10:00和17:00-22:00点出现降雨阈值即赔付；',
-                    content7: '7 保障期限：1个月。',
-                },
-                productItems: {
-	                _title: '产品条款',
-                    content1: '总则',
-                    content2: '第一条 本保障合同(以下简称为“本合同”)由保障条款、保障单、保障凭证以及批单组成。凡涉及本合同的约定,均应采用书面形式。',
-                    content3: '第二条 具有完全民事行为能力的境内(不含香港、澳门及台湾地区)自然人可以为本保障合同的购买人。本保障合同的被保障人为因天气状况而发生费用损失的自然人。',
-                    content4: '第三条 本保障合同所指保障机构是SigmaIO。',
-                    content5: '保险责任',
-                    content6: '第四条 在保障期间内,根据保障合同的约定,因购买人购买地区的温度、降水等天气状况 导致被保障人在生产或生活中,如日常室外活动等,发生延误或额外的费用支出,则保险人 按照本保障合同的约定在保障金额内给付保障金。相关定义详见本条款第二十条“释义”部分。',
-                    content7: '责任免除 ',
-                    content8: '第五条 由于下列原因造成的损失、费用,保障机构不负责给付: ',
-                    content9: '(一) 利用保障单约定数据提供机构以外任何第三方出具的数据、或者指定数据提供机构提供的错误数据; ',
-                    content10: ''
-                }
+                guaranteeItems: '《保障条款》',
+                insureShouldKnow: '《投保须知》',
+                buyShouldKnow: '《购买须知》',
+                productItems: '《产品条款》',
+            },
+            payCompleted: {
+	            _title: '支付完成',
+                paySuccess: '支付成功',
+                payFail: '支付失败',
+                backToHome: '返回首页',
+                repay: '重新支付',
+                showDetail: '查看详情',
             }
         }
     },

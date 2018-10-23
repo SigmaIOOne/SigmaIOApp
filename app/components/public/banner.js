@@ -1,5 +1,5 @@
 /**
- * 产品
+ * 产品 -> 轮播图
  */
 import React, { Component } from 'react';
 import {

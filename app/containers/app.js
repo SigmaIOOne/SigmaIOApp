@@ -83,6 +83,7 @@ import Suggest from '../components/my/suggest'; //我的 -> 意见反馈
 
 import ProductDetail from '../components/product/productDetail'; //产品 -> 产品详情
 import WriteOrder from '../components/product/writeOrder'; //产品 -> 产品详情 -> 填写订单
+import PayCompleted from '../components/product/payCompleted'; //产品 -> 产品详情 -> 填写订单 -> 支付完成
 
 //rely
 import Storage from 'react-native-storage';
@@ -536,6 +537,12 @@ const RootNavigator = createStackNavigator(
             screen: WriteOrder,
             navigationOptions: {
                 headerTitle: I18n.t('product.productDetail.writeOrder._title')
+            }
+        },
+        PayCompleted: {
+            screen: PayCompleted,
+            navigationOptions: {
+                headerTitle: I18n.t('product.productDetail.payCompleted._title')
             }
         }
 	},
