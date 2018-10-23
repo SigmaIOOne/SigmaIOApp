@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import {
     Image,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -19,6 +20,7 @@ import { Button } from 'react-native-elements';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import ProductDetailTable from '../public/productDetailTable';
+import monthSelector from '../public/monthSelector';
 
 export default class ProductDetail extends Component {
     constructor(props) {
@@ -73,7 +75,22 @@ export default class ProductDetail extends Component {
             },
             // 份数
             buyNum: 0,
+            yearMonthSelectList: [], // 降雨险的时候存放可以选择的年月
+            showSelectView: false, // 是否显示月份选择下拉框
+            selectedYearMonthValue: '', // 选择的年月
         };
+    }
+
+    componentWillMount() {
+        this._init();
+    }
+    _init = () => {
+        const yearMonthSelectList = monthSelector();
+        console.log('yearMonthSelectList ', yearMonthSelectList);
+        this.setState({
+            yearMonthSelectList,
+            selectedYearMonthValue: yearMonthSelectList[0],
+        });
     }
     // 渲染安全险 -> 保障详情
     _renderProductInsuranceDetails = () => {
@@ -138,10 +155,24 @@ export default class ProductDetail extends Component {
                 title: 'buyNum',  right: this._renderBuyNumSelector, noBorderBottom: true,
             },
         ];
+        const { yearMonthSelectList, showSelectView } = this.state;
         return (
             <View style={[styles.details, styles.marginBottom42]}>
                 {
                     list.map((data, index) => this._renderProductRainingItem(data, index))
+                }
+                {/* 月份下拉框 */}
+                {
+                    showSelectView && !!yearMonthSelectList.length &&
+                        <View style={{maxHeight: scaleSize(420), position: 'absolute', top: scaleSize(270), left: 0}}>
+                            <ScrollView>
+                                <View style={styles.monthSelectorListView}>
+                                    {
+                                        yearMonthSelectList.map((data, index) => this._renderSelectMonthListItem(data, index))
+                                    }
+                                </View>
+                            </ScrollView>
+                        </View>
                 }
             </View>
         )
@@ -175,9 +206,30 @@ export default class ProductDetail extends Component {
     }
     // 渲染月份选择器
     _renderMonthSelector = () => {
+        const { selectedYearMonthValue, showSelectView } = this.state;
         return (
-            <View></View>
+            <TouchableOpacity onPress={() => this.setState({showSelectView: !showSelectView})}>
+                <View style={styles.monthSelectorView}>
+                    <Text style={styles.selectMonthItem}>{selectedYearMonthValue}</Text>
+                    <Image style={styles.selectIcon} source={require('../../assets/images/product/down_arrow.png')}/>
+                </View>
+            </TouchableOpacity>
         );
+    }
+    // 渲染月份下拉框Item
+    _renderSelectMonthListItem = (data, index) => {
+        return (
+            <TouchableOpacity key={index} style={styles.monthSelectorListItem} onPress={() => this._clickSelectItem(data)}>
+                <Text style={styles.selectMonthItem}>{data}</Text>
+            </TouchableOpacity>
+        );
+    }
+    // 点击选择的年月
+    _clickSelectItem = (data) => {
+        this.setState({
+            selectedYearMonthValue: data,
+            showSelectView: false,
+        });
     }
     // 渲染份数数量选择器
     _renderBuyNumSelector = () => {
@@ -286,6 +338,7 @@ const styles = StyleSheet.create({
         marginBottom: scaleSize(20),
     },
     details: {
+        position: 'relative',
         width: scaleSize(666),
         backgroundColor: 'rgba(242, 242, 245, .55)',
         borderRadius: scaleSize(8),
@@ -392,5 +445,41 @@ const styles = StyleSheet.create({
         height: scaleSize(66),
         borderRadius: scaleSize(33),
         backgroundColor: '#4A90E2',
+    },
+    // 月份选择器用
+    monthSelectorView: {
+        width: scaleSize(250),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        height: scaleSize(90),
+    },
+    selectMonthItem: {
+        color: '#9B9B9B',
+        fontSize: scaleSize(30),
+    },
+    selectIcon: {
+        width: scaleSize(28),
+        height: scaleSize(28),
+    },
+    monthSelectorListView: {
+        width: scaleSize(666),
+        // maxHeight: scaleSize(420),
+        backgroundColor: '#FFFFFF',
+        borderTopWidth: scaleSize(1),
+        borderTopColor: '#BEBEBE',
+        borderLeftWidth: scaleSize(1),
+        borderLeftColor: '#BEBEBE',
+        borderRightWidth: scaleSize(1),
+        borderRightColor: '#BEBEBE',
+    },
+    monthSelectorListItem: {
+        width: scaleSize(666),
+        height: scaleSize(70),
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        borderBottomWidth: scaleSize(1),
+        borderBottomColor: '#BEBEBE',
     }
 });
