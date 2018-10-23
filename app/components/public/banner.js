@@ -62,7 +62,7 @@ export default class Banner extends Component {
     render() {
         
         return (
-            <View style={{ height: scaleSize(500) }}>
+            <View style={{ height: scaleSize(520) }}>
                 <Carousel
                     layout={'default'}
                     ref={(c) => { this._carousel = c; }}
