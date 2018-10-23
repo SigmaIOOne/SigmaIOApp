@@ -161,14 +161,16 @@ export default class ProductDetail extends Component {
     }
     // 渲染省份选择器
     _renderProvinceSelector = () => {
+        // 暂时先不用做选择器
         return (
-            <View></View>
+            <Text style={styles.detailsContentTxt30}>北京市</Text>
         );
     }
     // 渲染城市选择器
     _renderCitySelector = () => {
+        // 暂时先不用做选择器
         return (
-            <View></View>
+            <Text style={styles.detailsContentTxt30}>北京市</Text>
         );
     }
     // 渲染月份选择器

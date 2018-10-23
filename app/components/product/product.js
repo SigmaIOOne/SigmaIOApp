@@ -81,7 +81,6 @@ class Product extends Component {
                     <Banner />
                     {/* <View style={styles.bannerView}></View> */}
                     {/* 产品模块 */}
-                    
                     <View>
                         <View style={styles.sectionTitle}><Text style={styles.sectionTitleTxt}>{I18n.t('product.home.insuranceProduct')}</Text></View>
                         {

@@ -180,10 +180,10 @@ class WriteOrder extends Component {
     }
 
     // 打开弹窗
-    _openModal = (title, imgSrc) => {
+    _openModal = (title, imgName) => {
         this.setState({
             modalTitle: title,
-            modalImg: imgSrc
+            modalImg: imgName
         });
         this.myModal.open();
     };
@@ -227,48 +227,86 @@ class WriteOrder extends Component {
         }
     }
 
+    // 渲染订单下面我同意部分
+    _renderIAgree = () => {
+        const { type } = this.props.navigation.state.params;
+        const { mnemonisAgree } = this.state;
+        return (
+            <View style={styles.isAgree_flex}>
+                <CheckBox
+                    title=" "
+                    iconType="material"
+                    checkedIcon="check-circle"
+                    uncheckedIcon="check-circle"
+                    checkedColor="#4A90E2"
+                    checked={mnemonisAgree}
+                    containerStyle={styles.checkBox}
+                    onPress={() => {
+                        this.setState({ mnemonisAgree: !mnemonisAgree });
+                    }}
+                />
+                <Text style={styles.color_999}>
+                    {/* 我同意 */}
+                    {I18n.t('product.productDetail.writeOrder.IAgree')}
+                </Text>
+                {
+                    type === 0 &&
+                    <View style={styles.notes}>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('guaranteeItems', 'insurance_guarantee_items')}>
+                            《{I18n.t('product.productDetail.writeOrder.guaranteeItems')}》
+                        </Text>
+                        {/* 《保障条款》 */}
+                        <Text style={styles.color_999}>和</Text>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('insureShouldKnow', 'insurance_insure_should_know')}>
+                            《{I18n.t('product.productDetail.writeOrder.insureShouldKnow')}》
+                        </Text>
+                        {/* 《投保须知》 */}
+                    </View>
+                }
+                {
+                    type === 1 &&
+                    <View style={styles.notes}>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('buyShouldKnow', 'navigation_buy_should_know')}>
+                            《{I18n.t('product.productDetail.writeOrder.buyShouldKnow')}》
+                        </Text>
+                        {/* 《购买须知》 */}
+                        <Text style={styles.color_999}>和</Text>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('productItems', 'navigation_product_items')}>
+                            《{I18n.t('product.productDetail.writeOrder.productItems')}》
+                        </Text>
+                        {/* 《产品条款》 */}
+                    </View>
+                }
+                {
+                    type === 2 &&
+                    <View style={styles.notes}>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('buyShouldKnow', 'raining_buy_should_know')}>
+                            《{I18n.t('product.productDetail.writeOrder.buyShouldKnow')}》
+                        </Text>
+                        {/* 《购买须知》 */}
+                        <Text style={styles.color_999}>和</Text>
+                        <Text style={styles.color_aff} onPress={() => this._openModal('productItems', 'raining_product_items')}>
+                            《{I18n.t('product.productDetail.writeOrder.productItems')}》
+                        </Text>
+                        {/* 《产品条款》 */}
+                    </View>
+                }
+            </View>
+        );
+    }
     render() {
         const { type } = this.props.navigation.state.params;
-        const { mnemonisAgree, modalTitle } = this.state;
+        const { modalTitle, modalImg } = this.state;
         return (
             <ScrollView>
                 <View style={styles.container}>
                     <Text style={styles.tips}>{I18n.t('product.productDetail.writeOrder.tips' + type)}</Text>
                     {/* 订单填写列表区 */}
                     { this._renderOrderList(type) }
-                    <View style={styles.isAgree_flex}>
-                        <CheckBox
-                            title=" "
-                            iconType="material"
-                            checkedIcon="check-circle"
-                            uncheckedIcon="check-circle"
-                            checkedColor="#4A90E2"
-                            checked={mnemonisAgree}
-                            containerStyle={styles.checkBox}
-                            onPress={() => {
-                                this.setState({ mnemonisAgree: !mnemonisAgree });
-                            }}
-                        />
-                        <Text style={styles.color_999}>
-                            {I18n.t('product.productDetail.writeOrder.IAgree')}
-                            {/* 我同意 */}
-                            {
-                                type === 1 &&
-                                <View>
-                                    <Text
-                                        style={styles.color_aff}
-                                        onPress={() => this._openModal()}
-                                    >
-                                        {I18n.t('product.productDetail.writeOrder.buyShouldKnow')}
-                                        {/* 《购买须知》 */}
-                                    </Text>
-                                </View>
-                            }
-
-                        </Text>
-                    </View>
+                    {/* 订单下面我同意部分 */}
+                    { this._renderIAgree() }
+                    {/* 确定按钮 */}
                     <Button
-                        // 确定
                         title={I18n.t('public.OK')}
                         titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
                         buttonStyle={styles.checkBtnStyle}
@@ -287,12 +325,31 @@ class WriteOrder extends Component {
                             <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.modalContent}>
-                    </View>
+                    <ScrollView>
+                        <View>
+                            {
+                                modalImg === 'insurance_guarantee_items' && <Image style={[styles.modalContentImg, {height: scaleSize(6022)}]} source={require('../../assets/images/product/insurance_guarantee_items.png')}/>
+                            }
+                            {
+                                modalImg === 'insurance_insure_should_know' && <Image style={[styles.modalContentImg, {height: scaleSize(564)}]} source={require('../../assets/images/product/insurance_insure_should_know.png')}/>
+                            }
+                            {
+                                modalImg === 'navigation_buy_should_know' && <Image style={[styles.modalContentImg, {height: scaleSize(1216)}]} source={require('../../assets/images/product/navigation_buy_should_know.png')}/>
+                            }
+                            {
+                                modalImg === 'navigation_product_items' && <Image style={[styles.modalContentImg, {height: scaleSize(4082)}]} source={require('../../assets/images/product/navigation_product_items.png')}/>
+                            }
+                            {
+                                modalImg === 'raining_buy_should_know' && <Image style={[styles.modalContentImg, {height: scaleSize(608)}]} source={require('../../assets/images/product/raining_buy_should_know.png')}/>
+                            }
+                            {
+                                modalImg === 'raining_product_items' && <Image style={[styles.modalContentImg, {height: scaleSize(4894)}]} source={require('../../assets/images/product/raining_product_items.png')}/>
+                            }
+                        </View>
+                    </ScrollView>
                 </Modal>
                 <Toast onRef={toast => this.toast = toast}/>
             </ScrollView>
-
         );
     }
 }
@@ -452,6 +509,9 @@ const styles = StyleSheet.create({
     color_aff: {
         color: '#5077BC',
     },
+    notes: {
+        flexDirection: 'row',
+    },
     modal: {
         width: scaleSize(670),
         height: scaleSize(1078),
@@ -481,4 +541,8 @@ const styles = StyleSheet.create({
         width: scaleSize(32),
         height: scaleSize(32),
     },
+    modalContentImg: {
+        width: scaleSize(670),
+        marginTop: scaleSize(32),
+    }
 });
