@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import {
     Image,
-    ScrollView,
+    Picker,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -76,7 +76,7 @@ export default class ProductDetail extends Component {
             // 份数
             buyNum: 0,
             yearMonthSelectList: [], // 降雨险的时候存放可以选择的年月
-            showSelectView: false, // 是否显示月份选择下拉框
+            // showSelectView: false, // 是否显示月份选择下拉框
             selectedYearMonthValue: '', // 选择的年月
         };
     }
@@ -155,25 +155,24 @@ export default class ProductDetail extends Component {
                 title: 'buyNum',  right: this._renderBuyNumSelector, noBorderBottom: true,
             },
         ];
-        const { yearMonthSelectList, showSelectView } = this.state;
         return (
             <View style={[styles.details, styles.marginBottom42]}>
                 {
                     list.map((data, index) => this._renderProductRainingItem(data, index))
                 }
                 {/* 月份下拉框 */}
-                {
-                    showSelectView && !!yearMonthSelectList.length &&
-                        <View style={{maxHeight: scaleSize(420), position: 'absolute', top: scaleSize(270), left: 0}}>
-                            <ScrollView>
-                                <View style={styles.monthSelectorListView}>
-                                    {
-                                        yearMonthSelectList.map((data, index) => this._renderSelectMonthListItem(data, index))
-                                    }
-                                </View>
-                            </ScrollView>
-                        </View>
-                }
+                {/*{*/}
+                    {/*showSelectView && !!yearMonthSelectList.length &&*/}
+                        {/*<View style={{maxHeight: scaleSize(420), position: 'absolute', top: scaleSize(270), left: 0}}>*/}
+                            {/*<ScrollView>*/}
+                                {/*<View style={styles.monthSelectorListView}>*/}
+                                    {/*{*/}
+                                        {/*yearMonthSelectList.map((data, index) => this._renderSelectMonthListItem(data, index))*/}
+                                    {/*}*/}
+                                {/*</View>*/}
+                            {/*</ScrollView>*/}
+                        {/*</View>*/}
+                {/*}*/}
             </View>
         )
     }
@@ -206,31 +205,56 @@ export default class ProductDetail extends Component {
     }
     // 渲染月份选择器
     _renderMonthSelector = () => {
-        const { selectedYearMonthValue, showSelectView } = this.state;
+        const { selectedYearMonthValue, yearMonthSelectList } = this.state;
+        // return (
+        //     <TouchableOpacity onPress={() => this.setState({showSelectView: !showSelectView})}>
+        //         <View style={styles.monthSelectorView}>
+        //             <Text style={styles.selectMonthItem}>{selectedYearMonthValue}</Text>
+        //             <Image style={styles.selectIcon} source={require('../../assets/images/product/down_arrow.png')}/>
+        //         </View>
+        //     </TouchableOpacity>
+        // );
         return (
-            <TouchableOpacity onPress={() => this.setState({showSelectView: !showSelectView})}>
-                <View style={styles.monthSelectorView}>
-                    <Text style={styles.selectMonthItem}>{selectedYearMonthValue}</Text>
-                    <Image style={styles.selectIcon} source={require('../../assets/images/product/down_arrow.png')}/>
-                </View>
-            </TouchableOpacity>
+            <View style={{marginRight: scaleSize(-24)}}>
+                {/* 月份下拉框 */}
+                <Picker
+                    selectedValue={selectedYearMonthValue}
+                    onValueChange={(selectedYearMonthValue) => this.setState({selectedYearMonthValue})}
+                    style={{
+                        width: scaleSize(245),
+                        color: '#9B9B9B',
+                        fontSize: scaleSize(30),
+                        paddingRight: 0,
+                        marginRight: 0,
+                    }}
+                >
+                    {
+                        yearMonthSelectList.map((data, index) =>
+                            <Picker.Item
+                                key={index}
+                                label={data}
+                                value={data}
+                            />)
+                    }
+                </Picker>
+            </View>
         );
     }
     // 渲染月份下拉框Item
-    _renderSelectMonthListItem = (data, index) => {
-        return (
-            <TouchableOpacity key={index} style={styles.monthSelectorListItem} onPress={() => this._clickSelectItem(data)}>
-                <Text style={styles.selectMonthItem}>{data}</Text>
-            </TouchableOpacity>
-        );
-    }
+    // _renderSelectMonthListItem = (data, index) => {
+    //     return (
+    //         <TouchableOpacity key={index} style={styles.monthSelectorListItem} onPress={() => this._clickSelectItem(data)}>
+    //             <Text style={styles.selectMonthItem}>{data}</Text>
+    //         </TouchableOpacity>
+    //     );
+    // }
     // 点击选择的年月
-    _clickSelectItem = (data) => {
-        this.setState({
-            selectedYearMonthValue: data,
-            showSelectView: false,
-        });
-    }
+    // _clickSelectItem = (data) => {
+    //     this.setState({
+    //         selectedYearMonthValue: data,
+    //         showSelectView: false,
+    //     });
+    // }
     // 渲染份数数量选择器
     _renderBuyNumSelector = () => {
         const { buyNum } = this.state;
@@ -272,6 +296,7 @@ export default class ProductDetail extends Component {
             'productRainingTips',
         ];
         const { type } = this.props.navigation.state.params;
+        const { yearMonthSelectList, showSelectView } = this.state;
         console.log('type ', type, typeof type);
         return (
             <Container>
@@ -449,9 +474,9 @@ const styles = StyleSheet.create({
     // 月份选择器用
     monthSelectorView: {
         width: scaleSize(250),
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
+        // flexDirection: 'row',
+        // alignItems: 'center',
+        // justifyContent: 'flex-end',
         height: scaleSize(90),
     },
     selectMonthItem: {
