@@ -20,8 +20,12 @@ export default class OrderDetails extends Component {
     _renderPerRow = (data) => {
         return (
             <View style={styles.perRow}>
-                <Text style={styles.rowTxt}>{I18n.t(data.title)}</Text>
-                <Text style={styles.rowTxt}>{data.value}</Text>
+                {
+                    data.left
+                    ? data.left
+                    : <Text style={styles.rowTxt}>{I18n.t(data.title)}</Text>
+                }
+                <Text style={data.valueStyle ? styles[data.valueStyle] : styles.rowTxt}>{data.value}</Text>
             </View>
         )
     }
@@ -31,15 +35,10 @@ export default class OrderDetails extends Component {
             <Text style={styles.modalTxt}>{I18n.t(data)}</Text>
         )
     }
-    render() {
+    // 渲染账户安全险的订单详情
+    _renderProductInsuranceOrder = () => {
         return (
-            <View style={styles.container}>
-                <View style={styles.top}>
-                    <Text style={styles.topTitle}>{I18n.t('my.orderDetails.insurance')}</Text>
-                    <TouchableOpacity style={styles.topRightArea} onPress={() => this.myModal.open()}>
-                        <Text style={styles.topRightTxt}>{I18n.t('my.applyCompensation')}</Text>
-                    </TouchableOpacity>
-                </View>
+            <View>
                 {
                     // 保障金额
                     this._renderPerRow({
@@ -94,6 +93,160 @@ export default class OrderDetails extends Component {
                     <Text style={styles.rowTxt}>{I18n.t('my.orderDetails.guaranteeAddress')}</Text>
                     <Text style={styles.rowTxt}>{'68TR510kh37c732MV449dd618es30Y11a00L88fgCx'}</Text>
                 </View>
+            </View>
+        );
+    }
+    // 渲染航空险的订单详情
+    _renderProductNavigationOrder = () => {
+        return (
+            <View>
+                {
+                    // 最高保障金额
+                    this._renderPerRow({
+                        title: 'my.orderDetails.guaranteeAmountMax',
+                        value: '20000SIGM',
+                    })
+                }
+                <View style={styles.whiteSplit}></View>
+                {
+                    // 航班
+                    this._renderPerRow({
+                        title: 'my.orderDetails.flight',
+                        value: '中国国航 CA1219',
+                    })
+                }
+                {
+                    // 北京首都
+                    this._renderPerRow({
+                        left: <Text style={styles.rowTxt}>北京首都</Text>,
+                        value: '银川河东',
+                    })
+                }
+                {
+                    // 计划起飞时间
+                    this._renderPerRow({
+                        title: 'my.orderDetails.flightStartDate',
+                        value: '计划起飞时间',
+                    })
+                }
+                {
+                    // 身份证号码
+                    this._renderPerRow({
+                        title: 'my.orderDetails.id',
+                        value: '2110103198637482315',
+                    })
+                }
+                {
+                    // 手机号码
+                    this._renderPerRow({
+                        title: 'my.orderDetails.phone',
+                        value: '18609763948',
+                    })
+                }
+                {
+                    // 购买人
+                    this._renderPerRow({
+                        title: 'my.orderDetails.buyer',
+                        value: '刘航',
+                    })
+                }
+                <View style={styles.whiteSplit}></View>
+                {
+                    // 订单金额
+                    this._renderPerRow({
+                        title: 'my.orderDetails.orderAmount',
+                        value: '200 SIGM',
+                    })
+                }
+            </View>
+        );
+    }
+    // 渲染降雨险的订单详情
+    _renderProductRaining = () => {
+        return (
+            <View>
+                {
+                    // 最高保障金额
+                    this._renderPerRow({
+                        title: 'my.orderDetails.guaranteeAmountMax',
+                        value: '20000SIGM',
+                    })
+                }
+                <View style={styles.whiteSplit}></View>
+                {
+                    // 保障城市
+                    this._renderPerRow({
+                        title: 'my.orderDetails.guaranteeCity',
+                        value: '北京',
+                    })
+                }
+                {
+                    // 保障月份
+                    this._renderPerRow({
+                        title: 'my.orderDetails.guaranteeMonth',
+                        value: '201808',
+                    })
+                }
+                {
+                    // 理赔阈值
+                    this._renderPerRow({
+                        title: 'my.orderDetails.threshold',
+                        value: '中雨1小时累计降水量>2.5mm',
+                    })
+                }
+                {
+                    // 身份证号码
+                    this._renderPerRow({
+                        title: 'my.orderDetails.id',
+                        value: '2110103198637482315',
+                    })
+                }
+                {
+                    // 手机号码
+                    this._renderPerRow({
+                        title: 'my.orderDetails.phone',
+                        value: '18609763948',
+                    })
+                }
+                {
+                    // 购买人
+                    this._renderPerRow({
+                        title: 'my.orderDetails.buyer',
+                        value: '刘航',
+                    })
+                }
+                <View style={styles.whiteSplit}></View>
+                {
+                    // 订单金额
+                    this._renderPerRow({
+                        title: 'my.orderDetails.orderAmount',
+                        value: '200 SIGM',
+                    })
+                }
+            </View>
+        );
+    }
+    render() {
+        // 0：账户安全险，1：航延宝，2：上下班降雨险
+        const { product } = this.props.navigation.state.params;
+        const productList = ['productInsurance', 'productNavigation', 'productRaining'];
+        return (
+            <View style={styles.container}>
+                <View style={styles.top}>
+                    <Text style={styles.topTitle}>{I18n.t('product.' + productList[product])}</Text>
+                    <TouchableOpacity style={styles.topRightArea} onPress={() => this.myModal.open()}>
+                        <Text style={styles.topRightTxt}>{I18n.t('my.applyCompensation')}</Text>
+                    </TouchableOpacity>
+                </View>
+                {
+                    product === 0 && this._renderProductInsuranceOrder()
+                }
+                {
+                    product === 1 && this._renderProductNavigationOrder()
+                }
+                {
+                    product === 2 && this._renderProductRaining()
+                }
                 {/* 理赔流程弹窗 */}
                 <Modal
                     style={styles.modal}
@@ -167,6 +320,10 @@ const styles = StyleSheet.create({
         color: '#9B9B9B',
         fontSize: scaleSize(30),
     },
+    blueValueTxt: {
+        color: '#4A90E2',
+        fontSize: scaleSize(30),
+    },
     whiteSplit: {
         // width: scaleSize(666),
         height: scaleSize(16),
@@ -215,5 +372,5 @@ const styles = StyleSheet.create({
     modalTxt: {
         color: '#555555',
         fontSize: scaleSize(28),
-    }
+    },
 });

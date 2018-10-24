@@ -16,6 +16,7 @@ import { Button } from 'react-native-elements';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import OrderDetails from "../my/orderDetails";
 
 export default class PayCompleted extends Component {
     render() {
@@ -24,7 +25,6 @@ export default class PayCompleted extends Component {
         const { payStatus, product } = this.props.navigation.state.params;
         const payStateList = ['payFail', 'paySuccess'];
         const productList = ['productInsurance', 'productNavigation', 'productRaining'];
-        console.log('payStatus ', payStatus, typeof payStatus);
         return (
             <View style={styles.container}>
                 <Image style={styles.iconImg} source={payStatus === 0 ? require('../../assets/images/product/pay_fail.png') : require('../../assets/images/product/pay_success.png')}/>
@@ -36,7 +36,7 @@ export default class PayCompleted extends Component {
                         title={I18n.t('product.productDetail.payCompleted.backToHome')}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(32)}}
                         buttonStyle={styles.btnStyle}
-                        onPress={() => {}}
+                        onPress={() => this.props.navigation.navigate('Product')}
                     />
                     {
                         payStatus === 0
@@ -51,7 +51,7 @@ export default class PayCompleted extends Component {
                             title={I18n.t('product.productDetail.payCompleted.showDetail')}
                             titleStyle={{color: '#4A90E2', fontSize: scaleSize(32)}}
                             buttonStyle={styles.btnStyle}
-                            onPress={() => {}}/>
+                            onPress={() => this.props.navigation.navigate('OrderDetails', {product: product})}/>
                     }
                 </View>
             </View>
