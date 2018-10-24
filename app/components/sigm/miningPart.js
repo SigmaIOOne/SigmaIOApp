@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     Dimensions,
+    Animated
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
@@ -19,6 +20,17 @@ import { scaleSize } from '../../utils/ScreenUtil';
 import GetDeposit from "./getDeposit";
 
 export default class MiningPart extends React.Component {
+
+    constructor(props) {
+		super(props);
+		this.state = {
+            fadeAnim: new Animated.Value(0),
+            width: new Animated.Value(scaleSize(192)),
+            marginLeft: new Animated.Value(scaleSize(34)),
+
+        };
+        this._onPress = this._onPress.bind(this);
+	}
     /**
      * 渲染floor2的item
      */
@@ -41,6 +53,33 @@ export default class MiningPart extends React.Component {
             </View>
         );
     }
+    _onPress() {
+        Animated.timing(
+            this.state.fadeAnim,
+            {toValue: 1, duration: 500}
+        ).start();
+        Animated.timing(
+            this.state.width,
+            {toValue: scaleSize(230), duration: 2000},
+            {toValue: scaleSize(192), duration: 2000}
+        ).start(()=> {
+            this.setState({
+                width: new Animated.Value(scaleSize(192)),
+            })
+        });
+        Animated.timing(
+            this.state.marginLeft,
+            {toValue: scaleSize(15), duration: 2000}
+        ).start(() => {
+            this.setState({
+                marginLeft: new Animated.Value(scaleSize(34)),
+            })
+        });
+
+    }
+    componentDidMount() {
+        
+    }
     render() {
         return (
             <View>
@@ -58,7 +97,14 @@ export default class MiningPart extends React.Component {
                 </View>
                 <View style={styles.content}>
                     <View style={styles.floor1}>
-                        <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}></ImageBackground>
+                        <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}>
+                            <TouchableOpacity onPress={this._onPress}>
+                                <Animated.Image style={{ width: this.state.width, height: this.state.width, marginTop: this.state.marginLeft, marginLeft: this.state.marginLeft }}
+                                    source={require('../../assets/images/sigm/inner_circle.png')}
+                                />
+                            </TouchableOpacity>
+                            {/* <Image style={styles.innerCircle} source={require('../../assets/images/sigm/inner_circle.png')}/> */}
+                        </ImageBackground>
                         {/* 挖矿攻略 */}
                         <TouchableOpacity onPress={() => this.miningStrategyModal.open()}>
                             <Text style={styles.strategyTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
@@ -236,6 +282,12 @@ const styles = StyleSheet.create({
         height: scaleSize(260),
         marginTop: scaleSize(82),
         marginBottom: scaleSize(40),
+    },
+    innerCircle: {
+        width: scaleSize(192),
+        height: scaleSize(192),
+        marginTop: scaleSize(34),
+        marginLeft: scaleSize(34)
     },
     strategyTxt: {
         fontSize: scaleSize(28),
