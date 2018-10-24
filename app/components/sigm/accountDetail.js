@@ -66,7 +66,7 @@ export default class AccountDetail extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <ImageBackground style={styles.detailTop} source={require('../../assets/images/sigm/login_bg.png')}>
+                <ImageBackground style={styles.detailTop} source={require('../../assets/images/sigm/sigm_detail_bg.png')}>
                     <View style={[styles.topFloor1, styles.spaceBetween]}>
                         <Text style={styles.topFloor1Left}>{I18n.t('sigm.accountDetail.allAssets')}</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('SigmTransactionRecord')}>

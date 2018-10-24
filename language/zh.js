@@ -4,7 +4,7 @@ export default {
 		importWallet: '导入钱包',
 		createWallet: '创建钱包',
 		importInstructions: '在已有钱包中导出助记词，点击“导入钱包”，输入导出的助记词；导入钱包后请立即备份助记词。',
-		createInstructions: '没有钱包，请点击“创建钱包”，创建钱包时，请牢记您的密码；创建钱包后轻立即备份助记词。'
+		createInstructions: '没有钱包，请点击“创建钱包”。创建钱包时，请牢记密码，创建钱包后请立即备份助记词。'
 	},
 	wallet: {
 		mnemonic: '助记词',
@@ -96,7 +96,7 @@ export default {
             },
 			helpCenter: {
 				_title: '帮助中心',
-				mnemonic: '什么是助记词',
+				mnemonic: '什么是助记词?',
 				keystore: '什么是keystore',
 				privateKey: '什么是私钥'
 			},
@@ -496,6 +496,7 @@ export default {
         }
     },
     my: {
+	    login: '登录/注册',
 	    logout: '退出登录',
         message: '消息中心',
         order: '我的订单',
@@ -581,81 +582,6 @@ export default {
             inputPlaceholder: 'QQ/手机号/邮箱',
         }
     },
-	node: {
-        miner: '矿机',
-        minerCount: '矿机数',
-        totalPower: '总算力',
-        dailyProducts: '每日产出',
-        withdrawCash: '提现',
-        balance: '当前持有(GOG)',
-        power: '算力',
-        id: '编号',
-        status: '状态',
-        active: '激活',
-        inactive: '未激活',
-        dailyProduct: '日产出',
-        address: '地点',
-        registerMiner: {
-            _title: '绑定矿机',
-			inputMinerNumber: '输入矿机编号',
-			inputMinerCode: '输入矿机code',
-            emptyNoError: '矿机编号不能为空，请重新输入',
-            emptyCodeError: '矿机code不能为空，请重新输入',
-            failedError: '绑定失败，请重新输入',
-            inputTradingPwd: '输入交易密码'
-		},
-		powerRule: {
-            _title: '算力规则',
-            rule1: '1、算力分解后不可充值，请谨慎操作。 ',
-            rule2: '2、每次提币的手续费为1%提现数额。 ',
-            rule3: '3、请不要直接提现到ICO的众筹地址，这会导致您无法收取众筹到的数字资产。',
-            rule4: '4、提币到合约地址可能会导致交易失败，将导致转账失败，资产将退回到GOG。GOG会人工处理将币转回到原账户。 ',
-            rule5: '5、网络转账费用及时间是不固定的，取决于转账时合约执行需要消耗的算力。当前支付的Gas limit为90000，用于执行转账或合约执行。如果此次转账消耗超过90000gas，将导致转账失败，资产将退回到GOG。',
-            rule6: '6、请务必确认电脑及手机安全，防止信息被泄露或篡改。'
-        },
-        withdrawRule: {
-            _title: '提币规则',
-            rule1: '1、每次提现不可少于3000GOG。',
-            rule2: '2、每次提币的手续费为1%提现数额。',
-            rule3: '3、请不要直接提现到ICO的众筹地址，这会导致您无法收取众筹到的数字资产。',
-            rule4: '4、提币到合约地址可能会导致交易失败，将导致转账失败，资产将退回到GOG。GOG会人工处理将币转回到原账户。 ',
-            rule5: '5、网络转账费用及时间是不固定的，取决于转账时合约执行需要消耗的算力。当前支付的Gas limit为90000，用于执行转账或合约执行。如果此次转账消耗超过90000gas，将导致转账失败，资产将退回到GOG。',
-            rule6: '6、请务必确认电脑及手机安全，防止信息被泄露或篡改。'
-        },
-        setPassword: {
-            _title: '设置交易密码',
-            tip1: '1.交易密码必须有大写字母、小写字母、数字，禁止使 用符号',
-            tip2: '2.交易密码限定在8-12位之间',
-			setPassword: '设置交易密码',
-			setNewPassword: '设置新交易密码',
-            confirmPassword: '确认交易密码',
-            placehoder1: '字母、数字组合 8-12位之间',
-            placehoder2: '请重复输入交易密码'
-		},
-		powers: {
-			_title: '分解算力',
-			powerRule: '算力规则',
-			powerAmount: '算力数量',
-			powerFee: '收取1%手续费',
-			availableBalance: '手续费',
-			powerAll: '全部',
-			receivedAmount: '实际到账数量',
-			powerToken: '分解'
-		},
-        withdraw: {
-            _title: '提现',
-            withdrawRule: '提币规则',
-            withdrawAmount: '提币数量',
-            withdrawFee: '收取1%手续费',
-            availableBalance: '可用余额',
-            withdrawAll: '全部提现',
-            receivedAmount: '实际到账数量',
-            withdrawToken: '提币'
-		},
-		moreInfo: {
-			_title: '矿机信息'
-		}
-	},
 	public: {
 		second: '秒',
 		next: '下一步',
@@ -714,7 +640,8 @@ export default {
         codePlaceholder: '请输入验证码',
         phone: '手机号',
         phonePlaceholder: '请输入手机号',
-        serverPolicies: '《服务条款》'
+        serverPolicies: '《服务条款》',
+        mnemonicTitle: '什么是助记词',
 	},
     error: {
         passwordWrong: '密码错误',

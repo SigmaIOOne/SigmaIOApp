@@ -11,6 +11,7 @@ import moment from "moment/moment";
 export default function monthSelector () {
     const beforeDays = 10; // 需要提前的天数
     const dateList = []; // 存放可以选择的年月
+    const showYearsNum = 3; // 可以显示的年份数量
 
     function _init() {
         const currYear = moment().get('year');
@@ -25,10 +26,10 @@ export default function monthSelector () {
         const nextYear = nextMoment.get('year');
         const nextMonth = nextMoment.get('month');
         const startMomentArr = _calculateStartTime(currYear, currMonth, nextYear, nextMonth);
-        const EndYear = currYear + 2;
+        const EndYear = currYear + showYearsNum;
         let year = startMomentArr[0];
         let month = startMomentArr[1];
-        while (year <= EndYear) {
+        while (year < EndYear) {
             month++;
             const currStr = year + month.toString().padStart(2, '0');
             nextMoment = moment().year(year).month(month);
