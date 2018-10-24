@@ -6,38 +6,29 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import MiningPart from "./miningPart";
 
 class Sigm extends React.Component {
+    static propTypes = {
+        login: PropTypes.object,
+    }
     constructor(props) {
         super(props);
         this.state = {
-            logged: false
         }
     }
-    componentDidMount() {
-        storage.load({ key: 'walletInfo'})
-            .then((res) => {
-                if (res.walletAddress) {
-                    this.setState({
-                        logged: true
-                    })
-                }
-            })
-            .catch(() => {
-                this.setState({
-                    logged: false
-                })
-            });
-    }
-
-    _clickToNavigate = (target) => {
-
+    _cardPress = (target) => {
+        const login = this.props.login.login;
+        const navigate = this.props.navigation.navigate;
+        if (!login) navigate('Login');
+        else navigate(target);
     }
     render() {
+        const login = this.props.login.login;
         return (
             <View style={styles.container}>
                 <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>
@@ -47,9 +38,12 @@ class Sigm extends React.Component {
                             <Image style={styles.headerLeftImg} source={require('../../assets/images/sigm/sigm_title.png')}/>
                             <Text style={styles.headerLeftText}>SigmalO</Text>
                         </View>
-                        <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login')}>
-                            <Text style={styles.headerRightText}>{I18n.t('sigm.login')}</Text>
-                        </TouchableOpacity>
+                        {
+                            !login &&
+                                <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login')}>
+                                    <Text style={styles.headerRightText}>{I18n.t('sigm.login')}</Text>
+                                </TouchableOpacity>
+                        }
                     </View>
                     {/* 卡片 */}
                     {/* 总资产 */}
@@ -59,7 +53,7 @@ class Sigm extends React.Component {
                                 <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_1.png')}/>
                                 <Text style={styles.cardTitleText}>{I18n.t('sigm.totalAsset')}</Text>
                             </View>
-                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this.props.navigation.navigate('AccountDetail')}>
+                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('AccountDetail')}>
                                 <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
                             </TouchableOpacity>
                         </View>
@@ -82,7 +76,7 @@ class Sigm extends React.Component {
                                 <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_2.png')}/>
                                 <Text style={styles.cardTitleText}>{I18n.t('sigm.minerAccount')}</Text>
                             </View>
-                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this.props.navigation.navigate('MiningPart')}>
+                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('MiningPart')}>
                                 <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
                             </TouchableOpacity>
                         </View>
@@ -108,7 +102,7 @@ class Sigm extends React.Component {
 
 export default connect(
     state => ({
-        wallet: state.wallet
+        login: state.login
     }),{}
 )(Sigm)
 

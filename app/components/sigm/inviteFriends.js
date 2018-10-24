@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import {
+    Modal,
     View,
     Text,
     StyleSheet,
@@ -78,7 +79,8 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     blueArea: {
-        height: scaleSize(636),
+        // height: scaleSize(636),
+        height: scaleSize(600),
         backgroundColor: '#4A90E2',
         marginTop: scaleSize(98),
     },

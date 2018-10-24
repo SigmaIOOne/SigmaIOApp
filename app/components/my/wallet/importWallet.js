@@ -13,7 +13,7 @@ var DeviceInfo = require('react-native-device-info');
 var Mnemonic = require('bitcore-mnemonic');
 import { scaleSize } from '../../../utils/ScreenUtil';
 import { connect } from 'react-redux';
-import { updateWalletAddress, updateUserId, changeLoginState, updateWalletInfo } from '../../../store/reducers/wallet';
+import { updateWalletAddress, updateUserId, changeWalletImportState, updateWalletInfo } from '../../../store/reducers/wallet';
 // import { getUser } from '../../../api/bind';
 
 class ImportWallet extends Component {
@@ -254,7 +254,7 @@ class ImportWallet extends Component {
 							let keystoreV3 = web3.eth.accounts
 								.privateKeyToAccount('0x' + ks.exportPrivateKey(address[0], pwDerivedKey))
 								.encrypt(option.password);
-                            this.props.changeLoginState(true);
+                            this.props.changeWalletImportState(true);
                             this.props.updateWalletInfo({
                                 walletAddress: address[0],
                                 keystoreV3: keystoreV3,
@@ -339,7 +339,7 @@ class ImportWallet extends Component {
 				setTimeout(() => {
 					try {
 						let keystoreV3 = web3.eth.accounts.encrypt(this.state.privateFile, this.state.privatePwd);
-                        this.props.changeLoginState(true);
+                        this.props.changeWalletImportState(true);
                         this.props.updateWalletInfo({
                             walletAddress: '0x' + keystoreV3.address,
                             keystoreV3: keystoreV3,
@@ -417,7 +417,7 @@ class ImportWallet extends Component {
 					// }).catch((e) => {
 					// 	console.log(e)
 					// })
-                    this.props.changeLoginState(true);
+                    this.props.changeWalletImportState(true);
                     this.props.updateWalletInfo({
                         walletAddress: account.address,
                         keystoreV3: JSON.parse(this.state.keystoreFile),
@@ -690,7 +690,7 @@ export default connect(
 	}),{
 		updateWalletAddress,
 		updateUserId,
-        changeLoginState,
+        changeWalletImportState,
         updateWalletInfo
 	}
 )(ImportWallet)

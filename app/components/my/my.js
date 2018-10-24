@@ -14,7 +14,7 @@ import { scaleSize } from '../../utils/ScreenUtil';
 
 class My extends Component {
     static propTypes = {
-        wallet: PropTypes.object,
+        login: PropTypes.object,
     }
     _renderSelectItem = (data) => {
 	    return (
@@ -34,7 +34,7 @@ class My extends Component {
 	render() {
         const phone = '13718886966';
         const formatPhone = phone.replace(phone.slice(3, 7), '****');
-        const login = this.props.wallet.login;
+        const login = this.props.login.login;
 		return (
 			<View style={ login ? styles.container : {}}>
                 {
@@ -125,7 +125,7 @@ class My extends Component {
 // export default withNavigation(My);
 export default connect(
     state => ({
-        wallet: state.wallet
+        login: state.login
     })
 )(My)
 
