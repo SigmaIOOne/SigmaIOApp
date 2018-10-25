@@ -76,17 +76,17 @@ export default class GetDeposit extends React.Component {
                         })
                     }
                     {/* 邀请好友 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/friends.png'),
-                            title: 'sigm.miningPart.getDepositPart.inviteFriends',
-                            description1: 'sigm.miningPart.getDepositPart.inviteDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
-                            disabled: false,
-                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
-                        })
-                    }
+                    {/*{*/}
+                        {/*this._renderListItem({*/}
+                            {/*iconImg: require('../../assets/images/sigm/friends.png'),*/}
+                            {/*title: 'sigm.miningPart.getDepositPart.inviteFriends',*/}
+                            {/*description1: 'sigm.miningPart.getDepositPart.inviteDescription1',*/}
+                            {/*description2: 'sigm.miningPart.getDepositPart.inviteDescription2',*/}
+                            {/*btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',*/}
+                            {/*disabled: false,*/}
+                            {/*pressFunc: () => { this.props.navigation.navigate('InviteFriends') }*/}
+                        {/*})*/}
+                    {/*}*/}
                     {/* 认证身份 */}
                     {
                         this._renderListItem({

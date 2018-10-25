@@ -36,12 +36,12 @@ class AssetHome extends React.Component {
 
     componentWillMount() {
         console.log('will ', this.props.wallet);
-        this._changeLoginState(this.props.wallet.login);
+        this._changeLoginState(this.props.wallet.walletImport);
     }
 
     componentWillReceiveProps(nextProps) {
-        const newLoginState = nextProps.wallet.login;
-        if (this.props.wallet.login !== newLoginState) {
+        const newLoginState = nextProps.wallet.walletImport;
+        if (this.props.wallet.walletImport !== newLoginState) {
             this._changeLoginState(newLoginState);
         }
     }

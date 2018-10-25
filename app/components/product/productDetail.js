@@ -85,6 +85,7 @@ export default class ProductDetail extends Component {
         this._init();
     }
     _init = () => {
+        // const yearMonthSelectList = monthSelector('2018-12-23');
         const yearMonthSelectList = monthSelector();
         console.log('yearMonthSelectList ', yearMonthSelectList);
         this.setState({

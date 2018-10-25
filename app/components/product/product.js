@@ -77,10 +77,10 @@ class Product extends Component {
         ];
         return (
             <ScrollView style={{ backgroundColor: '#FFFFFF' }}>
-                <View style={styles.header}>
-                    <Text style={{ fontSize: 16, textAlign: 'center', color: '#555555'}}>产品</Text>
-                </View>
                 <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={{ fontSize: 16, textAlign: 'center', color: '#555555'}}>产品</Text>
+                    </View>
                     {/* 轮播图三张图片, 对应下面的保险的三个产品 */}
                     <Banner />
                     {/* <View style={styles.bannerView}></View> */}
@@ -92,7 +92,6 @@ class Product extends Component {
                         }
                     </View>
                 </View>
-                
             </ScrollView>
         )
     }
@@ -107,13 +106,15 @@ export default connect(
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        minHeight: Dimensions.get('window').height,
+        // minHeight: Dimensions.get('window').height,
         backgroundColor: '#FFFFFF',
     },
     header: {
+        width: scaleSize(750),
         backgroundColor: '#FFFFFF',
         height: scaleSize(88),
         justifyContent: 'center',
+        alignItems: 'center',
         borderBottomColor: '#E8E8E8',
         borderBottomWidth: scaleSize(1),
         marginTop: headerTop

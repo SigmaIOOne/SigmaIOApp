@@ -8,8 +8,8 @@ const UPDATE_WALLET_NAME = 'dbc/wallet/UPDATE_WALLET_NAME';
 const UPDATE_WALLET_USERID = 'dbc/wallet/UPDATE_WALLET_USERID';
 // const UPDATE_WALLET_ADDRESS = 'wallet/UPDATE_WALLET_ADDRESS'
 // 来自lxy新增
-const CHANGE_LOGIN_STATE = 'dbc/wallet/CHANGE_LOGIN_STATE';
 const UPDATE_WALLET_INFO = 'dbc/wallet/UPDATE_WALLET_INFO';
+const CHANGE_WALLET_IMPORT_STATE = 'dbc/wallet/CHANGE_WALLET_IMPORT_STATE';
 
 // ---------reducer---------
 const initialState = {
@@ -17,7 +17,7 @@ const initialState = {
   walletName: '',
   userId: '',
   // 来自lxy新增
-  login: false,
+  walletImport: false, // 是否导入了钱包
   walletInfo: {}
 };
 
@@ -38,9 +38,9 @@ export default function wallet(state = initialState, action = {}) {
         userId: { $set: action.payload.userId },
       });
     }
-    case CHANGE_LOGIN_STATE: {
+    case CHANGE_WALLET_IMPORT_STATE: {
       return update(state, {
-          login: { $set: action.payload.newState },
+        walletImport: { $set: action.payload.newState },
       });
     }
       case UPDATE_WALLET_INFO: {
@@ -82,10 +82,10 @@ export function updateUserId(userId){
 }
 
 // 来自lxy新增
-// 改变登录状态
-export function changeLoginState(newState){
+// 改变钱包导入状态状态
+export function changeWalletImportState(newState){
     return {
-        type: CHANGE_LOGIN_STATE,
+        type: CHANGE_WALLET_IMPORT_STATE,
         payload: {
             newState
         }
@@ -101,5 +101,6 @@ export function updateWalletInfo(info){
         }
     };
 }
+
 
 

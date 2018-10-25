@@ -11,11 +11,9 @@ import { reduxifyNavigator, createReactNavigationReduxMiddleware, createNavigati
 
 //TabBar 底部栏位页面
 import Splash from '../pages/Splash'; // app开屏画面
-// import Assets from '../components/asset/asset'; // 底部：资产
 import AssetHome from '../components/asset/assetHome'; // 底部：资产
 import Sigm from '../components/sigm/sigm'; // 底部：Sigm
 import Product from '../components/product/product'; // 底部：产品
-// import Node_item from '../components/node/node'; //底部：节点
 import My_item from '../components/my/my'; //底部： 我的
 
 //Router
@@ -47,14 +45,7 @@ import BindInCode from '../components/my/bindInCode'; //我的 -> 绑定邀请�
 import changePwd from '../components/my/changePwd'; //我的 -> 修改交易密码
 import setNewPwd from '../components/my/setNewPwd'; //我的 -> 修改交易密码 -> 设置新交易密码
 
-import BindMachine from '../components/node/bindMachine'; //矿机 -> 绑定矿机
-import SetPwd from '../components/node/setPwd'; // 矿机 -> 设置交易密码
-import decomposePower from '../components/node/decomposePower'; //分解算力
-import WithdrawCash from '../components/node/withdrawCash'; //矿机 -> 提现
-import CurrencyRule from '../components/node/currencyRule'; //矿机 -> 提现规则
-import powerRule from '../components/node/powerRule';
 import QRscanner from '../components/public/QRscanner'; //转账 -> 扫描二维码
-import moreInfo from '../components/node/moreInfo'; //矿机信息
 
 import Login from '../components/sigm/login/login'; // SIGM -> 登录
 import FindPsd from '../components/sigm/login/findPsd'; // SIGM -> 登录 -> 忘记密码
@@ -75,7 +66,7 @@ import UploadRecord from '../components/my/uploadRecord'; // 我的 -> 数据上
 import SecurityCenter from '../components/my/securityCenter'; // 我的 -> 安全中心
 import BindPhone from '../components/my/bindPhone'; // 我的 -> 安全中心 -> 绑定手机
 import Certificate from '../components/my/certificate'; // 我的 -> 安全中心 -> 认证身份
-import ServerPolicies from '../components/my/serverPolicies'; // 我的 -> 隐私条款
+import ServerPolicies from '../components/my/serverPolicies'; // 我的 -> 安全中心 -> 绑定手机 -> 隐私条款
 import Protocols from '../components/my/protocols'; // 我的 -> 使用协议
 import AboutUs from '../components/my/aboutus'; //我的 -> 关于我们
 import Release from '../components/my/release'; //我的 -> 关于我们 -> 版本日志
@@ -382,13 +373,6 @@ const RootNavigator = createStackNavigator(
 		// 		headerTitle: () => <Text>{I18n.t('my.webHost')} </Text>
 		// 	}
 		// },
-		BindMachine,
-		SetPwd,
-		WithdrawCash,
-		decomposePower,
-		CurrencyRule,
-		powerRule,
-		moreInfo,
 		QRscanner: {
 			screen: QRscanner,
 			navigationOptions: {

@@ -10,7 +10,7 @@ import Icon from '../../pages/iconSets';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { checkWalletName } from '../../utils/valiServices';
 import { connect } from 'react-redux';
-import { updateWalletName, changeLoginState, updateWalletInfo } from '../../store/reducers/wallet';
+import { updateWalletName, changeWalletImportState, updateWalletInfo } from '../../store/reducers/wallet';
 
 const screen = Dimensions.get('window');
 
@@ -370,7 +370,7 @@ class WalletInfo extends Component {
 														// this.navigate('Guide');
                                                         Promise
                                                             .all(
-                                                                this.props.changeLoginState(false),
+                                                                this.props.changeWalletImportState(false),
                                                                 this.props.updateWalletInfo({})
                                                             )
                                                             .then(() => {
@@ -505,7 +505,7 @@ export default connect(
 		wallet: state.wallet
 	}),{
 		updateWalletName,
-        changeLoginState,
+        changeWalletImportState,
         updateWalletInfo
 	}
 )(WalletInfo)

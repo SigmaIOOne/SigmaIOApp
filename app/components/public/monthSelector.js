@@ -8,14 +8,21 @@
  */
 import moment from "moment/moment";
 
-export default function monthSelector () {
+// currMoment格式: '2018-12-23'
+
+export default function monthSelector (currMoment) {
     const beforeDays = 10; // 需要提前的天数
+    const showYearsNum = 3; // 可以显示的年份数量
     const dateList = []; // 存放可以选择的年月
 
     function _init() {
-        const currYear = moment().get('year');
-        const currMonth = moment().get('month');
-        const currDate = moment().get('date');
+        if (currMoment) {
+            currMoment = currMoment.split('-');
+            currMoment = moment().year(Number(currMoment[0])).month(Number(currMoment[1]) - 1).date(Number(currMoment[2]));
+        } else currMoment = moment();
+        const currYear = currMoment.get('year');
+        const currMonth = currMoment.get('month');
+        const currDate = currMoment.get('date');
         const nextDate = currDate + beforeDays;
         const nextMoment = moment().year(currYear).month(currMonth).date(nextDate);
         _getDateList(currYear, currMonth, nextMoment);
@@ -25,10 +32,10 @@ export default function monthSelector () {
         const nextYear = nextMoment.get('year');
         const nextMonth = nextMoment.get('month');
         const startMomentArr = _calculateStartTime(currYear, currMonth, nextYear, nextMonth);
-        const EndYear = currYear + 2;
         let year = startMomentArr[0];
         let month = startMomentArr[1];
-        while (year <= EndYear) {
+        const EndYear = year + showYearsNum;
+        while (year < EndYear) {
             month++;
             const currStr = year + month.toString().padStart(2, '0');
             nextMoment = moment().year(year).month(month);

@@ -10,7 +10,7 @@ import { scaleSize } from '../../../utils/ScreenUtil';
 import { checkWalletName, checkPwd, checkTwoPwd, checkisAgress } from '../../../utils/valiServices';
 
 import { connect } from 'react-redux';
-import { updateWalletAddress, changeLoginState, updateWalletInfo } from '../../../store/reducers/wallet';
+import { updateWalletAddress, changeWalletImportState, updateWalletInfo } from '../../../store/reducers/wallet';
 
 const screen = Dimensions.get('window');
 var DeviceInfo = require('react-native-device-info');
@@ -125,7 +125,7 @@ class CreateWallet extends Component {
 											.privateKeyToAccount('0x' + ks.exportPrivateKey(address[0], pwDerivedKey))
 											.encrypt(this.state.pwd);
 										// this.props.updateWalletAddress(address[0]);
-                                        this.props.changeLoginState(true);
+                                        this.props.changeWalletImportState(true);
                                         this.props.updateWalletInfo({
                                             walletAddress: address[0],
                                             keystoreV3: keystoreV3,
@@ -268,7 +268,7 @@ export default connect(
 		wallet: state.wallet
 	}),{
 		updateWalletAddress,
-        changeLoginState,
+        changeWalletImportState,
         updateWalletInfo
 	}
 )(CreateWallet)

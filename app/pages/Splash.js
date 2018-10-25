@@ -3,7 +3,7 @@ import { Dimensions, Animated } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 // import { I18n } from '../../language/i18n';
-import { changeLoginState, updateWalletInfo } from '../store/reducers/wallet';
+import { changeWalletImportState, updateWalletInfo } from '../store/reducers/wallet';
 
 const maxHeight = Dimensions.get('window').height;
 const maxWidth = Dimensions.get('window').width;
@@ -38,7 +38,7 @@ class Splash extends React.Component {
 					key: 'walletInfo'
 				})
                 .then(res => {
-                    this.props.changeLoginState(true);
+                    this.props.changeWalletImportState(true);
                     this.props.updateWalletInfo(res);
                 });
 			// 	.then((res) => {
@@ -71,7 +71,7 @@ class Splash extends React.Component {
 const NewSplash = connect(
     null,
     {
-        changeLoginState,
+        changeWalletImportState,
         updateWalletInfo
     }
 )(Splash);

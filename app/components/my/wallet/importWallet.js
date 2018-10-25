@@ -13,7 +13,7 @@ var DeviceInfo = require('react-native-device-info');
 var Mnemonic = require('bitcore-mnemonic');
 import { scaleSize } from '../../../utils/ScreenUtil';
 import { connect } from 'react-redux';
-import { updateWalletAddress, updateUserId, changeLoginState, updateWalletInfo } from '../../../store/reducers/wallet';
+import { updateWalletAddress, updateUserId, changeWalletImportState, updateWalletInfo } from '../../../store/reducers/wallet';
 // import { getUser } from '../../../api/bind';
 
 class ImportWallet extends Component {
@@ -254,7 +254,7 @@ class ImportWallet extends Component {
 							let keystoreV3 = web3.eth.accounts
 								.privateKeyToAccount('0x' + ks.exportPrivateKey(address[0], pwDerivedKey))
 								.encrypt(option.password);
-                            this.props.changeLoginState(true);
+                            this.props.changeWalletImportState(true);
                             this.props.updateWalletInfo({
                                 walletAddress: address[0],
                                 keystoreV3: keystoreV3,
@@ -339,7 +339,7 @@ class ImportWallet extends Component {
 				setTimeout(() => {
 					try {
 						let keystoreV3 = web3.eth.accounts.encrypt(this.state.privateFile, this.state.privatePwd);
-                        this.props.changeLoginState(true);
+                        this.props.changeWalletImportState(true);
                         this.props.updateWalletInfo({
                             walletAddress: '0x' + keystoreV3.address,
                             keystoreV3: keystoreV3,
@@ -417,7 +417,7 @@ class ImportWallet extends Component {
 					// }).catch((e) => {
 					// 	console.log(e)
 					// })
-                    this.props.changeLoginState(true);
+                    this.props.changeWalletImportState(true);
                     this.props.updateWalletInfo({
                         walletAddress: account.address,
                         keystoreV3: JSON.parse(this.state.keystoreFile),
@@ -454,7 +454,7 @@ class ImportWallet extends Component {
 	}
 
 	render() {
-		return (
+        return (
 			<ScrollableTabView
 				style={{ backgroundColor: '#fff', height: scaleSize(88) }}
 				tabBarUnderlineStyle={{ backgroundColor: '#4A90E2', height: scaleSize(8), width: scaleSize(76), marginLeft: scaleSize(94) }}
@@ -507,11 +507,7 @@ class ImportWallet extends Component {
 								{/* 我已仔细阅读并同意 */}
 								<Text
 									style={styles.color_aff}
-									onPress={() => {
-										this.props.navigation.navigate('UserPolicy', {
-											service_source: this.state.service_source
-										});
-									}}
+                                    onPress={() => this.props.navigation.navigate('ServerPolicies')}
 								>
 									{'《' + I18n.t('wallet.term') + '》'}
 									{/* 《服务及隐私条款》 */}
@@ -526,6 +522,25 @@ class ImportWallet extends Component {
 							disabled={this.state.disabledImport}
 							disabledStyle={styles.disabledStyle}
 						/>
+                        <View>
+                            <Text
+                                style={{
+                                    color: '#4A90E2',
+                                    fontSize: scaleSize(28),
+                                    marginTop: scaleSize(76),
+                                    marginLeft: scaleSize(278),
+                                }}
+                                onPress={() =>
+                                    this.props.navigation.navigate('KnowledgePoint', {
+                                        title: I18n.t('my.home.helpCenter.mnemonic'),
+                                        content: I18n.t('public.mnemonic'),
+                                        ps: I18n.t('public.mnemonic_ps')
+                                    })}
+                            >
+                                {I18n.t('public.mnemonicTitle')}
+                                {/* 什么是助记词? */}
+                            </Text>
+                        </View>
 						<Loading ref="loading" />
 					</ScrollView>
 				</View>
@@ -554,11 +569,7 @@ class ImportWallet extends Component {
 								{/* 我已仔细阅读并同意 */}
 								<Text
 									style={styles.color_aff}
-									onPress={() => {
-										this.props.navigation.navigate('UserPolicy', {
-											service_source: this.state.service_source
-										});
-									}}
+                                    onPress={() => this.props.navigation.navigate('ServerPolicies')}
 								>
 									{'《' + I18n.t('wallet.term') + '》'}
 									{/* 《服务及隐私条款》 */}
@@ -570,6 +581,25 @@ class ImportWallet extends Component {
 							onPress={this._keystoreImport.bind(this)}
 							buttonStyle={styles.buttonStyle}
 						/>
+                        <View>
+                            <Text
+                                style={{
+                                    color: '#4A90E2',
+                                    fontSize: scaleSize(28),
+                                    marginTop: scaleSize(76),
+                                    marginLeft: scaleSize(278),
+                                }}
+                                onPress={() =>
+                                    this.props.navigation.navigate('KnowledgePoint', {
+                                        title: I18n.t('my.home.helpCenter.mnemonic'),
+                                        content: I18n.t('public.mnemonic'),
+                                        ps: I18n.t('public.mnemonic_ps')
+                                    })}
+                            >
+                                {I18n.t('public.mnemonicTitle')}
+                                {/* 什么是助记词? */}
+                            </Text>
+                        </View>
 					</ScrollView>
 				</View>
 				<View tabLabel={I18n.t('wallet.privateKey')} style={styles.padding_10}>
@@ -616,11 +646,7 @@ class ImportWallet extends Component {
 								{/* 我已仔细阅读并同意 */}
 								<Text
 									style={styles.color_aff}
-									onPress={() => {
-										this.props.navigation.navigate('UserPolicy', {
-											service_source: this.state.service_source
-										});
-									}}
+                                    onPress={() => this.props.navigation.navigate('ServerPolicies')}
 								>
 									{'《' + I18n.t('wallet.term') + '》'}
 									{/* 《服务及隐私条款》 */}
@@ -632,6 +658,25 @@ class ImportWallet extends Component {
 							onPress={this._privateKeyImport.bind(this)}
 							buttonStyle={styles.buttonStyle}
 						/>
+                        <View>
+                            <Text
+                                style={{
+                                    color: '#4A90E2',
+                                    fontSize: scaleSize(28),
+                                    marginTop: scaleSize(76),
+                                    marginLeft: scaleSize(278),
+                                }}
+                                onPress={() =>
+                                    this.props.navigation.navigate('KnowledgePoint', {
+                                        title: I18n.t('my.home.helpCenter.mnemonic'),
+                                        content: I18n.t('public.mnemonic'),
+                                        ps: I18n.t('public.mnemonic_ps')
+                                    })}
+                            >
+                                {I18n.t('public.mnemonicTitle')}
+                                {/* 什么是助记词? */}
+                            </Text>
+                        </View>
 					</ScrollView>
 				</View>
 			</ScrollableTabView>
@@ -645,7 +690,7 @@ export default connect(
 	}),{
 		updateWalletAddress,
 		updateUserId,
-        changeLoginState,
+        changeWalletImportState,
         updateWalletInfo
 	}
 )(ImportWallet)
