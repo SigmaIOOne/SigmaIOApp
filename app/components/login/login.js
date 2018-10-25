@@ -13,9 +13,9 @@ import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import Toast from 'react-native-easy-toast';
 
-import { I18n } from '../../../../language/i18n';
-import { scaleSize } from '../../../utils/ScreenUtil';
-import { checkAccount, checkPwd } from '../../../utils/valiServices';
+import { I18n } from '../../../language/i18n';
+import { scaleSize } from '../../utils/ScreenUtil';
+import { checkAccount, checkPwd } from '../../utils/valiServices';
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -40,13 +40,13 @@ export default class Login extends React.Component {
         const { account, psd } = this.state;
         return (
             <ScrollView>
-                <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
-                    <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
+                <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
+                    <Image style={styles.loginLogo} source={require('../../assets/images/sigm/login_logo.png')}/>
                     <Input
                         placeholder={I18n.t('sigm.loginPart.phonePlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/phone_icon.png')}/>
+                            <Image style={styles.inputIcon} source={require('../../assets/images/sigm/phone_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
@@ -58,7 +58,7 @@ export default class Login extends React.Component {
                         placeholder={I18n.t('sigm.loginPart.psdPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/psd_icon.png')}/>
+                            <Image style={styles.inputIcon} source={require('../../assets/images/sigm/psd_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}

@@ -10,11 +10,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import MiningPart from "./miningPart";
+import axios from 'axios';
+import { test } from '../../api/login';
 
 class Sigm extends React.Component {
     static propTypes = {
         login: PropTypes.object,
+        netInfo: PropTypes.object,
     }
     constructor(props) {
         super(props);
@@ -26,9 +28,13 @@ class Sigm extends React.Component {
         const navigate = this.props.navigation.navigate;
         if (!login) navigate('Login');
         else navigate(target);
+        test().then(res => {
+            console.log('target ', res);
+        })
     }
     render() {
         const login = this.props.login.login;
+        console.log('netInfo ', this.props.netInfo);
         return (
             <View style={styles.container}>
                 <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>
@@ -102,7 +108,8 @@ class Sigm extends React.Component {
 
 export default connect(
     state => ({
-        login: state.login
+        login: state.login,
+        netInfo: state.netInfo,
     }),{}
 )(Sigm)
 

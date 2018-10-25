@@ -12,10 +12,10 @@ import {
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 
-import { I18n } from '../../../../language/i18n';
-import { scaleSize } from '../../../utils/ScreenUtil';
-import { checkAccount, checkCode, checkImgCode } from '../../../utils/valiServices';
-import Toast from '../../../utils/myToast';
+import { I18n } from '../../../language/i18n';
+import { scaleSize } from '../../utils/ScreenUtil';
+import { checkAccount, checkCode, checkImgCode } from '../../utils/valiServices';
+import Toast from '../../utils/myToast';
 
 export default class Registry extends React.Component {
     constructor(props) {
@@ -61,13 +61,13 @@ export default class Registry extends React.Component {
         const { account, imgCode, imgTargetCode, phoneCode } = this.state;
         return (
             <ScrollView>
-                <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
-                    <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
+                <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
+                    <Image style={styles.loginLogo} source={require('../../assets/images/sigm/login_logo.png')}/>
                     <Input
                         placeholder={I18n.t('sigm.loginPart.registryPart.accountPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/phone_icon.png')}/>
+                            <Image style={styles.inputIcon} source={require('../../assets/images/sigm/phone_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
@@ -79,7 +79,7 @@ export default class Registry extends React.Component {
                         placeholder={I18n.t('sigm.loginPart.registryPart.imgCode')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/img_code.png')}/>
+                            <Image style={styles.inputIcon} source={require('../../assets/images/sigm/img_code.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
@@ -99,7 +99,7 @@ export default class Registry extends React.Component {
                         placeholder={I18n.t('sigm.loginPart.registryPart.phoneCode')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         leftIcon={
-                            <Image style={styles.inputIcon} source={require('../../../assets/images/sigm/psd_icon.png')}/>
+                            <Image style={styles.inputIcon} source={require('../../assets/images/sigm/psd_icon.png')}/>
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={

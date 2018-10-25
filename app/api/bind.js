@@ -5,11 +5,11 @@ let forge = require('node-forge');
 
 //绑定手机号
 const bindPhone = async (phone, code, ethAddress) => {
-	return axios.post('/wallet/phone', {
+    return axios.post('/wallet/phone', {
         phone,
         code,
         ethAddress,
-	});
+	})
 };
 
 //发送验证码

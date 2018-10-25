@@ -2,6 +2,7 @@
 
 // const serverUrl = 'http://54.250.199.29:8088/'; //合约地址 正式地址
 const serverUrl = 'http://13.112.45.51:8088/'; //合约地址 测试地址
+// const serverUrl = 'http://m.isong.xin';
 
 // const hostMode = 'ropsten';
 const hostMode = 'mainnet';

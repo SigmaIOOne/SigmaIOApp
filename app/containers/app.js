@@ -47,10 +47,10 @@ import setNewPwd from '../components/my/setNewPwd'; //我的 -> 修改交易密�
 
 import QRscanner from '../components/public/QRscanner'; //转账 -> 扫描二维码
 
-import Login from '../components/sigm/login/login'; // SIGM -> 登录
-import FindPsd from '../components/sigm/login/findPsd'; // SIGM -> 登录 -> 忘记密码
-import SetNewPsd from '../components/sigm/login/setNewPsd'; // SIGM -> 登录 -> 设置新密码
-import Registry from '../components/sigm/login/registry'; // SIGM -> 登录 -> 立即注册
+import Login from '../components/login/login'; // SIGM -> 登录
+import FindPsd from '../components/login/findPsd'; // SIGM -> 登录 -> 忘记密码
+import SetNewPsd from '../components/login/setNewPsd'; // SIGM -> 登录 -> 设置新密码
+import Registry from '../components/login/registry'; // SIGM -> 登录 -> 立即注册
 import AccountDetail from '../components/sigm/accountDetail'; // SIGM -> 账户详情
 import SigmTransactionRecord from '../components/sigm/transactionRecord'; // SIGM -> 账户详情 -> 交易记录
 import MiningPart from '../components/sigm/miningPart'; // SIGM -> 挖矿账户 -> 挖矿

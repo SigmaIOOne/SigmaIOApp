@@ -12,10 +12,10 @@ import {
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 
-import { I18n } from '../../../../language/i18n';
-import { scaleSize } from '../../../utils/ScreenUtil';
-import { checkAccount, checkPwd } from '../../../utils/valiServices';
-import Toast from '../../../utils/myToast';
+import { I18n } from '../../../language/i18n';
+import { scaleSize } from '../../utils/ScreenUtil';
+import { checkAccount, checkPwd } from '../../utils/valiServices';
+import Toast from '../../utils/myToast';
 
 export default class SetNewPsd extends React.Component {
     constructor(props) {
@@ -40,8 +40,8 @@ export default class SetNewPsd extends React.Component {
         const { account, psd } = this.state;
         return (
             <ScrollView>
-                <ImageBackground style={styles.imgBg} source={require('../../../assets/images/sigm/login_bg.png')}>
-                    <Image style={styles.loginLogo} source={require('../../../assets/images/sigm/login_logo.png')}/>
+                <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
+                    <Image style={styles.loginLogo} source={require('../../assets/images/sigm/login_logo.png')}/>
                     <Input
                         placeholder={I18n.t('sigm.loginPart.findPsdPart.newPsdPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
