@@ -131,7 +131,7 @@ export default class Registry extends React.Component {
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Toast onRef={toast => this.toast = toast} position="center" />
+                    <Toast onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );

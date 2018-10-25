@@ -649,6 +649,7 @@ export default {
         deviceNotExists: '矿机不存在',
 		deviceCodeWrong: '矿机code错误',
 		deviceBound: '您输入的矿机号已被绑定',
-		codeNumberLimited: '您当前发送的短信已超过本时效限制，请稍后再试'
+		codeNumberLimited: '您当前发送的短信已超过本时效限制，请稍后再试',
+        noNetwork: '网络未连接',
     }
 };

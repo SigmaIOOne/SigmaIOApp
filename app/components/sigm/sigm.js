@@ -10,7 +10,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import axios from 'axios';
+import Toast from '../../utils/myToast';
+
+// 测试用
+import { changeLoginState } from '../../store/reducers/login';
 import { test } from '../../api/login';
 
 class Sigm extends React.Component {
@@ -23,17 +26,36 @@ class Sigm extends React.Component {
         this.state = {
         }
     }
+    // componentWillReceiveProps(nextProps) {
+        // 网络未连接
+        // if (this.props.netInfo.noNetworkClickNum) {
+            // this.toast.show(I18n.t('error.noNetwork'));
+            // 在这里的时候，下面的toast弹窗还没渲染出来，所以不能在这里设置
+            // console.log('nnn ', nextProps.netInfo, this.toast);
+        // }
+    // }
+    componentDidUpdate() {
+        // 网络未连接
+        if (this.props.netInfo.noNetworkClickNum) {
+            this.toast.show(I18n.t('error.noNetwork'));
+        }
+    }
     _cardPress = (target) => {
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
-        if (!login) navigate('Login');
-        else navigate(target);
-        test().then(res => {
-            console.log('target ', res);
-        })
+        !login ? navigate('Login') : navigate(target);
+    }
+    // 马上收取
+    _getImmediately = () => {
+        // const login = this.props.login.login;
+        // if (!login) navigate('Login');
+        test()
+            .then(res => console.log('** ', res));
+        this.props.changeLoginState(false);
     }
     render() {
         const login = this.props.login.login;
+        // const isConnected = this.props.netInfo.isConnected;
         console.log('netInfo ', this.props.netInfo);
         return (
             <View style={styles.container}>
@@ -95,12 +117,15 @@ class Sigm extends React.Component {
                                 <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{I18n.t('sigm.waitingGet')}</Text>
                                 <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>0.00</Text>
                             </View>
-                            <TouchableOpacity style={styles.card2Row3Right}>
+                            {/* 马上收取 */}
+                            <TouchableOpacity style={styles.card2Row3Right} onPress={() => this._getImmediately()}>
                                 <Text style={styles.card2Row3RightText}>{I18n.t('sigm.immediatelyGet')}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
+                {/* 网络未连接 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
@@ -110,7 +135,9 @@ export default connect(
     state => ({
         login: state.login,
         netInfo: state.netInfo,
-    }),{}
+    }),{
+        changeLoginState,
+    }
 )(Sigm)
 
 const styles = StyleSheet.create({

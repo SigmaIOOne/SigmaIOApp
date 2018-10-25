@@ -80,7 +80,7 @@ export default class FindPsd extends React.Component {
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
                         onPress={() => this._clickToNext()}
                     />
-                    <Toast onRef={toast => this.toast = toast} position="center" />
+                    <Toast onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );

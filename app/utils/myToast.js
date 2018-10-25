@@ -2,6 +2,7 @@
  * 通用Toast弹窗处理
  * 父组件通过onRef回调的方法获得子组件的ref, 如下
  * <Toast onRef={toast => this.toast = toast}/>
+ * this.toast.show('XXXXXX')
  */
 import React from 'react';
 import Toast from 'react-native-easy-toast';
