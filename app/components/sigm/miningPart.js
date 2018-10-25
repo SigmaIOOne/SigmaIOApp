@@ -7,6 +7,7 @@ import {
     Image,
     Text,
     TouchableOpacity,
+    TouchableHighlight,
     StyleSheet,
     Dimensions,
     Animated
@@ -24,9 +25,13 @@ export default class MiningPart extends React.Component {
     constructor(props) {
 		super(props);
 		this.state = {
-            fadeAnim: new Animated.Value(0),
-            width: new Animated.Value(scaleSize(192)),
+            fadeAnim: new Animated.Value(1),
+            top: new Animated.Value(scaleSize(220)),
             marginLeft: new Animated.Value(scaleSize(34)),
+            show: true,
+            anim: new Animated.Value(0),
+            compositeAnim: new Animated.Value(0),
+
 
         };
         this._onPress = this._onPress.bind(this);
@@ -54,28 +59,20 @@ export default class MiningPart extends React.Component {
         );
     }
     _onPress() {
+        Animated.spring(this.state.anim, {
+            toValue: 0,   
+            velocity: 7,  
+            tension: -20, 
+            friction: 3,  
+          }).start();
         Animated.timing(
             this.state.fadeAnim,
-            {toValue: 1, duration: 500}
+            {toValue: 0, duration: 2000}
         ).start();
         Animated.timing(
-            this.state.width,
-            {toValue: scaleSize(230), duration: 2000},
-            {toValue: scaleSize(192), duration: 2000}
-        ).start(()=> {
-            this.setState({
-                width: new Animated.Value(scaleSize(192)),
-            })
-        });
-        Animated.timing(
-            this.state.marginLeft,
-            {toValue: scaleSize(15), duration: 2000}
-        ).start(() => {
-            this.setState({
-                marginLeft: new Animated.Value(scaleSize(34)),
-            })
-        });
-
+            this.state.top,
+            {toValue: scaleSize(0), duration: 2000},
+        ).start();
     }
     componentDidMount() {
         
@@ -97,13 +94,46 @@ export default class MiningPart extends React.Component {
                 </View>
                 <View style={styles.content}>
                     <View style={styles.floor1}>
+                        <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#666'}}>
+                            已领取0.02343SIGM
+                        </Animated.Text>
                         <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}>
-                            <TouchableOpacity onPress={this._onPress}>
-                                <Animated.Image style={{ width: this.state.width, height: this.state.width, marginTop: this.state.marginLeft, marginLeft: this.state.marginLeft }}
-                                    source={require('../../assets/images/sigm/inner_circle.png')}
-                                />
+                            <TouchableOpacity onPress={()=>{
+                                Animated.spring(this.state.anim, {
+                                toValue: 0,   
+                                velocity: 7,  
+                                tension: -20, 
+                                friction: 3,  
+                                }).start();
+                                Animated.timing(
+                                    this.state.fadeAnim,
+                                    {toValue: 0, duration: 2000}
+                                ).start(() => {
+                                    this.setState({
+                                        fadeAnim: new Animated.Value(1),
+                                    }) 
+                                });
+                                Animated.timing(
+                                    this.state.top,
+                                    {toValue: scaleSize(0), duration: 2000},
+                                ).start(() => {
+                                    this.setState({
+                                        top: new Animated.Value(scaleSize(220)),
+                                    })
+                                });
+                            }}>
+                                <Animated.View
+                                    style={[styles.content1, {
+                                    transform: [   
+                                        {scale: this.state.anim.interpolate({
+                                        inputRange: [0, 2],
+                                        outputRange: [1, 1.5],
+                                        })}
+                                    ]}
+                                    ]}>
+                                    <Image source={require('../../assets/images/sigm/inner_circle.png')} style={styles.innerCircle}/>
+                                </Animated.View>
                             </TouchableOpacity>
-                            {/* <Image style={styles.innerCircle} source={require('../../assets/images/sigm/inner_circle.png')}/> */}
                         </ImageBackground>
                         {/* 挖矿攻略 */}
                         <TouchableOpacity onPress={() => this.miningStrategyModal.open()}>
@@ -286,8 +316,8 @@ const styles = StyleSheet.create({
     innerCircle: {
         width: scaleSize(192),
         height: scaleSize(192),
-        marginTop: scaleSize(34),
-        marginLeft: scaleSize(34)
+        // marginTop: scaleSize(34),
+        // marginLeft: scaleSize(34)
     },
     strategyTxt: {
         fontSize: scaleSize(28),
@@ -411,5 +441,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#4A90E2',
         borderRadius: scaleSize(44),
         marginLeft: scaleSize(72),
-    }
+    },
+    content1: {
+        // backgroundColor: 'green',
+        // borderWidth: 1,
+        // padding: 5,
+        // margin: 20,
+        alignItems: 'center',
+        width: scaleSize(192),
+        height: scaleSize(192),
+        marginTop: scaleSize(34),
+        marginLeft: scaleSize(34)
+      },
 });
