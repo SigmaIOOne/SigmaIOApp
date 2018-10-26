@@ -38,8 +38,9 @@ class Sigm extends React.Component {
         // 网络未连接
         // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
         // toast也就不会触发
-        if (this.props.netInfo.noNetworkClickNum) {
-            this.toast.show(I18n.t('error.noNetwork'));
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
         }
     }
     _cardPress = (target) => {

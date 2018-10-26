@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { I18n } from '../../language/i18n'; // 多国语言支持
-import { StyleSheet, Text, AsyncStorage, Image, Alert, BackHandler } from 'react-native';
+import { StyleSheet, Text, AsyncStorage, Image, Alert, BackHandler, View } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, NavigationActions, StackNavigator, addNavigationHelpers } from 'react-navigation'; // 页面切换 路由导航组件
 import { hostMode } from '../utils/config';
 import { scaleSize, ifIphoneX } from '../utils/ScreenUtil';
@@ -537,11 +537,14 @@ const RootNavigator = createStackNavigator(
 			headerStyle: {
 				backgroundColor: '#fff'
 			},
+            headerRight: <View/>,
 			headerTitleStyle: {
 				color: '#000',
 				fontSize: 18,
                 // textAlign: 'center',
                 // alignSelf: 'center',
+                flex: 1,
+                textAlign: 'center',
 			},
 			headerTintColor: '#000'
 		}
