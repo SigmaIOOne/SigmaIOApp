@@ -104,15 +104,13 @@ export function checkCode(code) {
 }
 
 // 验证图片验证码
-export function checkImgCode(targetCode, code) {
+export function checkImgCode(code) {
     return new Promise(function (resolve, reject) {
         code = code.trim();
         if (code.length === 0) {
             reject('图片验证码不能为空');
         } else if (code.length !== 4) {
             reject('图片验证码是四位数');
-        } else if (targetCode !== code){
-            reject('图片验证码输入不对');
         } else {
             resolve();
         }

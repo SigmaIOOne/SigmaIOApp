@@ -9,12 +9,27 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import Toast from '../../utils/myToast';
+import { logout } from '../../api/login';
+import { changeLoginState } from '../../store/reducers/login';
 
 class My extends Component {
     static propTypes = {
+        changeLoginState: PropTypes.func,
         login: PropTypes.object,
+        netInfo: PropTypes.object,
+    }
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
+        }
     }
     _renderSelectItem = (data) => {
 	    return (
@@ -31,6 +46,19 @@ class My extends Component {
             </TouchableOpacity>
         );
     }
+    // 退出登录
+    _logout = async () => {
+        let result = await logout();
+        result = result.data;
+        if (result.status == 200) {
+            this.props.changeLoginState(false);
+            storage.remove({
+                key: 'login'
+            });
+        } else {
+            this.toast.show(result.msg);
+        }
+    }
 	render() {
         const phone = '13718886966';
         const formatPhone = phone.replace(phone.slice(3, 7), '****');
@@ -45,7 +73,7 @@ class My extends Component {
                                     <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
                                     <Text style={styles.topTxt}>{formatPhone}</Text>
                                 </View>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => this._logout()}>
                                     <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -117,6 +145,7 @@ class My extends Component {
                         </View>
                     </TouchableOpacity>
                 }
+                <Toast onRef={toast => this.toast = toast}/>
 			</View>
 		);
 	}
@@ -125,8 +154,11 @@ class My extends Component {
 // export default withNavigation(My);
 export default connect(
     state => ({
-        login: state.login
-    })
+        login: state.login,
+        netInfo: state.netInfo,
+    }), {
+        changeLoginState,
+    }
 )(My)
 
 const styles = StyleSheet.create({

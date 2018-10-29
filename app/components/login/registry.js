@@ -8,7 +8,8 @@ import {
     StyleSheet,
     ScrollView
 } from 'react-native';
-// import { Input, Button } from 'native-base';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 
@@ -16,53 +17,100 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { checkAccount, checkCode, checkImgCode } from '../../utils/valiServices';
 import Toast from '../../utils/myToast';
+import Timer from '../../utils/timer';
+// import {changeLoginState} from "../../store/reducers/login";
+import {getPhoneCode, checkPhoneCode} from '../../api/login';
+import SetNewPsd from "./setNewPsd";
 
-export default class Registry extends React.Component {
+class Registry extends React.Component {
+    static propTypes = {
+        netInfo: PropTypes.object,
+    }
     constructor(props) {
+        console.log('prop ');
         super(props);
         this.state = {
             account: '',
-            imgTargetCode: '', // 存放随机生成的验证码
             imgCode: '',
-            phoneCode: ''
+            phoneCode: '',
+            count: 60,
+            canSendCode: true, // 可以点击发送验证码
+            firstSendCode: true, // 第一次发送验证码
+            imgUrl: 'http://m.isong.xin/Admin/Index/verify?code=' + Math.random(),
         }
     }
-    componentWillMount() {
-        this._createRandomCode();
-    }
-    _clickToregister = () => {
-        const { account, imgCode, imgTargetCode, phoneCode } = this.state;
-        checkAccount(account)
-            .then(() => checkImgCode(imgTargetCode, imgCode))
-            .then(() => checkCode(phoneCode))
-            .then(() => {
-                this.props.navigation.navigate('SetNewPsd');
-            })
-            .catch(err => {
-                this.toast.show(err);
-            });
-    }
-    // 不找生成图片二维码的插件了，因为有手机验证码了，这个没必要弄,自己随便写个好了
-    _createRandomCode = () => {
-        const result = [];
-        for(let i=0;i<4;i++) {
-            const temp = [];
-            temp[0]= String.fromCharCode(Math.floor(Math.random()*26+65)); //存放大写字母
-            temp[1]= String.fromCharCode(Math.floor(Math.random()*26+97)); //存放小写字母
-            temp[2]= String.fromCharCode(Math.floor(Math.random()*10+48)); //存放数字
-            const n = Math.floor(Math.random()*3);
-            result[i] = temp[n];
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
         }
-        this.setState({
-            imgTargetCode: result.join('')
-        });
+    }
+    // 获取手机号验证码
+    _getPhoneCode = async () => {
+        try {
+            const { account, imgCode } = this.state;
+            await checkAccount(account);
+            await checkImgCode(imgCode);
+            let result = await getPhoneCode(account, 'register', imgCode);
+            result = result.data;
+            if (result.status === 200) {
+                this.setState({
+                    canSendCode: false,
+                    count: 60,
+                    firstSendCode: false,
+                });
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+    _onTimer = () => {
+        if (!this.state.canSendCode) {
+            if (this.state.count > 0) {
+                this.setState({
+                    count: this.state.count - 1,
+                });
+                if(this.state.count === 0){
+                    this.setState({ canSendCode: true });
+                }
+            }
+        }
+    }
+    // 立即注册
+    _clickToregister = async () => {
+        try {
+            const { account, phoneCode } = this.state;
+            await checkAccount(account);
+            await checkCode(phoneCode);
+            let result = await checkPhoneCode(account, phoneCode);
+            result = result.data;
+            if (result.status === 200) {
+                this.props.navigation.navigate('SetNewPsd', {origin: 'registry'})
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
     render() {
-        const { account, imgCode, imgTargetCode, phoneCode } = this.state;
+        const { account, imgCode, phoneCode, canSendCode, firstSendCode, count, imgUrl } = this.state;
+        let getCodeTxt = '';
+        if(firstSendCode) getCodeTxt = I18n.t('public.getCode'); // 获取验证码
+        else if(!canSendCode) getCodeTxt = count + I18n.t('public.getCodeWait'); // s后重新获取
+        else getCodeTxt = I18n.t('public.getCodeAgain'); // 重新获取
         return (
             <ScrollView>
                 <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
                     <Image style={styles.loginLogo} source={require('../../assets/images/sigm/login_logo.png')}/>
+                    {/* 请输入您的邮箱或手机号 */}
                     <Input
                         placeholder={I18n.t('sigm.loginPart.registryPart.accountPlaceholder')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
@@ -75,6 +123,7 @@ export default class Registry extends React.Component {
                         value={account}
                         onChangeText={(account) => { this.setState({account}) }}
                     />
+                    {/* 请输入图片验证码 */}
                     <Input
                         placeholder={I18n.t('sigm.loginPart.registryPart.imgCode')}
                         placeholderTextColor="rgba(255, 255, 255, .6)"
@@ -84,9 +133,9 @@ export default class Registry extends React.Component {
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
                             <View>
-                                <View style={styles.imgCode}>
-                                    <Text style={styles.imgCodeTxt}>{imgTargetCode}</Text>
-                                </View>
+                                <TouchableOpacity style={styles.imgCode} onPress={() => this.setState({imgUrl: 'http://m.isong.xin/Admin/Index/verify?code=' + Math.random()})}>
+                                    <Image key='imgCode' style={{width: scaleSize(120), height: scaleSize(48)}} source={{uri:imgUrl}}/>
+                                </TouchableOpacity>
                             </View>
                         }
                         rightIconContainerStyle={styles.imgRightIconContainerStyle}
@@ -103,9 +152,10 @@ export default class Registry extends React.Component {
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
-                            <TouchableOpacity>
+                            <TouchableOpacity disabled={!canSendCode} onPress={() => this._getPhoneCode()}>
                                 <View>
-                                    <Text style={styles.codeTxt}>{I18n.t('sigm.loginPart.findPsdPart.getCode')}</Text>
+                                    <Timer interval={1000} onTimer={this._onTimer}/>
+                                    <Text style={styles.codeTxt}>{getCodeTxt}</Text>
                                 </View>
                             </TouchableOpacity>
                         }
@@ -117,14 +167,13 @@ export default class Registry extends React.Component {
                     />
                     <Button
                         title={I18n.t('sigm.loginPart.registryPart.registryBtn')}
-                        // "下一步"
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
                         onPress={() => this._clickToregister()}
                     />
                     <View style={[styles.flexRow]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
-                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.findPsdBtn')}</Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
+                            <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.psdLogin')}</Text>
                         </TouchableOpacity>
                         <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
                         <TouchableOpacity>
@@ -137,6 +186,14 @@ export default class Registry extends React.Component {
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+    }),{
+        // changeLoginState,
+    }
+)(Registry)
 
 const styles = StyleSheet.create({
     flexRow: {
@@ -179,10 +236,10 @@ const styles = StyleSheet.create({
         borderRadius: scaleSize(4),
         padding: scaleSize(4),
     },
-    imgCodeTxt: {
-        color: '#FFFFFF',
-        fontSize: scaleSize(30),
-    },
+    // imgCodeTxt: {
+    //     color: '#FFFFFF',
+    //     fontSize: scaleSize(30),
+    // },
     inputStyle: {
         fontSize: scaleSize(32),
         color: 'rgba(255, 255, 255, 0.6)'

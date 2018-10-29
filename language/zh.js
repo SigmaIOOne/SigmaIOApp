@@ -300,6 +300,10 @@ export default {
             loginBtn: '立即登录',
             findPsdBtn: '忘记密码',
             registerBtn: '立即注册',
+            psdLogin: '密码登录',
+            setPsd: '请设置您的登录密码',
+            setPsdAgain: '请再次输入密码',
+            twoPsdNoSame: '两次输入密码不同',
             findPsdPart: {
                 accountPlaceholder: '请输入您的注册时的邮箱或手机号',
                 codePlaceholder: '请输入邮箱或手机验证码',
@@ -585,6 +589,7 @@ export default {
 	public: {
 		second: '秒',
 		next: '下一步',
+        finish: '完成',
         check: '确认',
 		back: '返回',
 		save: '保存',
@@ -636,6 +641,8 @@ export default {
         today: '今天',
         code: '验证码',
         getCode: '获取验证码',
+        getCodeAgain: '重新获取',
+        getCodeWait: 's后重试',
         agreeBtn: '确认',
         codePlaceholder: '请输入验证码',
         phone: '手机号',

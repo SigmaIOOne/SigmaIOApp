@@ -4,6 +4,7 @@ import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 // import { I18n } from '../../language/i18n';
 import { changeWalletImportState, updateWalletInfo } from '../store/reducers/wallet';
+import { changeLoginState } from '../store/reducers/login';
 
 const maxHeight = Dimensions.get('window').height;
 const maxWidth = Dimensions.get('window').width;
@@ -32,6 +33,11 @@ class Splash extends React.Component {
 				mnemonic: false
 			})
 		})
+        storage.load({ key: 'login'}).then(res => {
+            this.props.changeLoginState(true);
+        }).catch((err) => {
+            console.log('err ', err);
+        })
 		setTimeout(() => {
 			storage
 				.load({
@@ -72,7 +78,8 @@ const NewSplash = connect(
     null,
     {
         changeWalletImportState,
-        updateWalletInfo
+        updateWalletInfo,
+        changeLoginState,
     }
 )(Splash);
 

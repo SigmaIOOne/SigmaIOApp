@@ -1,3 +1,6 @@
+/**
+ * 注册 --- 获取验证码 --- 忘记密码
+ */
 import React from 'react';
 import {
     View,
@@ -14,29 +17,78 @@ import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import { checkAccount } from '../../utils/valiServices';
+import { checkAccount, checkCode } from '../../utils/valiServices';
 import Toast from '../../utils/myToast';
+import Timer from '../../utils/timer';
+import {getPhoneCode, checkPhoneCode} from '../../api/login';
 
 export default class FindPsd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             account: '',
-            psd: ''
+            phoneCode: '',
+            count: 60,
+            canSendCode: true, // 可以点击发送验证码
+            firstSendCode: true, // 第一次发送验证码
         }
     }
-    _clickToNext = () => {
-        const { account, psd } = this.state;
-        checkAccount(account)
-            .then(() => {
-                this.props.navigation.navigate('SetNewPsd');
-            })
-            .catch(err => {
-                this.toast.show(err);
-            });
+    _clickToNext = async () => {
+        try {
+            const { account, phoneCode } = this.state;
+            await checkAccount(account);
+            await checkCode(phoneCode);
+            let result = await checkPhoneCode(account, phoneCode);
+            result = result.data;
+            if (result.status === 200) {
+                this.props.navigation.navigate('SetNewPsd', {origin: 'findPsd'})
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+    _onTimer = () => {
+        if (!this.state.canSendCode) {
+            if (this.state.count > 0) {
+                this.setState({
+                    count: this.state.count - 1,
+                });
+                if(this.state.count === 0){
+                    this.setState({ canSendCode: true });
+                }
+            }
+        }
+    }
+    // 获取手机号验证码
+    _getPhoneCode = async () => {
+        try {
+            const { account } = this.state;
+            await checkAccount(account);
+            let result = await getPhoneCode(account, 'register');
+            result = result.data;
+            if (result.status === 200) {
+                this.setState({
+                    canSendCode: false,
+                    count: 60,
+                    firstSendCode: false,
+                });
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
     render() {
-        const { account, psd } = this.state;
+        const { account, phoneCode, canSendCode, firstSendCode, count } = this.state;
+        let getCodeTxt = '';
+        if(firstSendCode) getCodeTxt = I18n.t('public.getCode'); // 获取验证码
+        else if(!canSendCode) getCodeTxt = count + I18n.t('public.getCodeWait'); // s后重新获取
+        else getCodeTxt = I18n.t('public.getCodeAgain'); // 重新获取
         return (
             <ScrollView>
                 <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
@@ -61,17 +113,18 @@ export default class FindPsd extends React.Component {
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
-                            <TouchableOpacity>
+                            <TouchableOpacity disabled={!canSendCode} onPress={() => this._getPhoneCode()}>
                                 <View>
-                                    <Text style={styles.codeTxt}>{I18n.t('sigm.loginPart.findPsdPart.getCode')}</Text>
+                                    <Timer interval={1000} onTimer={this._onTimer}/>
+                                    <Text style={styles.codeTxt}>{getCodeTxt}</Text>
                                 </View>
                             </TouchableOpacity>
                         }
                         rightIconContainerStyle={styles.rightIconContainerStyle}
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
-                        value={psd}
-                        onChangeText={(psd) => this.setState({psd})}
+                        value={phoneCode}
+                        onChangeText={(phoneCode) => this.setState({phoneCode})}
                     />
                     <Button
                         title={I18n.t('public.next')}

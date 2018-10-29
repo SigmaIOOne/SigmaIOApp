@@ -11,10 +11,8 @@ import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
-
 // 测试用
 import { changeLoginState } from '../../store/reducers/login';
-import { test } from '../../api/login';
 
 class Sigm extends React.Component {
     static propTypes = {
@@ -52,9 +50,11 @@ class Sigm extends React.Component {
     _getImmediately = () => {
         // const login = this.props.login.login;
         // if (!login) navigate('Login');
-        test()
-            .then(res => console.log('** ', res));
-        this.props.changeLoginState(false);
+        axios
+            .post('http://m.isong.xin/Admin/Index/verify')
+            .then(res => {
+                console.log('@@  ', res);
+            })
     }
     render() {
         const login = this.props.login.login;

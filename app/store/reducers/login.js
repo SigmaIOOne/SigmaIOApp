@@ -8,7 +8,7 @@ const CHANGE_LOGIN_STATE = 'dbc/login/CHANGE_LOGIN_STATE';
 
 // ---------reducer---------
 const initialState = {
-    login: true, // 是否手机登录了
+    login: false, // 是否手机登录了
     userInfo: {}, // 存放用户信息
 };
 

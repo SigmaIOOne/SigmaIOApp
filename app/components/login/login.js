@@ -8,16 +8,23 @@ import {
     StyleSheet,
     ScrollView
 } from 'react-native';
-// import { Input, Button } from 'native-base';
+import {connect} from "react-redux";
+import PropTypes from 'prop-types';
 import { Input, Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
-import Toast from 'react-native-easy-toast';
 
+import Toast from '../../utils/myToast';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { checkAccount, checkPwd } from '../../utils/valiServices';
+import { changeLoginState } from "../../store/reducers/login";
+import { login } from '../../api/login';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
+    static propTypes = {
+        changeLoginState: PropTypes.func,
+        netInfo: PropTypes.object,
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -25,16 +32,38 @@ export default class Login extends React.Component {
             psd: ''
         }
     }
-    _clickToLogin = () => {
-        const { account, psd } = this.state;
-        checkAccount(account)
-            .then(() => checkPwd(psd))
-            .then(() => {
-
-            })
-            .catch(err => {
-                this.toast.show(err);
-            });
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
+        }
+    }
+    _clickToLogin = async () => {
+        try {
+            const { account, psd } = this.state;
+            await checkAccount(account);
+            await checkPwd(psd);
+            let result = await login(account, psd);
+            result = result.data;
+            // 别用===了，因为有些接口返回status是数字，有些是字符串
+            if (result.status == 200) {
+                this.props.changeLoginState(true);
+                storage.save({ 
+                    key: 'login', 
+                    data: { loginState: true }, 
+                    expires: null
+                });
+                this.props.navigation.navigate('Sigm');
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
     render() {
         const { account, psd } = this.state;
@@ -52,7 +81,7 @@ export default class Login extends React.Component {
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         value={account}
-                        onChange={(account) => this.setState({account})}
+                        onChangeText={(account) => this.setState({account})}
                     />
                     <Input
                         placeholder={I18n.t('sigm.loginPart.psdPlaceholder')}
@@ -72,7 +101,7 @@ export default class Login extends React.Component {
                         // "立即登录"
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
-                        onPress={() => this._clickToLogin}
+                        onPress={() => this._clickToLogin()}
                     />
                     <View style={[styles.flexRow]}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
@@ -83,12 +112,20 @@ export default class Login extends React.Component {
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Toast ref={toast => this.toast = toast} position="center" />
+                    <Toast onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+    }),{
+        changeLoginState,
+    }
+)(Login)
 
 const styles = StyleSheet.create({
     flexRow: {
