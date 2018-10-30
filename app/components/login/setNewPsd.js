@@ -82,6 +82,7 @@ class SetNewPsd extends React.Component {
                         placeholderTextColor="rgba(255, 255, 255, .6)"
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
+                        secureTextEntry={true}
                         value={psd1}
                         onChangeText={(psd1) => this.setState({psd1})}
                     />

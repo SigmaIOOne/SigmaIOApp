@@ -63,6 +63,12 @@ class My extends Component {
         const phone = '13718886966';
         const formatPhone = phone.replace(phone.slice(3, 7), '****');
         const login = this.props.login.login;
+        storage.load({ key: 'login'}).then(res => {
+            console.log('login 22 ', res);
+            this.props.changeLoginState(true);
+        }).catch((err) => {
+            console.log('login err 22 ', err);
+        })
 		return (
 			<View style={ login ? styles.container : {}}>
                 {

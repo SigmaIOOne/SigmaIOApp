@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
+import { getSigmTab } from '../../api/sigm';
 // 测试用
 import { changeLoginState } from '../../store/reducers/login';
 
@@ -22,6 +23,11 @@ class Sigm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            all: '0.00', // 总资产
+            dollar: '0.00', // 约等于多少钱
+            income: '0.00', // 累计收益
+            miningaccount: '0.00', // 挖矿资产
+            charged: '0.00', // 待收取
         }
     }
     // componentWillReceiveProps(nextProps) {
@@ -32,6 +38,15 @@ class Sigm extends React.Component {
             // console.log('nnn ', nextProps.netInfo, this.toast);
         // }
     // }
+    componentDidMount() {
+        console.log('sigm did ', this.props.navigation.state.params);
+        this._asyncGetSigm();
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('sigm will ', nextProps.navigation.state.params);
+        if (nextProps.login.login) this._asyncGetSigm();
+        else this._resetSigmData(); // 说明退出了登录
+    }
     componentDidUpdate() {
         // 网络未连接
         // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
@@ -46,20 +61,53 @@ class Sigm extends React.Component {
         const navigate = this.props.navigation.navigate;
         !login ? navigate('Login') : navigate(target);
     }
+    // 用户退出登录后重置tab信息
+    _resetSigmData = () => {
+        console.log('reset');
+        this.setState({
+            all: '0.00', // 总资产
+            dollar: '0.00', // 约等于多少钱
+            income: '0.00', // 累计收益
+            miningaccount: '0.00', // 挖矿资产
+            charged: '0.00', // 待收取
+        });
+    }
+    // 获取sigm的tab页上的数据信息
+    _asyncGetSigm = async () => {
+        try {
+            let result = await getSigmTab();
+            result = result.data;
+            console.log('sigm res ', result);
+            if (result.status === 200) {
+                const { all, dollar, income, miningaccount, charged } = result.data;
+                this.setState({
+                    all,
+                    dollar,
+                    income,
+                    miningaccount,
+                    charged,
+                });
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     // 马上收取
     _getImmediately = () => {
         // const login = this.props.login.login;
         // if (!login) navigate('Login');
-        axios
-            .post('http://m.isong.xin/Admin/Index/verify')
-            .then(res => {
-                console.log('@@  ', res);
-            })
+        const login = this.props.login.login;
+        !login && navigate('Login');
+        // 将待领取全部取出来，加到挖矿资产里去
     }
     render() {
         const login = this.props.login.login;
         // const isConnected = this.props.netInfo.isConnected;
         console.log('netInfo ', this.props.netInfo);
+        const { all, dollar, income, miningaccount, charged } = this.state;
         return (
             <View style={styles.container}>
                 <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>
@@ -90,14 +138,14 @@ class Sigm extends React.Component {
                         </View>
                         <View style={[styles.cardRow2, styles.spaceBetween]}>
                             <View style={[styles.spaceBetween]}>
-                                <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>0.00</Text>
+                                <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{all}</Text>
                                 <Text style={styles.cardRow2LeftText}>SIGM</Text>
                             </View>
-                            <Text style={styles.cardRow2Right}>≈0.00$</Text>
+                            <Text style={styles.cardRow2Right}>≈{dollar}$</Text>
                         </View>
                         <View style={[styles.cardRow3, styles.spaceBetween]}>
                             <Text style={styles.cardRow3Left}>{I18n.t('sigm.totalProfit')}</Text>
-                            <Text style={styles.cardRow3Right}>0.00</Text>
+                            <Text style={styles.cardRow3Right}>{income}</Text>
                         </View>
                     </View>
                     {/* 挖矿账户 */}
@@ -112,13 +160,13 @@ class Sigm extends React.Component {
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.cardRow2, styles.flexRow]}>
-                            <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>0.00</Text>
+                            <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{miningaccount}</Text>
                             <Text style={styles.cardRow2LeftText}>SIGM</Text>
                         </View>
                         <View style={[styles.cardRow3, styles.spaceBetween]}>
                             <View style={[styles.spaceBetween]}>
                                 <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{I18n.t('sigm.waitingGet')}</Text>
-                                <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>0.00</Text>
+                                <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{charged}</Text>
                             </View>
                             {/* 马上收取 */}
                             <TouchableOpacity style={styles.card2Row3Right} onPress={() => this._getImmediately()}>
