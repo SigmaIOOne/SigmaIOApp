@@ -336,6 +336,7 @@ export default {
             },
             transferModal: {
 	            text: '今日可划转',
+                inputPlaceholder: '请输入划转数量',
                 tip: '系统会根据您的注册时间、活跃数据、好友 数据综合自动评估当天、当次最高划转SIGM数量',
                 checkBtn: '确认划转'
             },
@@ -658,5 +659,7 @@ export default {
 		deviceBound: '您输入的矿机号已被绑定',
 		codeNumberLimited: '您当前发送的短信已超过本时效限制，请稍后再试',
         noNetwork: '网络未连接',
+        noNetworkPageTxt: '当前未连接到网络，请重试',
+        tryAgain: '点我重试',
     }
 };

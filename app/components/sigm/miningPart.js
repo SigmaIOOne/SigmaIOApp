@@ -7,11 +7,12 @@ import {
     Image,
     Text,
     TouchableOpacity,
-    TouchableHighlight,
     StyleSheet,
     Dimensions,
     Animated
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import Modal from 'react-native-modalbox';
@@ -19,9 +20,13 @@ import Modal from 'react-native-modalbox';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import GetDeposit from "./getDeposit";
+import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
 
-export default class MiningPart extends React.Component {
-
+class MiningPart extends React.Component {
+    static propTypes = {
+        netInfo: PropTypes.object,
+    }
     constructor(props) {
 		super(props);
 		this.state = {
@@ -31,11 +36,23 @@ export default class MiningPart extends React.Component {
             show: true,
             anim: new Animated.Value(0),
             compositeAnim: new Animated.Value(0),
-
-
         };
-        this._onPress = this._onPress.bind(this);
 	}
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
+        }
+    }
+    /**
+     * 页面初始化和刷新用
+     */
+    _init = () => {
+        console.log('init ');
+    }
     /**
      * 渲染floor2的item
      */
@@ -58,7 +75,7 @@ export default class MiningPart extends React.Component {
             </View>
         );
     }
-    _onPress() {
+    _onPress = () => {
         Animated.spring(this.state.anim, {
             toValue: 0,   
             velocity: 7,  
@@ -74,184 +91,198 @@ export default class MiningPart extends React.Component {
             {toValue: scaleSize(0), duration: 2000},
         ).start();
     }
-    componentDidMount() {
-        
-    }
+
     render() {
+        const isConnected = this.props.netInfo.isConnected;
         return (
             <View>
-                <View style={[styles.header, styles.flexRow]}>
-                    <View style={[styles.center, styles.headerLeft]}>
-                        <Text style={styles.headerTxt1}>{I18n.t('sigm.miningPart.minerAssets')}</Text>
-                        <Text style={[styles.headerTxt2, {marginRight: scaleSize(16)}]}>31.30945</Text>
-                        <Text style={styles.headerTxt2}>SIGM</Text>
-                    </View>
-                    <View style={styles.center}>
-                        <TouchableOpacity style={styles.transferT} onPress={() => this.transferModal.open()}>
-                            <Text style={styles.transferTxt}>{I18n.t('sigm.miningPart.transfer')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.content}>
-                    <View style={styles.floor1}>
-                        <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#666'}}>
-                            已领取0.02343SIGM
-                        </Animated.Text>
-                        <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}>
-                            <TouchableOpacity onPress={()=>{
-                                Animated.spring(this.state.anim, {
-                                toValue: 0,   
-                                velocity: 7,  
-                                tension: -20, 
-                                friction: 3,  
-                                }).start();
-                                Animated.timing(
-                                    this.state.fadeAnim,
-                                    {toValue: 0, duration: 2000}
-                                ).start(() => {
-                                    this.setState({
-                                        fadeAnim: new Animated.Value(1),
-                                    }) 
-                                });
-                                Animated.timing(
-                                    this.state.top,
-                                    {toValue: scaleSize(0), duration: 2000},
-                                ).start(() => {
-                                    this.setState({
-                                        top: new Animated.Value(scaleSize(220)),
+                {
+                    isConnected
+                    ? <View>
+                        <View style={[styles.header, styles.flexRow]}>
+                            <View style={[styles.center, styles.headerLeft]}>
+                                <Text style={styles.headerTxt1}>{I18n.t('sigm.miningPart.minerAssets')}</Text>
+                                <Text style={[styles.headerTxt2, {marginRight: scaleSize(16)}]}>31.30945</Text>
+                                <Text style={styles.headerTxt2}>SIGM</Text>
+                            </View>
+                            <View style={styles.center}>
+                                <TouchableOpacity style={styles.transferT} onPress={() => this.transferModal.open()}>
+                                    <Text style={styles.transferTxt}>{I18n.t('sigm.miningPart.transfer')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.content}>
+                            <View style={styles.floor1}>
+                                <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#666'}}>
+                                    已领取0.02343SIGM
+                                </Animated.Text>
+                                <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}>
+                                    <TouchableOpacity onPress={()=>{
+                                        Animated.spring(this.state.anim, {
+                                            toValue: 0,
+                                            velocity: 7,
+                                            tension: -20,
+                                            friction: 3,
+                                        }).start();
+                                        Animated.timing(
+                                            this.state.fadeAnim,
+                                            {toValue: 0, duration: 2000}
+                                        ).start(() => {
+                                            this.setState({
+                                                fadeAnim: new Animated.Value(1),
+                                            })
+                                        });
+                                        Animated.timing(
+                                            this.state.top,
+                                            {toValue: scaleSize(0), duration: 2000},
+                                        ).start(() => {
+                                            this.setState({
+                                                top: new Animated.Value(scaleSize(220)),
+                                            })
+                                        });
+                                    }}>
+                                        <Animated.View
+                                            style={[styles.content1, {
+                                                transform: [
+                                                    {scale: this.state.anim.interpolate({
+                                                            inputRange: [0, 2],
+                                                            outputRange: [1, 1.5],
+                                                        })}
+                                                ]}
+                                            ]}>
+                                            <Image source={require('../../assets/images/sigm/inner_circle.png')} style={styles.innerCircle}/>
+                                        </Animated.View>
+                                    </TouchableOpacity>
+                                </ImageBackground>
+                                {/* 挖矿攻略 */}
+                                <TouchableOpacity onPress={() => this.miningStrategyModal.open()}>
+                                    <Text style={styles.strategyTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.floor2}>
+                                {/* 我的实时算力 */}
+                                {
+                                    this._renderFloor2Item(
+                                        I18n.t('sigm.miningPart.realTimeDeposit'),
+                                        '100+37'
+                                    )
+                                }
+                                {/* 全网算力 */}
+                                {
+                                    this._renderFloor2Item(
+                                        I18n.t('sigm.miningPart.allDeposit'),
+                                        '7864689'
+                                    )
+                                }
+                                {/* 我的算力排行 */}
+                                {
+                                    this._renderFloor2Item(
+                                        I18n.t('sigm.miningPart.depositRank'),
+                                        '9876',
+                                        false
+                                    )
+                                }
+                            </View>
+                            <View style={[styles.flexRow, {alignItems: 'center'}]}>
+                                <Button
+                                    title={I18n.t('sigm.miningPart.signIn')}
+                                    // "今日签到"
+                                    icon={
+                                        <Image style={styles.signInIcon} source={require('../../assets/images/sigm/signIn_icon.png')}/>
+                                    }
+                                    buttonStyle={styles.signInBtn}
+                                    titleStyle={{color: '#FFFFFF', fontSize: scaleSize(36)}}
+                                    onPress={() => {}}
+                                />
+                                <Button
+                                    title={I18n.t('sigm.miningPart.getDeposit')}
+                                    // "获取算力"
+                                    icon={
+                                        <Image style={styles.getDepositIcon} source={require('../../assets/images/sigm/getDeposit_icon.png')}/>
+                                    }
+                                    buttonStyle={styles.getDepositBtn}
+                                    titleStyle={{color: '#4A90E2', fontSize: scaleSize(36)}}
+                                    onPress={() => this.props.navigation.navigate('GetDeposit')}
+                                />
+                            </View>
+                        </View>
+                        {/* 挖矿攻略弹窗 */}
+                        <Modal
+                            style={[styles.modal]}
+                            coverScreen={true}
+                            position={'center'}
+                            ref={modal => this.miningStrategyModal = modal}
+                            swipeArea={20}
+                        >
+                            <View>
+                                <View style={styles.modalTitle}>
+                                    <Text style={styles.modalTitleTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
+                                    <TouchableOpacity style={styles.closeBtnT} onPress={() => this.miningStrategyModal.close()}>
+                                        <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                {/* 什么是算力 */}
+                                {
+                                    this._renderMiningStrategyModalItem({
+                                        title: I18n.t('sigm.miningPart.miningStrategyPart.whatDeposit'),
+                                        value: I18n.t('sigm.miningPart.miningStrategyPart.depositDescription'),
+                                        hasBorderBotom: true
                                     })
-                                });
-                            }}>
-                                <Animated.View
-                                    style={[styles.content1, {
-                                    transform: [   
-                                        {scale: this.state.anim.interpolate({
-                                        inputRange: [0, 2],
-                                        outputRange: [1, 1.5],
-                                        })}
-                                    ]}
-                                    ]}>
-                                    <Image source={require('../../assets/images/sigm/inner_circle.png')} style={styles.innerCircle}/>
-                                </Animated.View>
-                            </TouchableOpacity>
-                        </ImageBackground>
-                        {/* 挖矿攻略 */}
-                        <TouchableOpacity onPress={() => this.miningStrategyModal.open()}>
-                            <Text style={styles.strategyTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
-                        </TouchableOpacity>
+                                }
+                                {/* 如何提高算力 */}
+                                {
+                                    this._renderMiningStrategyModalItem({
+                                        title: I18n.t('sigm.miningPart.miningStrategyPart.howDeposit'),
+                                        value: I18n.t('sigm.miningPart.miningStrategyPart.wayDescription'),
+                                    })
+                                }
+                            </View>
+                        </Modal>
+                        {/* 划转弹窗 */}
+                        <Modal
+                            style={[styles.modal, styles.transferModal]}
+                            coverScreen={true}
+                            position={'center'}
+                            ref={modal => this.transferModal = modal}
+                            swipeArea={20}
+                        >
+                            <View>
+                                <View style={styles.modalTitle}>
+                                    <Text style={styles.modalTitleTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
+                                    <TouchableOpacity style={styles.closeBtnT} onPress={() => this.transferModal.close()}>
+                                        <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.transferModalFloor1}>
+                                    <Text style={styles.transferModalText1}>{I18n.t('sigm.miningPart.transferPart.today')}</Text>
+                                    <Text style={styles.transferModalText1}>0</Text>
+                                </View>
+                                <Text style={styles.transferModalTips}>{I18n.t('sigm.miningPart.transferPart.tips')}</Text>
+                                <Button
+                                    title={I18n.t('sigm.miningPart.transferPart.btn')}
+                                    // "确认划转"
+                                    buttonStyle={styles.transferModalBtn}
+                                    titleStyle={{color: '#FFFFFF', fontSize: scaleSize(28)}}
+                                    onPress={() => {}}
+                                />
+                            </View>
+                        </Modal>
                     </View>
-                    <View style={styles.floor2}>
-                        {/* 我的实时算力 */}
-                        {
-                            this._renderFloor2Item(
-                                I18n.t('sigm.miningPart.realTimeDeposit'),
-                                '100+37'
-                            )
-                        }
-                        {/* 全网算力 */}
-                        {
-                            this._renderFloor2Item(
-                                I18n.t('sigm.miningPart.allDeposit'),
-                                '7864689'
-                            )
-                        }
-                        {/* 我的算力排行 */}
-                        {
-                            this._renderFloor2Item(
-                                I18n.t('sigm.miningPart.depositRank'),
-                                '9876',
-                                false
-                            )
-                        }
-                    </View>
-                    <View style={[styles.flexRow, {alignItems: 'center'}]}>
-                        <Button
-                            title={I18n.t('sigm.miningPart.signIn')}
-                            // "今日签到"
-                            icon={
-                                <Image style={styles.signInIcon} source={require('../../assets/images/sigm/signIn_icon.png')}/>
-                            }
-                            buttonStyle={styles.signInBtn}
-                            titleStyle={{color: '#FFFFFF', fontSize: scaleSize(36)}}
-                            onPress={() => {}}
-                        />
-                        <Button
-                            title={I18n.t('sigm.miningPart.getDeposit')}
-                            // "获取算力"
-                            icon={
-                                <Image style={styles.getDepositIcon} source={require('../../assets/images/sigm/getDeposit_icon.png')}/>
-                            }
-                            buttonStyle={styles.getDepositBtn}
-                            titleStyle={{color: '#4A90E2', fontSize: scaleSize(36)}}
-                            onPress={() => this.props.navigation.navigate('GetDeposit')}
-                        />
-                    </View>
-                </View>
-                {/* 挖矿攻略弹窗 */}
-                <Modal
-                    style={[styles.modal]}
-                    coverScreen={true}
-                    position={'center'}
-                    ref={modal => this.miningStrategyModal = modal}
-                    swipeArea={20}
-                >
-                    <View>
-                        <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
-                            <TouchableOpacity style={styles.closeBtnT} onPress={() => this.miningStrategyModal.close()}>
-                                <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
-                            </TouchableOpacity>
-                        </View>
-                        {/* 什么是算力 */}
-                        {
-                            this._renderMiningStrategyModalItem({
-                                title: I18n.t('sigm.miningPart.miningStrategyPart.whatDeposit'),
-                                value: I18n.t('sigm.miningPart.miningStrategyPart.depositDescription'),
-                                hasBorderBotom: true
-                            })
-                        }
-                        {/* 如何提高算力 */}
-                        {
-                            this._renderMiningStrategyModalItem({
-                                title: I18n.t('sigm.miningPart.miningStrategyPart.howDeposit'),
-                                value: I18n.t('sigm.miningPart.miningStrategyPart.wayDescription'),
-                            })
-                        }
-                    </View>
-                </Modal>
-                {/* 划转弹窗 */}
-                <Modal
-                    style={[styles.modal, styles.transferModal]}
-                    coverScreen={true}
-                    position={'center'}
-                    ref={modal => this.transferModal = modal}
-                    swipeArea={20}
-                >
-                    <View>
-                        <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleTxt}>{I18n.t('sigm.miningPart.miningStrategy')}</Text>
-                            <TouchableOpacity style={styles.closeBtnT} onPress={() => this.transferModal.close()}>
-                                <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.transferModalFloor1}>
-                            <Text style={styles.transferModalText1}>{I18n.t('sigm.miningPart.transferPart.today')}</Text>
-                            <Text style={styles.transferModalText1}>0</Text>
-                        </View>
-                        <Text style={styles.transferModalTips}>{I18n.t('sigm.miningPart.transferPart.tips')}</Text>
-                        <Button
-                            title={I18n.t('sigm.miningPart.transferPart.btn')}
-                            // "确认划转"
-                            buttonStyle={styles.transferModalBtn}
-                            titleStyle={{color: '#FFFFFF', fontSize: scaleSize(28)}}
-                            onPress={() => {}}
-                        />
-                    </View>
-                </Modal>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
+                }
+                {/* 网络未连接 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+    }),{
+    }
+)(MiningPart)
 
 const styles = StyleSheet.create({
     flexRow: {

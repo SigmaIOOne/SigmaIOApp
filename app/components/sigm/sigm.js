@@ -77,8 +77,7 @@ class Sigm extends React.Component {
         try {
             let result = await getSigmTab();
             result = result.data;
-            console.log('sigm res ', result);
-            if (result.status === 200) {
+            if (result.status == 200) {
                 const { all, dollar, income, miningaccount, charged } = result.data;
                 this.setState({
                     all,
@@ -100,7 +99,8 @@ class Sigm extends React.Component {
         // const login = this.props.login.login;
         // if (!login) navigate('Login');
         const login = this.props.login.login;
-        !login && navigate('Login');
+        const navigate = this.props.navigation.navigate;
+        !login ? navigate('Login') : navigate('MiningPart');
         // 将待领取全部取出来，加到挖矿资产里去
     }
     render() {
