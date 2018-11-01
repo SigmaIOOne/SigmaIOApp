@@ -4,38 +4,31 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
     Image,
     StyleSheet,
     Dimensions,
     TouchableOpacity,
 } from 'react-native';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
-import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 
 export default class Banner extends Component {
+    static propTypes = {
+        bannerData: PropTypes.array,
+        clickToProductDetail: PropTypes.func,
+    }
     constructor(props) {
 		super(props);
-		
 		this.state = {
-            bannerList : [
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/1.jpg'},
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/2.jpg'},
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/3.jpg'},
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/1.jpg'},
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/2.jpg'},
-                {thumbnail: 'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201304/jiaoben828/img/3.jpg'},
-            ],
             activeSlide: 0
 		};
     }
     get pagination () {
         return (
             <Pagination
-                dotsLength={this.state.bannerList.length}
+                dotsLength={this.props.bannerData.length}
                 activeDotIndex={this.state.activeSlide}
                 containerStyle={{ backgroundColor: '#fff' }}
                 dotColor={'rgba(232,232,232,1)'}
@@ -43,7 +36,7 @@ export default class Banner extends Component {
                 dotContainerStyle={{
                     width: 5,
                     height: 5,
-                    borderRadius: 5,
+                    // borderRadius: 5,
                     marginHorizontal: 8,
                 }}
                 />
@@ -53,9 +46,9 @@ export default class Banner extends Component {
     // 渲染顶部轮播图图片
     _renderBannerItem = ({item, index}) => {
         return (
-            <View style={styles.bannerView}>
-                <Image style={styles.bannerImg} source={{ uri: item.thumbnail}} />
-            </View>
+            <TouchableOpacity style={styles.bannerView} key={index} onPress={() => this.props.clickToProductDetail(item.type)}>
+                <Image style={styles.bannerImg} source={item.thumbnail}/>
+            </TouchableOpacity>
         );
     }
 
@@ -66,7 +59,7 @@ export default class Banner extends Component {
                 <Carousel
                     layout={'default'}
                     ref={(c) => { this._carousel = c; }}
-                    data={this.state.bannerList}
+                    data={this.props.bannerData}
                     renderItem={this._renderBannerItem}
                     sliderWidth={scaleSize(750)}
                     itemWidth={scaleSize(666)}
@@ -75,7 +68,7 @@ export default class Banner extends Component {
                     loop={true}
                     onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                     />
-                <Pagination dotsLength={this.state.bannerList.length} activeDotIndex={this.state.activeSlide}/>
+                <Pagination dotsLength={this.props.bannerData.length} activeDotIndex={this.state.activeSlide}/>
             </View>
         )
     }
@@ -95,6 +88,6 @@ const styles = StyleSheet.create({
     bannerImg: {
         width: scaleSize(666),
         height: scaleSize(346),
-        borderRadius: scaleSize(20)
+        // borderRadius: scaleSize(20)
     },
 });

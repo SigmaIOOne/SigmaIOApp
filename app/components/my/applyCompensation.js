@@ -3,35 +3,68 @@
  */
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
     Dimensions,
-    TouchableOpacity,
+    Image,
     ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-// import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import { getAllOrder } from '../../api/my';
+import { setAllOrder } from '../../store/reducers/data';
+import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
 
-
-export default class ApplyCompensation extends Component {
+class ApplyCompensation extends Component {
+    static propTypes = {
+        data: PropTypes.object,
+        netInfo: PropTypes.object,
+        setAllOrder: PropTypes.func,
+    }
+    componentDidMount() {
+        this._init();
+    }
+    // 页面初始化和刷新用
+    _init = () => {
+        this._getAllOrder();
+    }
+    // 获取全部订单，我的订单和申请理赔都用这个接口，后端说的
+    _getAllOrder = async () => {
+        try {
+            let result = await getAllOrder();
+            result = result.data;
+            console.log('all ', result);
+            if (result.status == 200) {
+                this.props.setAllOrder(result.data);
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     // 渲染每个订单模块
     _renderPerOrder = (data, index) => {
         return (
             <TouchableOpacity key={index} style={styles.order} onPress={() => this.myModal.open()}>
-                { data.list.map(res => this._renderPerRow(res)) }
+                { data.list.map((res, rowIndex) => this._renderPerRow(res, rowIndex)) }
                 <Text style={styles.orderSuccess}>{I18n.t('my.applyCompensationPart.type')}</Text>
             </TouchableOpacity>
         );
     }
     // 渲染每个订单模块里的每行
-    _renderPerRow = (data) => {
+    _renderPerRow = (data, index) => {
         return (
-            <View style={styles.perRow}>
+            <View style={styles.perRow} key={index}>
                 <Text style={styles.rowTitle}>{data.title}</Text>
                 <Text style={styles.rowValue}>{data.value}</Text>
             </View>
@@ -44,71 +77,94 @@ export default class ApplyCompensation extends Component {
         )
     }
     render() {
-        const list = [];
-        list.push(
-            {
-                id: '31434982743',
-                list: [
-                    { title: '订单号:', value: '31434982743'},
-                    { title: '账户安全险:', value: '2018-07-12 16：02'},
-                ]
-            }
-        );
-        // const list = [];
+        const { netInfo, data } = this.props;
+        const isConnected = netInfo.isConnected;
+        const { allOrder, hasAllOrderCache } = data;
+        const list = allOrder.map(res => ({
+            id: res.id, // 订单id
+            list: [
+                { title: '订单号:', value: res.nmber },
+                { title: res.type, value: res.time },
+            ]
+        }));
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    {
-                        list.length
-                            ? list.map((data, index) => this._renderPerOrder(data, index))
+            <View>
+                {
+                    (isConnected || (!isConnected && hasAllOrderCache)) // 有网 或者 没网但是有缓存
+                    ? <View>
+                        {
+                            list.length
+                            ? <ScrollView>
+                                <View style={styles.container}>
+                                    {
+                                        list.map((data, index) => this._renderPerOrder(data, index))
+                                    }
+                                    {/* 理赔流程弹窗 */}
+                                    <Modal
+                                        style={styles.modal}
+                                        position={'center'}
+                                        coverScreen={true}
+                                        ref={myModal => this.myModal = myModal}
+                                    >
+                                        <View style={styles.modalTitle}>
+                                            <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>
+                                            <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
+                                                <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.modalContent}>
+                                            {this._renderModalTxt('my.applyCompensationContent.title1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text1_1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text1_2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text2_1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text2_2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title3')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text3')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title4')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text4')}
+                                        </View>
+                                    </Modal>
+                                </View>
+                            </ScrollView>
                             : <View style={styles.noRecordPage}>
                                 <Image style={styles.noRecordImg} source={require('../../assets/images/my/no_record.png')}/>
                                 <Text style={styles.noRecordTxt}>{I18n.t('my.noRecord')}</Text>
                             </View>
-                    }
-                    {/* 理赔流程弹窗 */}
-                    <Modal
-                        style={styles.modal}
-                        position={'center'}
-                        coverScreen={true}
-                        ref={myModal => this.myModal = myModal}
-                    >
-                        <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>
-                            <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
-                                <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.modalContent}>
-                            {this._renderModalTxt('my.applyCompensationContent.title1')}
-                            {this._renderModalTxt('my.applyCompensationContent.text1_1')}
-                            {this._renderModalTxt('my.applyCompensationContent.text1_2')}
-                            {this._renderModalTxt('my.applyCompensationContent.title2')}
-                            {this._renderModalTxt('my.applyCompensationContent.text2_1')}
-                            {this._renderModalTxt('my.applyCompensationContent.text2_2')}
-                            {this._renderModalTxt('my.applyCompensationContent.title3')}
-                            {this._renderModalTxt('my.applyCompensationContent.text3')}
-                            {this._renderModalTxt('my.applyCompensationContent.title4')}
-                            {this._renderModalTxt('my.applyCompensationContent.text4')}
-                        </View>
-                    </Modal>
-                </View>
-            </ScrollView>
+                        }
+                    </View>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
+                }
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
+            </View>
         );
     }
 }
 
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+        data: state.data,
+    }),{
+        setAllOrder,
+    }
+)(ApplyCompensation)
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
-        height: Dimensions.get('window').height,
+        minHeight: Dimensions.get('window').height - StatusBar.currentHeight,
         paddingTop: scaleSize(40),
         paddingLeft: scaleSize(40),
         paddingRight: scaleSize(40),
         alignItems: 'center',
     },
     noRecordPage: {
+        width: scaleSize(750),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
         alignItems: 'center',
+        backgroundColor: '#FFFFFF',
     },
     noRecordImg: {
         width: scaleSize(120),

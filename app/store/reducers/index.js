@@ -7,6 +7,7 @@ import nav from './nav';
 // lxy 新增
 import login from './login';
 import netInfo from './netInfo';
+import data from './data';
 
 const reducers = combineReducers({
 	walletInfo,
@@ -16,6 +17,7 @@ const reducers = combineReducers({
     // lxy 新增
     login,
     netInfo,
+    data,
 });
 
 export default reducers;

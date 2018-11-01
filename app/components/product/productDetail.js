@@ -40,10 +40,6 @@ export default class ProductDetail extends Component {
                 ],
                 data: [
                     ['保障内容', '保障期限', '保障额度'],
-                    ['保障内容', '保障期限', '保障额度'],
-                    ['保障内容', '保障期限', '保障额度'],
-                    ['SigmaIO平台账户安全', '365天', '20000SIGM'],
-                    ['SigmaIO平台账户安全', '365天', '20000SIGM'],
                     ['SigmaIO平台账户安全', '365天', '20000SIGM'],
                 ]
             },
@@ -76,9 +72,10 @@ export default class ProductDetail extends Component {
                 ]
             },
             // 份数
-            buyNum: 0,
+            buyNum: 1,
             yearMonthSelectList: [], // 降雨险的时候存放可以选择的年月
             selectedYearMonthValue: '', // 选择的年月
+            buyValue: '', // 购买价格
         };
     }
 
@@ -86,12 +83,18 @@ export default class ProductDetail extends Component {
         this._init();
     }
     _init = () => {
+        const { type } = this.props.navigation.state.params;
         // const yearMonthSelectList = monthSelector('2018-12-23');
         const yearMonthSelectList = monthSelector();
-        console.log('yearMonthSelectList ', yearMonthSelectList);
+        const buyValueDefault = [
+            200,
+            1000,
+            920,
+        ];
         this.setState({
             yearMonthSelectList,
             selectedYearMonthValue: yearMonthSelectList[0],
+            buyValue: buyValueDefault[type],
         });
     }
     // 渲染安全险 -> 保障详情
@@ -278,12 +281,13 @@ export default class ProductDetail extends Component {
     // 购买份数操作
     _handleBuyNum = (type) => {
         let { buyNum } = this.state;
+        const perPrice = 920;
         if (type === 'minus') {
-            if (buyNum <= 0) return;
-            else this.setState({buyNum: --buyNum});
-        } else {
-            this.setState({buyNum: ++buyNum});
-        }
+            if (buyNum <= 1) return;
+            else --buyNum;
+        } else ++buyNum;
+        const buyValue = buyNum * perPrice;
+        this.setState({buyNum, buyValue});
     }
     // 立即购买
     _buyProduct = () => {
@@ -300,14 +304,19 @@ export default class ProductDetail extends Component {
             // 降雨险
             'productRainingTips',
         ];
+        const topImg = [
+            require('../../assets/images/product/banner_product_insurance.png'),
+            require('../../assets/images/product/banner_product_navigation.png'),
+            require('../../assets/images/product/banner_product_raining.png'),
+        ];
         const { type } = this.props.navigation.state.params;
-        const { yearMonthSelectList } = this.state;
+        const { yearMonthSelectList, buyValue } = this.state;
         console.log('type ', type, typeof type);
         return (
             <Container>
                 <KeyboardAwareScrollView>
                     <View style={styles.main}>
-                        <Image style={styles.productImg} source={require('../../assets/images/product/product_detail_img.png')}/>
+                        <Image style={styles.productImg} source={topImg[type]}/>
                         {
                             type === 2
                                 ? <View>
@@ -329,7 +338,7 @@ export default class ProductDetail extends Component {
                 </KeyboardAwareScrollView>
                 <Footer style={styles.footer}>
                     <View style={styles.footerLeft}>
-                        <Text style={styles.footerLeftValue}>200</Text>
+                        <Text style={styles.footerLeftValue}>{buyValue}</Text>
                         <Text style={styles.footerLeftUnit}>SIGM</Text>
                     </View>
                     <Button

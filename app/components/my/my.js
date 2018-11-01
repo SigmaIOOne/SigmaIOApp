@@ -15,12 +15,15 @@ import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToastOld';
 import { logout } from '../../api/login';
 import { changeLoginState } from '../../store/reducers/login';
+import { setTransactionRecord, setAllOrder } from '../../store/reducers/data';
 
 class My extends Component {
     static propTypes = {
         changeLoginState: PropTypes.func,
         login: PropTypes.object,
         netInfo: PropTypes.object,
+        setAllOrder: PropTypes.func,
+        setTransactionRecord: PropTypes.func,
     }
     componentDidUpdate() {
         // 网络未连接
@@ -50,8 +53,11 @@ class My extends Component {
     _logout = async () => {
         let result = await logout();
         result = result.data;
+        console.log('logout ', result);
         if (result.status == 200) {
             this.props.changeLoginState(false);
+            this.props.setAllOrder([], false);
+            this.props.setTransactionRecord([], false);
             storage.remove({
                 key: 'login'
             });
@@ -63,12 +69,6 @@ class My extends Component {
         const phone = '13718886966';
         const formatPhone = phone.replace(phone.slice(3, 7), '****');
         const login = this.props.login.login;
-        storage.load({ key: 'login'}).then(res => {
-            console.log('login 22 ', res);
-            this.props.changeLoginState(true);
-        }).catch((err) => {
-            console.log('login err 22 ', err);
-        })
 		return (
 			<View style={ login ? styles.container : {}}>
                 {
@@ -164,6 +164,8 @@ export default connect(
         netInfo: state.netInfo,
     }), {
         changeLoginState,
+        setAllOrder,
+        setTransactionRecord,
     }
 )(My)
 

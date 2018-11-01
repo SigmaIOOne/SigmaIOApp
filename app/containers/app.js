@@ -323,7 +323,7 @@ const RootNavigator = createStackNavigator(
 		AboutUs: {
 			screen: AboutUs,
 			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('my.aboutUs')}</Text>
+                headerTitle: I18n.t('my.aboutUs')
 			}
 		},
 		UserPolicy: {

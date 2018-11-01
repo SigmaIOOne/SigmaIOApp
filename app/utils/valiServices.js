@@ -34,12 +34,12 @@ export function checkPwd(pwd) {
   return new Promise(function(resolve, reject) {
     pwd = pwd.trim();
     const regExp = /\s/;
-    if (pwd.length >= 8 && pwd.length <=18 && !regExp.test(pwd)) {
+    if (pwd.length >= 6 && pwd.length <=18 && !regExp.test(pwd)) {
       resolve(pwd);
     } else if (pwd.length === 0) {
       reject(I18n.t('wallet.enterPwd'));
-    } else if (pwd.length < 8) {
-      reject('密码不能小于八位,请重新输入');
+    } else if (pwd.length < 6) {
+      reject('密码不能小于六位,请重新输入');
     } else if (pwd.length > 18) {
       reject('密码不能大于十八位,请重新输入');
     } else if (regExp.test(pwd)) {
@@ -131,4 +131,13 @@ export function checkNickName(str) {
       resolve();
     }
   })
+}
+
+// 验证意见反馈内容
+export function checkSuggestContent(content) {
+    return new Promise((res, rej) => {
+        content = content.trim();
+        if (content.length === 0) rej('意见内容不能为空');
+        else res();
+    })
 }

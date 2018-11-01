@@ -1,3 +1,6 @@
+/**
+ * SIGM -> 总资产 -> 账户详情 -> 交易记录
+ */
 import React from 'react';
 import {
     View,
@@ -59,7 +62,7 @@ class Sigm extends React.Component {
     _cardPress = (target) => {
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
-        !login ? navigate('Login') : navigate(target);
+        !login ? navigate('Login', {origin: 'Sigm'}) : navigate(target);
     }
     // 用户退出登录后重置tab信息
     _resetSigmData = () => {
@@ -100,7 +103,7 @@ class Sigm extends React.Component {
         // if (!login) navigate('Login');
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
-        !login ? navigate('Login') : navigate('MiningPart');
+        !login ? navigate('Login', {origin: 'Sigm'}) : navigate('MiningPart');
         // 将待领取全部取出来，加到挖矿资产里去
     }
     render() {
@@ -119,7 +122,7 @@ class Sigm extends React.Component {
                         </View>
                         {
                             !login &&
-                                <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login')}>
+                                <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login', {origin: 'Sigm'})}>
                                     <Text style={styles.headerRightText}>{I18n.t('sigm.login')}</Text>
                                 </TouchableOpacity>
                         }

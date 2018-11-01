@@ -18,8 +18,14 @@ const transferAmount = async (miningaccount) => {
     return axios.post('/Home/Api/distribute?apiid=transfer', body);
 }
 
+// 获取交易记录
+const getTransactionRecord = async () => {
+    return axios.post('/Home/Api/distribute?apiid=allorder');
+}
+
 export {
     getAccountDetail,
     getSigmTab,
+    getTransactionRecord,
     transferAmount,
 }

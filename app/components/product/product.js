@@ -21,23 +21,9 @@ const headerTop = ifIphoneX(40, 20 , 0)
 
 class Product extends Component {
     // 渲染保险产品
-    constructor(props) {
-		super(props);
-		this.navigate = this.props.navigation.navigate;
-		this.state = {
-
-		};
-	}
-    _renderItem ({item, index}) {
-        return (
-            <View style={styles.slide}>
-                <Image style={styles.insuranceProductImg1} source={item.img} />
-            </View>
-        );
-    }
     _renderInsuranceProduct = (data, index) => {
         return (
-            <TouchableOpacity style={styles.insuranceProduct} key={index} onPress={() => this.props.navigation.navigate('ProductDetail', {type: data.type})}>
+            <TouchableOpacity style={styles.insuranceProduct} key={index} onPress={() => this._clickToProductDetail(data.type)}>
                 <Image style={styles.insuranceProductImg} source={data.img}/>
                 <View style={styles.insuranceProductLeft}>
                     <Text style={styles.insuranceProductTitle}>{data.title}</Text>
@@ -50,7 +36,26 @@ class Product extends Component {
             </TouchableOpacity>
         );
     }
+    // 点击跳转到对应的产品详情页
+    _clickToProductDetail = (type) => {
+        this.props.navigation.navigate('ProductDetail', {type})
+    }
     render() {
+        // 这一页的数据都是写死的，不必调接口
+        const bannerData = [
+            {
+                thumbnail: require('../../assets/images/product/banner_product_insurance.png'),
+                type: 0,
+            },
+            {
+                thumbnail: require('../../assets/images/product/banner_product_navigation.png'),
+                type: 1,
+            },
+            {
+                thumbnail: require('../../assets/images/product/banner_product_raining.png'),
+                type: 2,
+            },
+        ];
         // 产品显示排序：安全险，航空险，降雨
         const productList = [
             {
@@ -82,7 +87,7 @@ class Product extends Component {
                         <Text style={{ fontSize: 16, textAlign: 'center', color: '#555555'}}>产品</Text>
                     </View>
                     {/* 轮播图三张图片, 对应下面的保险的三个产品 */}
-                    <Banner />
+                    <Banner clickToProductDetail={this._clickToProductDetail} bannerData={bannerData}/>
                     {/* <View style={styles.bannerView}></View> */}
                     {/* 产品模块 */}
                     <View>

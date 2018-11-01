@@ -27,12 +27,13 @@ export default class UploadRecord extends Component {
         );
     }
     render() {
-        const list = new Array(14).fill({
-            title: '驾驶时长',
-            sigm: '+5 SIGM',
-            date: '今天 09：45',
-        });
-        // const list = [];
+        // const list = new Array(14).fill({
+        //     title: '驾驶时长',
+        //     sigm: '+5 SIGM',
+        //     date: '今天 09：45',
+        // });
+        // 数据上传记录点进去空白页，就是先空白页面
+        const list = [];
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -53,7 +54,7 @@ export default class UploadRecord extends Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
-        height: Dimensions.get('window').height,
+        minHeight: Dimensions.get('window').height - scaleSize(128),
         paddingTop: scaleSize(40),
         alignItems: 'center',
     },

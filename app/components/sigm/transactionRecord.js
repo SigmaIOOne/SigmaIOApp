@@ -1,3 +1,6 @@
+/**
+ * SIGM -> 总资产 -> 账户详情 -> 交易记录
+ */
 import React from 'react';
 import {
     Dimensions,
@@ -6,46 +9,94 @@ import {
     Text,
     View,
 } from 'react-native';
-// import { I18n } from '../../../language/i18n';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import { scaleSize } from '../../utils/ScreenUtil';
 import {I18n} from "../../../language/i18n";
+import {getTransactionRecord} from '../../api/sigm';
+import {setTransactionRecord} from '../../store/reducers/data';
+import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
 
-export default class transactionRecord extends React.Component {
-    _renderListItem = (data) => {
+class TransactionRecord extends React.Component {
+    static propTypes = {
+        data: PropTypes.object,
+        netInfo: PropTypes.object,
+        setTransactionRecord: PropTypes.func,
+    }
+    componentDidMount() {
+        this._init();
+    }
+    // 页面初始化和刷新用
+    _init = () => {
+        this._getTransactionRecord();
+    }
+    // 获取交易记录
+    _getTransactionRecord = async () => {
+        try {
+            let result = await getTransactionRecord();
+            result = result.data;
+            console.log('record ', result);
+            if (result.status == 200) {
+                this.props.setTransactionRecord(result.data);
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+    _renderListItem = (data, index) => {
         return (
-            <View style={styles.perRecordItem}>
+            <View key={index} style={styles.perRecordItem}>
                 <View style={styles.perItemFloor1}>
-                    <Text style={styles.floor1LeftTxt}>{data.title}</Text>
+                    <Text style={styles.floor1LeftTxt}>{data.title.toString()}</Text>
                     <View style={styles.flexRow}>
-                        <Text style={styles.floor1RightTxt}>{data.value}</Text>
+                        <Text style={styles.floor1RightTxt}>{data.money}</Text>
                         <Text style={styles.floor1RightTxt}>SIGM</Text>
                     </View>
                 </View>
-                <Text style={styles.dateTxt}>{data.date}</Text>
+                <Text style={styles.dateTxt}>{data.time}</Text>
             </View>
         );
     }
     render() {
-        // const list = new Array(5).fill({
-        //     title: '主账户—提取',
-        //     date: '今天 09：45',
-        //     value: '30086.332'
-        // });
-        const list = [];
+        console.log('data ', this.props.data);
+        const { transactionRecord, hasTransactionRecord } = this.props.data;
+        const isConnected = this.props.netInfo.isConnected;
         return (
-            <View style={styles.container}>
+            <View>
                 {
-                    list.length
-                        ? list.map(data => this._renderListItem(data))
-                        : <View style={styles.noRecordPage}>
-                            <Image style={styles.noRecordImg} source={require('../../assets/images/sigm/no_record.png')}/>
-                            <Text style={styles.noRecordTxt}>{I18n.t('sigm.accountDetail.transactionRecordPart.noRecord')}</Text>
+                    (isConnected || (!isConnected && hasTransactionRecord)) // 有网 或者 没网但是有缓存
+                    ? <View style={styles.container}>
+                            {
+                                transactionRecord.length
+                                    ? transactionRecord.map((data, index) => this._renderListItem(data, index))
+                                    : <View style={styles.noRecordPage}>
+                                        <Image style={styles.noRecordImg} source={require('../../assets/images/sigm/no_record.png')}/>
+                                        <Text style={styles.noRecordTxt}>{I18n.t('sigm.accountDetail.transactionRecordPart.noRecord')}</Text>
+                                    </View>
+                            }
                         </View>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
+                {/* 网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+        data: state.data,
+    }),{
+        setTransactionRecord,
+    }
+)(TransactionRecord)
 
 const styles = StyleSheet.create({
     flexRow: {
@@ -71,12 +122,13 @@ const styles = StyleSheet.create({
     },
     perRecordItem: {
         width: scaleSize(670),
-        height: scaleSize(110),
+        // height: scaleSize(110),
         borderTopWidth: scaleSize(1),
         borderTopColor: 'rgba(155, 155, 155, 0.4)',
         paddingTop: scaleSize(16),
-        paddingRight: scaleSize(38),
-        paddingLeft: scaleSize(38),
+        paddingBottom: scaleSize(16),
+        // paddingRight: scaleSize(38),
+        // paddingLeft: scaleSize(38),
     },
     perItemFloor1: {
         flexDirection: 'row',
@@ -85,6 +137,7 @@ const styles = StyleSheet.create({
     floor1LeftTxt: {
         color: '#4A4A4A',
         fontSize: scaleSize(28),
+        maxWidth: scaleSize(400),
     },
     floor1RightTxt: {
         color: '#D0021B',

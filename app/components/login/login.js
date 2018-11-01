@@ -44,9 +44,11 @@ class Login extends React.Component {
     _clickToLogin = async () => {
         try {
             const { account, psd } = this.state;
+            const { origin } = this.props.navigation.state.params;
             await checkAccount(account);
             await checkPwd(psd);
             let result = await login(account, psd);
+            console.log('login ', result);
             result = result.data;
             // 别用===了，因为有些接口返回status是数字，有些是字符串
             if (result.status == 200) {
@@ -56,7 +58,7 @@ class Login extends React.Component {
                     data: { loginState: true }, 
                     expires: null
                 });
-                this.props.navigation.navigate('Sigm');
+                this.props.navigation.navigate(origin);
             } else {
                 this.toast.show(result.msg);
             }
