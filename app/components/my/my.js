@@ -14,7 +14,7 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToastOld';
 import { logout } from '../../api/login';
-import { changeLoginState } from '../../store/reducers/login';
+import { changeLoginState, setUserInfo } from '../../store/reducers/login';
 import { setTransactionRecord, setAllOrder } from '../../store/reducers/data';
 
 class My extends Component {
@@ -24,6 +24,7 @@ class My extends Component {
         netInfo: PropTypes.object,
         setAllOrder: PropTypes.func,
         setTransactionRecord: PropTypes.func,
+        setUserInfo: PropTypes.func,
     }
     componentDidUpdate() {
         // 网络未连接
@@ -56,6 +57,7 @@ class My extends Component {
         console.log('logout ', result);
         if (result.status == 200) {
             this.props.changeLoginState(false);
+            this.props.setUserInfo({});
             this.props.setAllOrder([], false);
             this.props.setTransactionRecord([], false);
             storage.remove({
@@ -66,9 +68,9 @@ class My extends Component {
         }
     }
 	render() {
-        const phone = '13718886966';
-        const formatPhone = phone.replace(phone.slice(3, 7), '****');
-        const login = this.props.login.login;
+        const { login, userInfo } = this.props.login;
+        const phone = login ? userInfo.account : '';
+        const formatPhone = login && phone ? phone.replace(phone.slice(3, 7), '****') : '';
 		return (
 			<View style={ login ? styles.container : {}}>
                 {
@@ -144,7 +146,7 @@ class My extends Component {
                                 })
                             }
                     </View>
-                    : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login')}>
+                    : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login', {origin: 'My'})}>
                         <View style={styles.topLeft}>
                             <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
                             <Text style={styles.topTxt}>{I18n.t('my.login')}</Text>
@@ -166,6 +168,7 @@ export default connect(
         changeLoginState,
         setAllOrder,
         setTransactionRecord,
+        setUserInfo,
     }
 )(My)
 

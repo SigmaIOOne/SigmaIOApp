@@ -3,13 +3,14 @@
  */
 import React from 'react';
 import {
-    View,
+    Dimensions,
     Image,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    Dimensions,
-    StyleSheet,
-    ScrollView
+    View,
 } from 'react-native';
 // import { Input, Button } from 'native-base';
 import { Input, Button } from 'react-native-elements';
@@ -36,12 +37,13 @@ export default class FindPsd extends React.Component {
     _clickToNext = async () => {
         try {
             const { account, phoneCode } = this.state;
+            const { origin } = this.props.navigation.state.params;
             await checkAccount(account);
             await checkCode(phoneCode);
             let result = await checkPhoneCode(account, phoneCode);
             result = result.data;
             if (result.status === 200) {
-                this.props.navigation.navigate('SetNewPsd', {origin: 'findPsd'})
+                this.props.navigation.navigate('SetNewPsd', {origin: 'findPsd', loginGoTarget: origin})
             } else {
                 this.toast.show(result.msg);
             }
@@ -67,7 +69,7 @@ export default class FindPsd extends React.Component {
         try {
             const { account } = this.state;
             await checkAccount(account);
-            let result = await getPhoneCode(account, 'register');
+            let result = await getPhoneCode(account, 'modify');
             result = result.data;
             if (result.status === 200) {
                 this.setState({
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     },
     imgBg: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - scaleSize(40),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
         // justifyContent: 'space-between',
         alignItems: 'center',
     },

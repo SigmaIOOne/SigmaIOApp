@@ -18,6 +18,7 @@ axios.interceptors.request.use(
                 time,
                 ...config.data
             };
+            console.log('config ', config);
         }
         return config;
     },

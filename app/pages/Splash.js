@@ -2,9 +2,10 @@ import React from 'react';
 import { Dimensions, Animated } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 // import { I18n } from '../../language/i18n';
 import { changeWalletImportState, updateWalletInfo } from '../store/reducers/wallet';
-import { changeLoginState } from '../store/reducers/login';
+import { changeLoginState, setUserInfo } from '../store/reducers/login';
 
 const maxHeight = Dimensions.get('window').height;
 const maxWidth = Dimensions.get('window').width;
@@ -14,7 +15,12 @@ class Splash extends React.Component {
 	static navigationOptions = {
 		header: null
 	};
-
+    static propTypes = {
+        changeLoginState: PropTypes.func,
+        setUserInfo: PropTypes.func,
+        changeWalletImportState: PropTypes.func,
+        updateWalletInfo: PropTypes.func,
+    }
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -22,7 +28,6 @@ class Splash extends React.Component {
 			mnemonic: false
 		};
 	}
-
 	componentDidMount() {
 		storage.load({ key: 'mnemonic'}).then((res) => {
             this.setState({
@@ -36,6 +41,7 @@ class Splash extends React.Component {
         storage.load({ key: 'login'}).then(res => {
             console.log('login ', res);
             this.props.changeLoginState(true);
+            this.props.setUserInfo(res);
         }).catch((err) => {
             console.log('login err ', err);
         })
@@ -78,9 +84,10 @@ class Splash extends React.Component {
 const NewSplash = connect(
     null,
     {
-        changeWalletImportState,
-        updateWalletInfo,
         changeLoginState,
+        changeWalletImportState,
+        setUserInfo,
+        updateWalletInfo,
     }
 )(Splash);
 

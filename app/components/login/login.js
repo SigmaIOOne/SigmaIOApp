@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-    View,
+    Dimensions,
     Image,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    Dimensions,
-    StyleSheet,
-    ScrollView
+    View,
 } from 'react-native';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
@@ -17,13 +18,14 @@ import Toast from '../../utils/myToast';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { checkAccount, checkPwd } from '../../utils/valiServices';
-import { changeLoginState } from "../../store/reducers/login";
+import { changeLoginState, setUserInfo } from "../../store/reducers/login";
 import { login } from '../../api/login';
 
 class Login extends React.Component {
     static propTypes = {
         changeLoginState: PropTypes.func,
         netInfo: PropTypes.object,
+        setUserInfo: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -48,19 +50,20 @@ class Login extends React.Component {
             await checkAccount(account);
             await checkPwd(psd);
             let result = await login(account, psd);
-            console.log('login ', result);
             result = result.data;
             // 别用===了，因为有些接口返回status是数字，有些是字符串
             if (result.status == 200) {
+                const data = { loginState: true, account };
                 this.props.changeLoginState(true);
+                this.props.setUserInfo(data);
                 storage.save({ 
                     key: 'login', 
-                    data: { loginState: true }, 
+                    data, 
                     expires: null
                 });
                 this.props.navigation.navigate(origin);
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {
@@ -69,6 +72,7 @@ class Login extends React.Component {
     }
     render() {
         const { account, psd } = this.state;
+        const { origin } = this.props.navigation.state.params;
         return (
             <ScrollView>
                 <ImageBackground style={styles.imgBg} source={require('../../assets/images/sigm/login_bg.png')}>
@@ -106,11 +110,11 @@ class Login extends React.Component {
                         onPress={() => this._clickToLogin()}
                     />
                     <View style={[styles.flexRow]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd')}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd', {origin})}>
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.findPsdBtn')}</Text>
                         </TouchableOpacity>
                         <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Registry')}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Registry', {origin})}>
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
                         </TouchableOpacity>
                     </View>
@@ -126,6 +130,7 @@ export default connect(
         netInfo: state.netInfo,
     }),{
         changeLoginState,
+        setUserInfo,
     }
 )(Login)
 
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
     },
     imgBg: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - scaleSize(40),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
         // justifyContent: 'space-between',
         alignItems: 'center',
     },

@@ -5,6 +5,7 @@
 import update from 'immutability-helper';
 
 const CHANGE_LOGIN_STATE = 'dbc/login/CHANGE_LOGIN_STATE';
+const SET_USER_INFO = 'dbc/login/SET_USER_INFO';
 
 // ---------reducer---------
 const initialState = {
@@ -19,6 +20,11 @@ export default function login(state = initialState, action = {}) {
                 login: { $set: action.payload.newState },
             });
         }
+        case SET_USER_INFO: {
+            return update(state, {
+                userInfo: { $set: action.payload.data },
+            });
+        }
         default: return state;
     }
 }
@@ -29,6 +35,16 @@ export function changeLoginState(newState){
         type: CHANGE_LOGIN_STATE,
         payload: {
             newState
+        }
+    };
+}
+
+// 设置用户信息
+export function setUserInfo(data){
+    return {
+        type: SET_USER_INFO,
+        payload: {
+            data
         }
     };
 }

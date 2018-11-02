@@ -2,8 +2,9 @@ import React from 'react';
 import {
     Image,
     Dimensions,
-    StyleSheet,
     ScrollView
+    StatusBar,
+    StyleSheet,
 } from 'react-native';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
@@ -13,14 +14,15 @@ import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { checkPwd } from '../../utils/valiServices';
-import { registrySetPsd } from '../../api/login';
+import { registrySetPsd, userResetPsd } from '../../api/login';
 import Toast from '../../utils/myToast';
-import {changeLoginState} from "../../store/reducers/login";
+import {changeLoginState, setUserInfo} from "../../store/reducers/login";
 
 class SetNewPsd extends React.Component {
     static propTypes = {
         changeLoginState: PropTypes.func,
         netInfo: PropTypes.object,
+        setUserInfo: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -41,30 +43,38 @@ class SetNewPsd extends React.Component {
     _clickToFinish = async () => {
         try {
             const { psd1, psd2 } = this.state;
-            const { origin } = this.props.navigation.state.params;
+            const { origin, loginGoTarget } = this.props.navigation.state.params;
             await checkPwd(psd1);
             await checkPwd(psd2);
             if (psd1 !== psd2) {
                 this.toast.show(I18n.t('sigm.loginPart.twoPsdNoSame'));
             }
-            let result = await registrySetPsd(psd1);
-            result = result.data;
-            console.log('result ', result);
-            if (result.status == 200) {
-                if (origin === 'registry') {
+            if (origin === 'registry') {
+                let result = await registrySetPsd(psd1);
+                result = result.data;
+                if (result.status == 200) {
+                    const { account } = this.props.navigation.state.params;
+                    const data = { loginState: true, account };
                     this.props.changeLoginState(true);
+                    this.props.setUserInfo(data);
                     storage.save({
                         key: 'login',
-                        data: { loginState: true },
+                        data,
                         expires: null
                     });
-                    this.props.navigation.navigate('Sigm');
-                } else this.props.navigation.navigate('Login');
+                    this.props.navigation.navigate(loginGoTarget);
+                } else await Promise.reject(result.msg);
             } else {
-                this.toast.show(result.msg);
+                let result = await userResetPsd(psd1);
+                console.log('res   ', result);
+                result = result.data;
+                if (result.status == 200) {
+                    this.props.navigation.navigate('Login', {origin: loginGoTarget});
+                } else await Promise.reject(result.msg);
             }
         }
         catch (err) {
+            console.log('err ', err);
             this.toast.show(err);
         }
     }
@@ -113,6 +123,7 @@ export default connect(
         netInfo: state.netInfo,
     }),{
         changeLoginState,
+        setUserInfo,
     }
 )(SetNewPsd)
 
@@ -122,7 +133,7 @@ const styles = StyleSheet.create({
     },
     imgBg: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - scaleSize(40),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
         // justifyContent: 'space-between',
         alignItems: 'center',
     },

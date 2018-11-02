@@ -73,7 +73,7 @@ class AccountDetail extends React.Component {
                     miningAccount: miningaccount,
                 });
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {
@@ -151,8 +151,7 @@ class AccountDetail extends React.Component {
             if (result.status == 200) {
                 this.transfer.close();
             } else {
-                console.log('toast ', this.toast, result.msg);
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {

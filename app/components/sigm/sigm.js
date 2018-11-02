@@ -90,7 +90,7 @@ class Sigm extends React.Component {
                     charged,
                 });
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {
@@ -99,12 +99,9 @@ class Sigm extends React.Component {
     }
     // 马上收取
     _getImmediately = () => {
-        // const login = this.props.login.login;
-        // if (!login) navigate('Login');
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
         !login ? navigate('Login', {origin: 'Sigm'}) : navigate('MiningPart');
-        // 将待领取全部取出来，加到挖矿资产里去
     }
     render() {
         const login = this.props.login.login;

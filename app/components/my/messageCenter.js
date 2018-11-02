@@ -57,7 +57,7 @@ class MessageCenter extends Component {
                     isLoaded: true,
                 });
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {

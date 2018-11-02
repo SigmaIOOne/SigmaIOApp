@@ -37,7 +37,7 @@ export default class Suggest extends React.Component {
             if (result.status == 200) {
                 this.props.navigation.goBack();
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {

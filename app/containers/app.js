@@ -14,7 +14,7 @@ import Splash from '../pages/Splash'; // app开屏画面
 import AssetHome from '../components/asset/assetHome'; // 底部：资产
 import Sigm from '../components/sigm/sigm'; // 底部：Sigm
 import Product from '../components/product/product'; // 底部：产品
-import My_item from '../components/my/my'; //底部： 我的
+import My from '../components/my/my'; //底部： 我的
 
 //Router
 // import Guide from '../guide/guide'; //没有本地存储的钱包时进入的引导页：引导用户去选择创建钱包或导入钱包
@@ -154,25 +154,25 @@ storage
 		
 	});
 
-const My = createStackNavigator({
-	My: {
-		screen: My_item,
-		navigationOptions: () => ({
-			title: I18n.t('tab.my'),
-			headerBackTitle: null,
-			header: null,
-			headerStyle: {
-				backgroundColor: '#ffffff',
-				borderBottomWidth: 0
-			},
-			headerTitleStyle: {
-				color: 'rgba(13,14,21,1)',
-				fontSize: 18
-			},
-			// headerTintColor: '#000'
-		})
-	}
-});
+// const My = createStackNavigator({
+// 	My: {
+// 		screen: My_item,
+// 		navigationOptions: () => ({
+// 			title: I18n.t('tab.my'),
+// 			headerBackTitle: null,
+// 			header: null,
+// 			headerStyle: {
+// 				backgroundColor: '#ffffff',
+// 				borderBottomWidth: 0
+// 			},
+// 			headerTitleStyle: {
+// 				color: 'rgba(13,14,21,1)',
+// 				fontSize: 18
+// 			},
+// 			// headerTintColor: '#000'
+// 		})
+// 	}
+// });
 
 const TabBarPage = createBottomTabNavigator(
 	{

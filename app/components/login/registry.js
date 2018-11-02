@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-    View,
+    Dimensions,
     Image,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    Dimensions,
-    StyleSheet,
-    ScrollView
+    View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -86,12 +87,13 @@ class Registry extends React.Component {
     _clickToregister = async () => {
         try {
             const { account, phoneCode } = this.state;
+            const { origin } = this.props.navigation.state.params;
             await checkAccount(account);
             await checkCode(phoneCode);
             let result = await checkPhoneCode(account, phoneCode);
             result = result.data;
             if (result.status === 200) {
-                this.props.navigation.navigate('SetNewPsd', {origin: 'registry'})
+                this.props.navigation.navigate('SetNewPsd', {origin: 'registry', loginGoTarget: origin, account})
             } else {
                 this.toast.show(result.msg);
             }
@@ -102,6 +104,7 @@ class Registry extends React.Component {
     }
     render() {
         const { account, imgCode, phoneCode, canSendCode, firstSendCode, count, imgUrl } = this.state;
+        const { origin } = this.props.navigation.state.params;
         let getCodeTxt = '';
         if(firstSendCode) getCodeTxt = I18n.t('public.getCode'); // 获取验证码
         else if(!canSendCode) getCodeTxt = count + I18n.t('public.getCodeWait'); // s后重新获取
@@ -172,7 +175,7 @@ class Registry extends React.Component {
                         onPress={() => this._clickToregister()}
                     />
                     <View style={[styles.flexRow]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('login', {origin})}>
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.psdLogin')}</Text>
                         </TouchableOpacity>
                         <Text style={[styles.loginBottomText, styles.splitLine]}>|</Text>
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
     },
     imgBg: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - scaleSize(40),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
         // justifyContent: 'space-between',
         alignItems: 'center',
     },

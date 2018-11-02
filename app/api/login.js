@@ -28,6 +28,14 @@ const registrySetPsd = async (password) => {
     return axios.post('/Home/Api/distribute?apiid=register', body);
 }
 
+// 用户重置密码接口
+const userResetPsd = async (password) => {
+    const body = {
+        password
+    };
+    return axios.post('/Home/Api/distribute?apiid=remanufacture', body);
+}
+
 // 用户密码登录
 const login = async (phone, password) => {
     const body = {
@@ -48,4 +56,5 @@ export {
     login,
     logout,
     registrySetPsd,
+    userResetPsd,
 }

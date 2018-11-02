@@ -41,7 +41,7 @@ class TransactionRecord extends React.Component {
             if (result.status == 200) {
                 this.props.setTransactionRecord(result.data);
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {
