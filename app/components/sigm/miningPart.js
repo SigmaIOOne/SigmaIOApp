@@ -19,8 +19,8 @@ import Modal from 'react-native-modalbox';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import GetDeposit from "./getDeposit";
 import Toast from '../../utils/myToast';
+import { getMiningData } from '../../api/sigm';
 import NoNetworkPage from '../public/noNetworkPage';
 
 class MiningPart extends React.Component {
@@ -36,8 +36,18 @@ class MiningPart extends React.Component {
             show: true,
             anim: new Animated.Value(0),
             compositeAnim: new Animated.Value(0),
+            // 上面是动画效果用,下面的命名来自接口返回参数
+            calculation: '', // 当前算⼒
+            charged: '', // 待收取
+            ranking: '', // 算⼒排名
+            miningaccount: '', // 挖矿资产
+            sign: '', // 签到情况0 未签到 1已签到
+            total: '', // 全⽹总算⼒
         };
 	}
+    componentDidMount() {
+        this._init();
+    }
     componentDidUpdate() {
         // 网络未连接
         // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
@@ -51,7 +61,40 @@ class MiningPart extends React.Component {
      * 页面初始化和刷新用
      */
     _init = () => {
-        console.log('init ');
+        this._getMiningData();
+    }
+    /**
+     * 获取挖矿页面上的数据信息
+     */
+    _getMiningData = async () => {
+        try {
+            let result = await getMiningData();
+            result = result.data;
+            console.log('all ', result);
+            if (result.status == 200) {
+                const {
+                    calculation,
+                    charged,
+                    ranking,
+                    miningaccount,
+                    sign,
+                    total,
+                } = result.data;
+                this.setState({
+                    calculation,
+                    charged,
+                    ranking,
+                    miningaccount,
+                    sign,
+                    total,
+                });
+            } else {
+                await Promise.reject(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
     /**
      * 渲染floor2的item
@@ -94,6 +137,14 @@ class MiningPart extends React.Component {
 
     render() {
         const isConnected = this.props.netInfo.isConnected;
+        const {
+            calculation,
+            charged,
+            ranking,
+            miningaccount,
+            sign,
+            total,
+        } = this.state;
         return (
             <View>
                 {
@@ -102,7 +153,7 @@ class MiningPart extends React.Component {
                         <View style={[styles.header, styles.flexRow]}>
                             <View style={[styles.center, styles.headerLeft]}>
                                 <Text style={styles.headerTxt1}>{I18n.t('sigm.miningPart.minerAssets')}</Text>
-                                <Text style={[styles.headerTxt2, {marginRight: scaleSize(16)}]}>31.30945</Text>
+                                <Text style={[styles.headerTxt2, {marginRight: scaleSize(16)}]}>{miningaccount}</Text>
                                 <Text style={styles.headerTxt2}>SIGM</Text>
                             </View>
                             <View style={styles.center}>
@@ -164,21 +215,21 @@ class MiningPart extends React.Component {
                                 {
                                     this._renderFloor2Item(
                                         I18n.t('sigm.miningPart.realTimeDeposit'),
-                                        '100+37'
+                                        calculation,
                                     )
                                 }
                                 {/* 全网算力 */}
                                 {
                                     this._renderFloor2Item(
                                         I18n.t('sigm.miningPart.allDeposit'),
-                                        '7864689'
+                                        total,
                                     )
                                 }
                                 {/* 我的算力排行 */}
                                 {
                                     this._renderFloor2Item(
                                         I18n.t('sigm.miningPart.depositRank'),
-                                        '9876',
+                                        ranking,
                                         false
                                     )
                                 }
@@ -190,7 +241,8 @@ class MiningPart extends React.Component {
                                     icon={
                                         <Image style={styles.signInIcon} source={require('../../assets/images/sigm/signIn_icon.png')}/>
                                     }
-                                    buttonStyle={styles.signInBtn}
+                                    disabled={sign == '1'}
+                                    buttonStyle={[styles.signInBtn, sign == '1' ? styles.signInGrayBtn : styles.signInBlueBtn]}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(36)}}
                                     onPress={() => {}}
                                 />
@@ -270,7 +322,7 @@ class MiningPart extends React.Component {
                     </View>
                     : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
-                {/* 网络未连接 */}
+                {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
@@ -376,9 +428,15 @@ const styles = StyleSheet.create({
     signInBtn: {
         width: scaleSize(296),
         height: scaleSize(68),
+        marginRight: scaleSize(62),
+    },
+    signInBlueBtn: {
         backgroundColor: '#4A90E2',
         borderRadius: scaleSize(34),
-        marginRight: scaleSize(62),
+    },
+    signInGrayBtn: {
+        backgroundColor: '#BEBEBE',
+        borderRadius: scaleSize(34),
     },
     signInIcon: {
         width: scaleSize(40),

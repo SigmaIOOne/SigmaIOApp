@@ -354,6 +354,7 @@ export default {
             allDeposit: '全网算力',
             depositRank: '我的算力排行',
             signIn: '今日签到',
+            hasSign: '已签到',
             getDeposit: '获取算力',
             miningStrategyPart: {
                 whatDeposit: '什么是算力？',

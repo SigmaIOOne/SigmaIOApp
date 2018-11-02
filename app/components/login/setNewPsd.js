@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Image,
     Dimensions,
-    ScrollView
+    ScrollView,
     StatusBar,
     StyleSheet,
 } from 'react-native';
