@@ -16,9 +16,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import { getAllOrder } from '../../api/my';
+import { getAllOrder } from '../../api/product';
 import { setAllOrder } from '../../store/reducers/data';
 import Toast from '../../utils/myToast';
+import Spinner from '../../utils/mySpinner';
 import NoNetworkPage from '../public/noNetworkPage';
 
 class MyOrders extends Component {
@@ -27,8 +28,19 @@ class MyOrders extends Component {
         netInfo: PropTypes.object,
         setAllOrder: PropTypes.func,
     }
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoaded: false,
+        };
+    }
     componentDidMount() {
+        // 不用willMount是防止那个toast还没有被渲染出来，然后需要有报错提示
         this._init();
+    }
+    componentWillReceiveProps(nextProps) {
+        // 没网情况下要把加载中停止掉
+        if (!this.state.isLoaded && !nextProps.netInfo.isConnected) this.setState({isLoaded: true});
     }
     // 页面初始化和刷新用
     _init = () => {
@@ -42,6 +54,9 @@ class MyOrders extends Component {
             console.log('all ', result);
             if (result.status == 200) {
                 this.props.setAllOrder(result.data);
+                this.setState({
+                    isLoaded: true,
+                });
             } else {
                 this.toast.show(result.msg);
             }
@@ -53,7 +68,7 @@ class MyOrders extends Component {
     // 渲染每个订单模块
     _renderPerOrder = (data, index) => {
         return (
-            <TouchableOpacity key={index} style={styles.order} onPress={() => this.props.navigation.navigate('OrderDetails')}>
+            <TouchableOpacity key={index} style={styles.order} onPress={() => this.props.navigation.navigate('OrderDetails', {id: data.id})}>
                 { data.list.map((res, rowIndex) => this._renderPerRow(res, rowIndex)) }
                 <Text style={styles.orderSuccess}>{I18n.t('my.paySuccess')}</Text>
             </TouchableOpacity>
@@ -94,6 +109,7 @@ class MyOrders extends Component {
         // );
         // const list = [];
         const { netInfo, data } = this.props;
+        const { isLoaded } = this.state;
         const isConnected = netInfo.isConnected;
         const { allOrder, hasAllOrderCache } = data;
         const list = allOrder.map(res => ({
@@ -106,24 +122,30 @@ class MyOrders extends Component {
         return (
             <View>
                 {
-                    (isConnected || (!isConnected && hasAllOrderCache)) // 有网 或者 没网但是有缓存
+                    isLoaded
                     ? <View>
                         {
-                            list.length
-                            ? <ScrollView>
-                                <View style={styles.container}>
-                                    {
-                                        list.map((data, index) => this._renderPerOrder(data, index))
-                                    }
-                                </View>
-                            </ScrollView>
-                            : <View style={styles.noRecordPage}>
-                                <Image style={styles.noRecordImg} source={require('../../assets/images/my/no_record.png')}/>
-                                <Text style={styles.noRecordTxt}>{I18n.t('my.noRecord')}</Text>
+                            (isConnected || (!isConnected && hasAllOrderCache)) // 有网 或者 没网但是有缓存
+                            ? <View>
+                                {
+                                    list.length
+                                        ? <ScrollView>
+                                            <View style={styles.container}>
+                                                {
+                                                    list.map((data, index) => this._renderPerOrder(data, index))
+                                                }
+                                            </View>
+                                        </ScrollView>
+                                        : <View style={styles.noRecordPage}>
+                                            <Image style={styles.noRecordImg} source={require('../../assets/images/my/no_record.png')}/>
+                                            <Text style={styles.noRecordTxt}>{I18n.t('my.noRecord')}</Text>
+                                        </View>
+                                }
                             </View>
+                            : <NoNetworkPage tryAgainFunc={this._init}/>
                         }
                     </View>
-                    : <NoNetworkPage tryAgainFunc={this._init}/>
+                    : <Spinner/>
                 }
                 {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>

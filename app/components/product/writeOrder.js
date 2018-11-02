@@ -14,9 +14,11 @@ import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox';
 import { Button, CheckBox, Input } from 'react-native-elements';
 
-import Toast from '../../utils/myToast';
 import { I18n } from '../../../language/i18n';
+import Toast from '../../utils/myToast';
 import { scaleSize } from '../../utils/ScreenUtil';
+import { checkPhone, checkEmail, checkIDNumber, checkDate } from '../../utils/valiServices';
+import { buyProduct } from '../../api/product';
 
 class WriteOrder extends Component {
     constructor(props) {
@@ -48,21 +50,21 @@ class WriteOrder extends Component {
 
     // 渲染安全险的订单填写列表
     _renderProductInsurance = () => {
-        const { wallet_address } = this.props.wallet.walletInfo;
-        console.log('wallet_address  ', this.props.wallet);
+        // const { wallet_address } = this.props.wallet.walletInfo;
         const dataList = [
             {   title: 'buyer', inputPlaceholder: 'buyerPlaceholder', inputTarget: 'buyer', },
             {   title: 'id', inputPlaceholder: 'idPlaceholder', inputTarget: 'id', },
             {   title: 'email', inputPlaceholder: 'emailPlaceholder', inputTarget: 'email', },
-            {   title: 'deadline', inputPlaceholder: 'deadlinePlaceholder1', inputTarget: 'deadline', },
+            {   title: 'deadline', rightView: () => <Text style={styles.rightViewText}>{I18n.t('product.productDetail.writeOrder.deadlinePlaceholder1')}</Text>},
             {   title: 'phone', inputPlaceholder: 'phonePlaceholder', inputTarget: 'phone', noBorderBottom: true },
         ];
         return (
             <View>
-                <View style={styles.addressTopCard}>
-                    <Text style={styles.addressTitle}>{I18n.t('product.productDetail.writeOrder.address')}</Text>
-                    <Text style={styles.addressValue}>{wallet_address}</Text>
-                </View>
+                {/* 钱包地址先不要了 */}
+                {/*<View style={styles.addressTopCard}>*/}
+                    {/*<Text style={styles.addressTitle}>{I18n.t('product.productDetail.writeOrder.address')}</Text>*/}
+                    {/*<Text style={styles.addressValue}>{wallet_address}</Text>*/}
+                {/*</View>*/}
                 {
                     dataList.map((data, index) => this._renderPerInputRow(data, index))
                 }
@@ -92,20 +94,22 @@ class WriteOrder extends Component {
     _renderProductRaining = () => {
         const dataList = [
             {   title: 'buyer', inputPlaceholder: 'buyerPlaceholder', inputTarget: 'buyer', },
-            {   title: 'credentialsType', rightView: this._renderSelectCredentialsBtn },
+            // {   title: 'credentialsType', rightView: this._renderSelectCredentialsBtn },
+            {   title: 'credentialsType', rightView: () => <Text style={styles.rightViewText}>{I18n.t('product.productDetail.writeOrder.ID')}</Text> },
             {   title: 'id', inputPlaceholder: 'idPlaceholder', inputTarget: 'id', },
-            {   title: 'flightData', inputPlaceholder: 'flightDataPlaceholder', inputTarget: 'flightData', },
-            {   title: 'flightDataId', inputPlaceholder: 'flightDataIdPlaceholder', inputTarget: 'flightDataId', },
+            {   title: 'email', inputPlaceholder: 'emailPlaceholder', inputTarget: 'email', },
+            {   title: 'deadline', rightView: () => <Text style={styles.rightViewText}>{I18n.t('product.productDetail.writeOrder.deadlinePlaceholder2')}</Text> },
             {   title: 'phone', inputPlaceholder: 'phonePlaceholder', inputTarget: 'phone', noBorderBottom: true },
         ];
-        const { showSelectView } = this.state;
+        // const { showSelectView } = this.state;
         return (
             <View style={styles.positionRelative}>
                 {
                     dataList.map((data, index) => this._renderPerInputRow(data, index))
                 }
+                {/* 证件类型不让用户选，所以不要了 */}
                 {/* 证件类型下拉框 */}
-                { showSelectView && this._renderSelectCredentials() }
+                {/*{ showSelectView && this._renderSelectCredentials() }*/}
             </View>
         );
     }
@@ -189,41 +193,85 @@ class WriteOrder extends Component {
     };
 
     // 确定所填写的订单
-    _checkOrder = () => {
-        const { type } = this.props.navigation.state.params;
-        // 0：安全险，1：航空险，2：降雨险
-        // 安全险
-        if (type === 0) {
-            // const {buyer, id, email, deadline, phone} = this.state;
-            // if (!buyer
-            //     || !id
-            //     || !email
-            //     || !deadline
-            //     || !phone) {
-            //     this.toast.show('您当前的信息未填写完全');
-            // }
-            this.props.navigation.navigate('PayCompleted', {payStatus: 0, product: 0});
-        } else if (type === 1) {
-            // const {buyer, id, flightData, flightDataId, phone} = this.state;
-            // if (!buyer
-            //     || !id
-            //     || !flightData
-            //     || !flightDataId
-            //     || !phone) {
-            //     this.toast.show('您当前的信息未填写完全');
-            // }
-            this.props.navigation.navigate('PayCompleted', {payStatus: 1, product: 1});
-        } else {
-            // 证件类型要不要传，看接口怎么说吧
-            // const {buyer, id, flightData, flightDataId, phone} = this.state;
-            // if (!buyer
-            //     || !id
-            //     || !flightData
-            //     || !flightDataId
-            //     || !phone) {
-            //     this.toast.show('您当前的信息未填写完全');
-            // }
-            this.props.navigation.navigate('PayCompleted', {payStatus: 0, product: 2});
+    _checkOrder = async () => {
+        try {
+            const { type } = this.props.navigation.state.params;
+            // 0：安全险，1：航空险，2：降雨险
+            // 安全险
+            if (type === 0) {
+                const {buyer, id, email, phone, mnemonisAgree} = this.state;
+                if (!buyer || !id || !email || !phone) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
+                else if (!mnemonisAgree) await Promise.reject(I18n.t('error.pleaseSelectAgree')); // 未勾选我同意
+                else {
+                    await checkIDNumber(id); // 验证身份证号
+                    await checkEmail(email); // 验证邮箱
+                    await checkPhone(phone); // 验证手机号码
+                    let result = await buyProduct({
+                        type: 1, // 后端：购买类别 1.账户安全 2.航延宝 3.天⽓险
+                        name: buyer,
+                        numberid: id,
+                        email,
+                        phone,
+                    });
+                    result = result.data;
+                    if (result.status == 200) {
+                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 0});
+                    } else {
+                        await Promise.reject(result.msg);
+                    }
+                }
+            } else if (type === 1) {
+                const {buyer, id, flightData, flightDataId, phone, mnemonisAgree} = this.state;
+                if (!buyer || !id || !flightData || !flightDataId || !phone) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
+                else if (!mnemonisAgree) await Promise.reject(I18n.t('error.pleaseSelectAgree')); // 未勾选我同意
+                else {
+                    await checkIDNumber(id); // 验证身份证号
+                    await checkDate(flightData); // 验证用户输入的日期
+                    await checkPhone(phone); // 验证手机号码
+                    let result = await buyProduct({
+                        type: 2, // 后端：购买类别 1.账户安全 2.航延宝 3.天⽓险
+                        name: buyer,
+                        numberid: id,
+                        flightdate: flightData,
+                        flightnumber: flightDataId,
+                        phone,
+                    });
+                    result = result.data;
+                    if (result.status == 200) {
+                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 1});
+                    } else {
+                        await Promise.reject(result.msg);
+                    }
+                }
+            } else {
+                // 证件类型要不要传，看接口怎么说吧
+                const {buyer, id, email, phone, mnemonisAgree} = this.state;
+                if (!buyer || !id || !email || !phone) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
+                else if (!mnemonisAgree) await Promise.reject(I18n.t('error.pleaseSelectAgree')); // 未勾选我同意
+                else {
+                    await checkIDNumber(id); // 验证身份证号
+                    await checkEmail(email); // 验证邮箱
+                    await checkPhone(phone); // 验证手机号码
+                    const { month } = this.props.navigation.state.params; // 用户在产品详情页选择的月份
+                    let result = await buyProduct({
+                        type: 3, // 后端：购买类别 1.账户安全 2.航延宝 3.天⽓险
+                        name: buyer,
+                        numberid: id,
+                        email,
+                        phone,
+                        month,
+                    });
+                    result = result.data;
+                    if (result.status == 200) {
+                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 2});
+                    } else {
+                        await Promise.reject(result.msg);
+                    }
+                }
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
         }
     }
 
@@ -348,6 +396,7 @@ class WriteOrder extends Component {
                         </View>
                     </ScrollView>
                 </Modal>
+                {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
             </ScrollView>
         );
@@ -381,6 +430,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
     },
+    rightViewText: {
+        color: '#9B9B9B',
+        fontSize: scaleSize(30),
+    },
     inputRowContent: {
         width: scaleSize(670),
         height: scaleSize(90),
@@ -399,8 +452,9 @@ const styles = StyleSheet.create({
         paddingLeft: scaleSize(17),
     },
     inputOutView: {
-        width: scaleSize(470),
+        width: scaleSize(490),
         overflow: 'hidden',
+        alignItems: 'flex-end',
     },
     inputStyle: {
         color: 'rgba(190, 190, 190, .8)',
@@ -408,8 +462,8 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     inputContainerStyle: {
-        maxWidth: scaleSize(470),
-        height: scaleSize(30),
+        maxWidth: scaleSize(490),
+        height: scaleSize(40),
         borderBottomWidth: 0,
     },
     addressTopCard: {

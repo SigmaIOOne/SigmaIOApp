@@ -10,16 +10,67 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
-// import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import {getOrderdetails} from '../../api/product';
+import Toast from '../../utils/myToast';
+import Spinner from '../../utils/mySpinner';
+import NoNetworkPage from '../public/noNetworkPage';
 
-export default class OrderDetails extends Component {
+class OrderDetails extends Component {
+    static propTypes = {
+        netInfo: PropTypes.object,
+    }
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoaded: false,
+            product: '', // 0：账户安全险，1：航延宝，2：上下班降雨险
+            productDetail: {}, // 存放原始订单详情数据
+        };
+    }
+    componentDidMount() {
+        this._init();
+    }
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.isLoaded && !nextProps.netInfo.isConnected) this.setState({isLoaded: true});
+    }
+    // 页面初始化和刷新用
+    _init = () => {
+        this._getOrderdetails();
+    }
+    // 获取订单详情
+    _getOrderdetails = async () => {
+        try {
+            const { id } = this.props.navigation.state.params;
+            let result = await getOrderdetails(id);
+            result = result.data;
+            console.log('orderDetail ', result);
+            if (result.status == 200) {
+                // this.props.setAllOrder(result.data);
+                const productType = ['账户安全', '航空宝', '降雨宝'];
+                result = result.data[0];
+                const type = productType.indexOf(result.type);
+                this.setState({
+                    product: type,
+                    productDetail: result,
+                    isLoaded: true,
+                });
+            } else {
+                this.toast.show(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     // 渲染每个订单模块里的每行
-    _renderPerRow = (data) => {
+    _renderPerRow = (data, index) => {
         return (
-            <View style={styles.perRow}>
+            <View style={styles.perRow} key={index}>
                 {
                     data.left
                     ? data.left
@@ -37,125 +88,114 @@ export default class OrderDetails extends Component {
     }
     // 渲染账户安全险的订单详情
     _renderProductInsuranceOrder = () => {
+        const productDetail = this.state.productDetail;
+        const floor2List = [
+            // 购买人
+            {
+                title: 'my.orderDetails.buyer',
+                value: productDetail.name,
+            },
+            // 身份证号码
+            {
+                title: 'my.orderDetails.id',
+                value: productDetail.numberid,
+            },
+            // 邮箱
+            {
+                title: 'my.orderDetails.email',
+                value: productDetail.email,
+            },
+            // 保障期限
+            {
+                title: 'my.orderDetails.guaranteeDeadline',
+                value: productDetail.add_time.substr(0, 10) + '至' + productDetail.end_time.substr(0, 10),
+            },
+            // 手机号码
+            {
+                title: 'my.orderDetails.phone',
+                value: productDetail.phone,
+            },
+            // 订单金额
+            {
+                title: 'my.orderDetails.orderAmount',
+                value: productDetail.money + 'SIGM',
+            },
+        ];
         return (
             <View>
                 {
                     // 保障金额
                     this._renderPerRow({
                         title: 'my.orderDetails.guaranteeAmount',
-                        value: '20000SIGM',
+                        value: productDetail.amountguarantee + 'SIGM',
                     })
                 }
                 <View style={styles.whiteSplit}></View>
                 {
-                    // 购买人
-                    this._renderPerRow({
-                        title: 'my.orderDetails.buyer',
-                        value: '刘航',
-                    })
+                    floor2List.map((data, index) => this._renderPerRow(data, index))
                 }
-                {
-                    // 身份证号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.id',
-                        value: '110103198637482315',
-                    })
-                }
-                {
-                    // 邮箱
-                    this._renderPerRow({
-                        title: 'my.orderDetails.email',
-                        value: 'liuhang@163.com',
-                    })
-                }
-                {
-                    // 保障期限
-                    this._renderPerRow({
-                        title: 'my.orderDetails.guaranteeDeadline',
-                        value: '2018-07-13至2019-07-13',
-                    })
-                }
-                {
-                    // 手机号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.phone',
-                        value: '18609763948',
-                    })
-                }
-                {
-                    // 订单金额
-                    this._renderPerRow({
-                        title: 'my.orderDetails.orderAmount',
-                        value: '200 SIGM',
-                    })
-                }
-                <View style={styles.lastItem}>
-                    <Text style={styles.rowTxt}>{I18n.t('my.orderDetails.guaranteeAddress')}</Text>
-                    <Text style={styles.rowTxt}>{'68TR510kh37c732MV449dd618es30Y11a00L88fgCx'}</Text>
-                </View>
+                {/* 保障地址不要了 */}
+                {/*<View style={styles.lastItem}>*/}
+                    {/*<Text style={styles.rowTxt}>{I18n.t('my.orderDetails.guaranteeAddress')}</Text>*/}
+                    {/*<Text style={styles.rowTxt}>{'68TR510kh37c732MV449dd618es30Y11a00L88fgCx'}</Text>*/}
+                {/*</View>*/}
             </View>
         );
     }
     // 渲染航空险的订单详情
     _renderProductNavigationOrder = () => {
+        const productDetail = this.state.productDetail;
+        const floor2List = [
+            {
+                // 航班
+                title: 'my.orderDetails.flight',
+                value: productDetail.flightnumber,
+            },
+            {
+                // 北京首都
+                title: productDetail.city,
+                value: productDetail.province,
+            },
+            {
+                // 计划起飞时间
+                title: 'my.orderDetails.flightStartDate',
+                value: productDetail.flightdate,
+            },
+            {
+                // 身份证号码
+                title: 'my.orderDetails.id',
+                value: productDetail.numberid,
+            },
+            {
+                // 手机号码
+                title: 'my.orderDetails.phone',
+                value: productDetail.phone,
+            },
+            {
+                // 购买人
+                title: 'my.orderDetails.buyer',
+                value: productDetail.name,
+            },
+        ];
         return (
             <View>
                 {
                     // 最高保障金额
                     this._renderPerRow({
                         title: 'my.orderDetails.guaranteeAmountMax',
-                        value: '20000SIGM',
+                        value: productDetail.amountguarantee + 'SIGM',
                     })
                 }
                 <View style={styles.whiteSplit}></View>
                 {
-                    // 航班
-                    this._renderPerRow({
-                        title: 'my.orderDetails.flight',
-                        value: '中国国航 CA1219',
-                    })
-                }
-                {
-                    // 北京首都
-                    this._renderPerRow({
-                        left: <Text style={styles.rowTxt}>北京首都</Text>,
-                        value: '银川河东',
-                    })
-                }
-                {
-                    // 计划起飞时间
-                    this._renderPerRow({
-                        title: 'my.orderDetails.flightStartDate',
-                        value: '计划起飞时间',
-                    })
-                }
-                {
-                    // 身份证号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.id',
-                        value: '2110103198637482315',
-                    })
-                }
-                {
-                    // 手机号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.phone',
-                        value: '18609763948',
-                    })
-                }
-                {
-                    // 购买人
-                    this._renderPerRow({
-                        title: 'my.orderDetails.buyer',
-                        value: '刘航',
-                    })
+                    floor2List.map((data, index) => this._renderPerRow(data, index))
                 }
                 <View style={styles.whiteSplit}></View>
                 {
                     // 订单金额
                     this._renderPerRow({
                         title: 'my.orderDetails.orderAmount',
-                        value: '200 SIGM',
+                        value: productDetail.money + 'SIGM',
                     })
                 }
             </View>
@@ -163,64 +203,58 @@ export default class OrderDetails extends Component {
     }
     // 渲染降雨险的订单详情
     _renderProductRaining = () => {
+        const productDetail = this.state.productDetail;
+        const floor2List = [
+            {
+                // 保障城市
+                title: 'my.orderDetails.guaranteeCity',
+                value: productDetail.city,
+            },
+            {
+                // 保障月份
+                title: 'my.orderDetails.guaranteeMonth',
+                value: productDetail.add_time.substr(0, 10) + '至' + productDetail.end_time.substr(0, 10),
+            },
+            {
+                // 理赔阈值
+                title: 'my.orderDetails.threshold',
+                value: '中雨1小时累计降水量>2.5mm',
+            },
+            {
+                // 身份证号码
+                title: 'my.orderDetails.id',
+                value: productDetail.numberid,
+            },
+            {
+                // 手机号码
+                title: 'my.orderDetails.phone',
+                value: productDetail.phone,
+            },
+            {
+                // 购买人
+                title: 'my.orderDetails.buyer',
+                value: productDetail.name,
+            },
+        ];
         return (
             <View>
                 {
                     // 最高保障金额
                     this._renderPerRow({
                         title: 'my.orderDetails.guaranteeAmountMax',
-                        value: '20000SIGM',
+                        value: productDetail.amountguarantee + 'SIGM',
                     })
                 }
                 <View style={styles.whiteSplit}></View>
                 {
-                    // 保障城市
-                    this._renderPerRow({
-                        title: 'my.orderDetails.guaranteeCity',
-                        value: '北京',
-                    })
-                }
-                {
-                    // 保障月份
-                    this._renderPerRow({
-                        title: 'my.orderDetails.guaranteeMonth',
-                        value: '201808',
-                    })
-                }
-                {
-                    // 理赔阈值
-                    this._renderPerRow({
-                        title: 'my.orderDetails.threshold',
-                        value: '中雨1小时累计降水量>2.5mm',
-                    })
-                }
-                {
-                    // 身份证号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.id',
-                        value: '2110103198637482315',
-                    })
-                }
-                {
-                    // 手机号码
-                    this._renderPerRow({
-                        title: 'my.orderDetails.phone',
-                        value: '18609763948',
-                    })
-                }
-                {
-                    // 购买人
-                    this._renderPerRow({
-                        title: 'my.orderDetails.buyer',
-                        value: '刘航',
-                    })
+                    floor2List.map((data, index) => this._renderPerRow(data, index))
                 }
                 <View style={styles.whiteSplit}></View>
                 {
                     // 订单金额
                     this._renderPerRow({
                         title: 'my.orderDetails.orderAmount',
-                        value: '200 SIGM',
+                        value: productDetail.money + 'SIGM',
                     })
                 }
             </View>
@@ -228,55 +262,78 @@ export default class OrderDetails extends Component {
     }
     render() {
         // 0：账户安全险，1：航延宝，2：上下班降雨险
-        const { product } = this.props.navigation.state.params;
+        const { product, isLoaded } = this.state;
+        const { netInfo } = this.props;
+        const isConnected = netInfo.isConnected;
+        console.log('type ', product);
         const productList = ['productInsurance', 'productNavigation', 'productRaining'];
         return (
-            <View style={styles.container}>
-                <View style={styles.top}>
-                    <Text style={styles.topTitle}>{I18n.t('product.' + productList[product])}</Text>
-                    <TouchableOpacity style={styles.topRightArea} onPress={() => this.myModal.open()}>
-                        <Text style={styles.topRightTxt}>{I18n.t('my.applyCompensation')}</Text>
-                    </TouchableOpacity>
-                </View>
+            <View>
                 {
-                    product === 0 && this._renderProductInsuranceOrder()
-                }
-                {
-                    product === 1 && this._renderProductNavigationOrder()
-                }
-                {
-                    product === 2 && this._renderProductRaining()
-                }
-                {/* 理赔流程弹窗 */}
-                <Modal
-                    style={styles.modal}
-                    position={'center'}
-                    coverScreen={true}
-                    ref={myModal => this.myModal = myModal}
-                >
-                    <View style={styles.modalTitle}>
-                        <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>
-                        <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
-                            <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
-                        </TouchableOpacity>
+                    isLoaded
+                    ? <View>
+                        {
+                            isConnected
+                            ? <View style={styles.container}>
+                                    <View style={styles.top}>
+                                        <Text style={styles.topTitle}>{I18n.t('product.' + productList[product])}</Text>
+                                        <TouchableOpacity style={styles.topRightArea} onPress={() => this.myModal.open()}>
+                                            <Text style={styles.topRightTxt}>{I18n.t('my.applyCompensation')}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {
+                                        product === 0 && this._renderProductInsuranceOrder()
+                                    }
+                                    {
+                                        product === 1 && this._renderProductNavigationOrder()
+                                    }
+                                    {
+                                        product === 2 && this._renderProductRaining()
+                                    }
+                                    {/* 理赔流程弹窗 */}
+                                    <Modal
+                                        style={styles.modal}
+                                        position={'center'}
+                                        coverScreen={true}
+                                        ref={myModal => this.myModal = myModal}
+                                    >
+                                        <View style={styles.modalTitle}>
+                                            <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>
+                                            <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
+                                                <Image style={styles.closeBtnImg} source={require('../../assets/images/common/close.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.modalContent}>
+                                            {this._renderModalTxt('my.applyCompensationContent.title1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text1_1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text1_2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text2_1')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text2_2')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title3')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text3')}
+                                            {this._renderModalTxt('my.applyCompensationContent.title4')}
+                                            {this._renderModalTxt('my.applyCompensationContent.text4')}
+                                        </View>
+                                    </Modal>
+                                </View>
+                            : <NoNetworkPage tryAgainFunc={this._init}/>
+                        }
                     </View>
-                    <View style={styles.modalContent}>
-                        {this._renderModalTxt('my.applyCompensationContent.title1')}
-                        {this._renderModalTxt('my.applyCompensationContent.text1_1')}
-                        {this._renderModalTxt('my.applyCompensationContent.text1_2')}
-                        {this._renderModalTxt('my.applyCompensationContent.title2')}
-                        {this._renderModalTxt('my.applyCompensationContent.text2_1')}
-                        {this._renderModalTxt('my.applyCompensationContent.text2_2')}
-                        {this._renderModalTxt('my.applyCompensationContent.title3')}
-                        {this._renderModalTxt('my.applyCompensationContent.text3')}
-                        {this._renderModalTxt('my.applyCompensationContent.title4')}
-                        {this._renderModalTxt('my.applyCompensationContent.text4')}
-                    </View>
-                </Modal>
+                    : <Spinner/>
+                }
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+    })
+)(OrderDetails)
 
 const styles = StyleSheet.create({
     container: {

@@ -178,7 +178,7 @@ class Sigm extends React.Component {
                         </View>
                     </View>
                 </View>
-                {/* 网络未连接 */}
+                {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
             </View>
         );

@@ -10,12 +10,12 @@ const sendSuggest = async (title, text) => {
     return axios.post('/Home/Api/distribute?apiid=opinion', body);
 }
 
-// 获取全部订单，我的订单和申请理赔都用这个接口，后端说的
-const getAllOrder = async () => {
-    return axios.post('/Home/Api/distribute?apiid=insur_order');
+// 获取消息列表
+const getMessageList = async () => {
+    return axios.post('/Home/Api/distribute?apiid=news_list');
 }
 
 export {
-    getAllOrder,
+    getMessageList,
     sendSuggest,
 }

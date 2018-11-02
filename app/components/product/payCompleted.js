@@ -22,7 +22,8 @@ export default class PayCompleted extends Component {
     render() {
         // payStatus: 0: 失败，1：成功
         // product: 0：账户安全险，1：航延宝，2：上下班降雨险
-        const { payStatus, product } = this.props.navigation.state.params;
+        const { product, id } = this.props.navigation.state.params;
+        const payStatus = 1; // 后来顾客那边说这个页面不会出现失败情况
         const payStateList = ['payFail', 'paySuccess'];
         const productList = ['productInsurance', 'productNavigation', 'productRaining'];
         return (
@@ -51,7 +52,7 @@ export default class PayCompleted extends Component {
                             title={I18n.t('product.productDetail.payCompleted.showDetail')}
                             titleStyle={{color: '#4A90E2', fontSize: scaleSize(32)}}
                             buttonStyle={styles.btnStyle}
-                            onPress={() => this.props.navigation.navigate('OrderDetails', {product: product})}/>
+                            onPress={() => this.props.navigation.navigate('OrderDetails', {id})}/>
                     }
                 </View>
             </View>

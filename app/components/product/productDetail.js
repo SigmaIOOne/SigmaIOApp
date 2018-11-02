@@ -2,9 +2,10 @@
  * 产品 -> 产品详情
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     Image,
-    Picker,
     ScrollView,
     StyleSheet,
     Text,
@@ -23,8 +24,13 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import ProductDetailTable from '../public/productDetailTable';
 import monthSelector from '../public/monthSelector';
+import Toast from '../../utils/myToastOld';
 
-export default class ProductDetail extends Component {
+class ProductDetail extends Component {
+    static propTypes = {
+        login: PropTypes.object,
+        netInfo: PropTypes.object,
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -78,9 +84,17 @@ export default class ProductDetail extends Component {
             buyValue: '', // 购买价格
         };
     }
-
     componentWillMount() {
         this._init();
+    }
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            this.toast.show(netInfo.errMsg);
+        }
     }
     _init = () => {
         const { type } = this.props.navigation.state.params;
@@ -155,10 +169,10 @@ export default class ProductDetail extends Component {
                 // 赔付阈值
                 title: 'threshold', value: '中雨1小时累计降水量>2.5mm',
             },
-            {
-                // 购买份数
-                title: 'buyNum',  right: this._renderBuyNumSelector, noBorderBottom: true,
-            },
+            // {
+            //     // 购买份数
+            //     title: 'buyNum',  right: this._renderBuyNumSelector, noBorderBottom: true,
+            // },
         ];
         return (
             <View style={[styles.details, styles.marginBottom42]}>
@@ -293,7 +307,9 @@ export default class ProductDetail extends Component {
     _buyProduct = () => {
         const { type } = this.props.navigation.state.params;
         console.log('type   ', type);
-        this.props.navigation.navigate('WriteOrder', {type})
+        const login = this.props.login.login;
+        const navigate = this.props.navigation.navigate;
+        !login ? navigate('Login', {origin: 'ProductDetail'}) : navigate('WriteOrder', {type, month: this.state.selectedYearMonthValue});
     }
     render() {
         const tips = [
@@ -363,10 +379,19 @@ export default class ProductDetail extends Component {
                         </View>
                     </ScrollView>
                 </Modal>
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </Container>
         )
     }
 }
+
+export default connect(
+    state => ({
+        login: state.login,
+        netInfo: state.netInfo,
+    })
+)(ProductDetail)
 
 const styles = StyleSheet.create({
     rowCenter: {

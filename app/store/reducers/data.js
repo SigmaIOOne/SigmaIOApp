@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 
 const SET_TRANSACTION_RECORD = 'dbc/data/SET_TRANSACTION_RECORD';
 const SET_ALL_ORDER = 'dbc/data/SET_ALL_ORDER';
+const SET_MESSAGE_LIST = 'dbc/data/SET_MESSAGE_LIST';
 
 // ---------reducer---------
 const initialState = {
@@ -13,6 +14,8 @@ const initialState = {
     transactionRecord: [], // 存放交易记录信息
     hasAllOrderCache: false, // 是否有全部订单的缓存，同理上面
     allOrder: [], // 全部订单信息
+    hasMessageCache: false, // 是否有全部消息的缓存，同理上面
+    messageList: [], // 全部消息信息
 };
 
 export default function data(state = initialState, action = {}) {
@@ -29,6 +32,13 @@ export default function data(state = initialState, action = {}) {
             return update(state, {
                 hasAllOrderCache: { $set: action.payload.hasCache },
                 allOrder: { $set: data },
+            });
+        }
+        case SET_MESSAGE_LIST: {
+            const data = action.payload.data ? action.payload.data : [];
+            return update(state, {
+                hasMessageCache: { $set: action.payload.hasCache },
+                messageList: { $set: data },
             });
         }
         default: return state;
@@ -50,6 +60,17 @@ export function setTransactionRecord(data, hasCache = true){
 export function setAllOrder(data, hasCache = true){
     return {
         type: SET_ALL_ORDER,
+        payload: {
+            data,
+            hasCache,
+        }
+    };
+}
+
+// 设置全部消息信息
+export function setMessageList(data, hasCache = true){
+    return {
+        type: SET_MESSAGE_LIST,
         payload: {
             data,
             hasCache,

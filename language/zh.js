@@ -476,7 +476,7 @@ export default {
                 phone: '手机号码',
                 phonePlaceholder: '请输入手机号码',
                 flightData: '航班日期',
-                flightDataPlaceholder: '请输入航班日期（年/月/日）',
+                flightDataPlaceholder: '请输入航班日期（20181002）',
                 flightDataId: '航班号',
                 flightDataIdPlaceholder: '请输入航班号',
                 credentialsType: '证件类型',
@@ -661,5 +661,7 @@ export default {
         noNetwork: '网络未连接',
         noNetworkPageTxt: '当前未连接到网络，请重试',
         tryAgain: '点我重试',
+        pleaseSelectAgree: '请勾选我同意',
+        orderNotFill: '您当前的信息未填写完全',
     }
 };
