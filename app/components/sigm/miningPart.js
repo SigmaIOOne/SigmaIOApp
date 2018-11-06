@@ -3,24 +3,25 @@
  */
 import React from 'react';
 import {
-    View,
+    Animated,
+    Dimensions,
     Image,
+    Keyboard,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    Animated
+    View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
+import { Button, Input } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import Modal from 'react-native-modalbox';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
-import { getMiningData } from '../../api/sigm';
+import { getMiningData, transferAmount, userSignIn } from '../../api/sigm';
 import NoNetworkPage from '../public/noNetworkPage';
 
 class MiningPart extends React.Component {
@@ -43,6 +44,7 @@ class MiningPart extends React.Component {
             miningaccount: '', // 挖矿资产
             sign: '', // 签到情况0 未签到 1已签到
             total: '', // 全⽹总算⼒
+            transferVal: '', // 划转数值
         };
 	}
     componentDidMount() {
@@ -118,6 +120,47 @@ class MiningPart extends React.Component {
             </View>
         );
     }
+    /**
+     * 用户签到
+     */
+    _userSignIn = async () => {
+        try {
+            let result = await userSignIn();
+            result = result.data;
+            result.status == 200 ? this._init() : await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+    /**
+     * 打开划转弹窗
+     */
+    _openTransferModal = () => {
+        this.setState({
+            transferVal: '',
+        }, () => this.transferModal.open());
+    }
+    /**
+     * 确认划转按钮
+     */
+    _transferAmount = async () => {
+        Keyboard.dismiss(); // 为了防止toast的位置因为键盘收起而移动，所以干脆先手动关闭键盘
+        try {
+            const transferVal = this.state.transferVal;
+            let result = await transferAmount(transferVal);
+            result = result.data;
+            console.log('transfer ', result);
+            if (result.status == 200) {
+                this.transfer.close();
+            } else {
+                await Promise.reject(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     _onPress = () => {
         Animated.spring(this.state.anim, {
             toValue: 0,   
@@ -144,6 +187,7 @@ class MiningPart extends React.Component {
             miningaccount,
             sign,
             total,
+            transferVal,
         } = this.state;
         return (
             <View>
@@ -156,8 +200,9 @@ class MiningPart extends React.Component {
                                 <Text style={[styles.headerTxt2, {marginRight: scaleSize(16)}]}>{miningaccount}</Text>
                                 <Text style={styles.headerTxt2}>SIGM</Text>
                             </View>
+                            {/* 划转 */}
                             <View style={styles.center}>
-                                <TouchableOpacity style={styles.transferT} onPress={() => this.transferModal.open()}>
+                                <TouchableOpacity style={styles.transferT} onPress={() => this._openTransferModal()}>
                                     <Text style={styles.transferTxt}>{I18n.t('sigm.miningPart.transfer')}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -242,9 +287,10 @@ class MiningPart extends React.Component {
                                         <Image style={styles.signInIcon} source={require('../../assets/images/sigm/signIn_icon.png')}/>
                                     }
                                     disabled={sign == '1'}
-                                    buttonStyle={[styles.signInBtn, sign == '1' ? styles.signInGrayBtn : styles.signInBlueBtn]}
+                                    disabledStyle={[styles.signInBtn, styles.signInGrayBtn]}
+                                    buttonStyle={[styles.signInBtn, styles.signInBlueBtn]}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(36)}}
-                                    onPress={() => {}}
+                                    onPress={() => this._userSignIn()}
                                 />
                                 <Button
                                     title={I18n.t('sigm.miningPart.getDeposit')}
@@ -307,7 +353,16 @@ class MiningPart extends React.Component {
                                 </View>
                                 <View style={styles.transferModalFloor1}>
                                     <Text style={styles.transferModalText1}>{I18n.t('sigm.miningPart.transferPart.today')}</Text>
-                                    <Text style={styles.transferModalText1}>0</Text>
+                                    <View>
+                                        <Input
+                                            placeholder={I18n.t('sigm.accountDetail.transferModal.inputPlaceholder')}
+                                            placeholderTextColor="#E8E8E8"
+                                            inputStyle={styles.modalTtransferInputStyle}
+                                            inputContainerStyle={styles.inputContainerStyle}
+                                            value={transferVal}
+                                            onChangeText={(transferVal) => this.setState({transferVal})}
+                                        />
+                                    </View>
                                 </View>
                                 <Text style={styles.transferModalTips}>{I18n.t('sigm.miningPart.transferPart.tips')}</Text>
                                 <Button
@@ -315,7 +370,7 @@ class MiningPart extends React.Component {
                                     // "确认划转"
                                     buttonStyle={styles.transferModalBtn}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(28)}}
-                                    onPress={() => {}}
+                                    onPress={() => this._transferAmount()}
                                 />
                             </View>
                         </Modal>
@@ -448,7 +503,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: scaleSize(34),
         borderColor: '#4A90E2',
-        borderWidth: scaleSize(1),
+        borderWidth: scaleSize(2),
     },
     getDepositIcon: {
         width: scaleSize(28),
@@ -514,6 +569,15 @@ const styles = StyleSheet.create({
     transferModalText1: {
         color: '#4A90E2',
         fontSize: scaleSize(30),
+    },
+    modalTtransferInputStyle: {
+        fontSize: scaleSize(30),
+        color: '#4A90E2',
+    },
+    inputContainerStyle: {
+        width: scaleSize(300),
+        height: scaleSize(42),
+        borderBottomWidth: 0,
     },
     transferModalTips: {
         width: scaleSize(670),

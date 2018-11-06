@@ -214,11 +214,7 @@ class WriteOrder extends Component {
                         phone,
                     });
                     result = result.data;
-                    if (result.status == 200) {
-                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 0});
-                    } else {
-                        await Promise.reject(result.msg);
-                    }
+                    result.status == 200 ? this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 0}) : await Promise.reject(result.msg);
                 }
             } else if (type === 1) {
                 const {buyer, id, flightData, flightDataId, phone, mnemonisAgree} = this.state;
@@ -237,14 +233,10 @@ class WriteOrder extends Component {
                         phone,
                     });
                     result = result.data;
-                    if (result.status == 200) {
-                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 1});
-                    } else {
-                        await Promise.reject(result.msg);
-                    }
+                    result.status == 200 ? this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 1}) : await Promise.reject(result.msg);
                 }
             } else {
-                // 证件类型要不要传，看接口怎么说吧
+                // 证件类型不用传，因为一定是身份证，后端说的，现在是证件类型都不给用户选
                 const {buyer, id, email, phone, mnemonisAgree} = this.state;
                 if (!buyer || !id || !email || !phone) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
                 else if (!mnemonisAgree) await Promise.reject(I18n.t('error.pleaseSelectAgree')); // 未勾选我同意
@@ -262,11 +254,7 @@ class WriteOrder extends Component {
                         month,
                     });
                     result = result.data;
-                    if (result.status == 200) {
-                        this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 2});
-                    } else {
-                        await Promise.reject(result.msg);
-                    }
+                    result.status == 200 ? this.props.navigation.navigate('PayCompleted', {id: result.data.id, product: 2}) : await Promise.reject(result.msg);
                 }
             }
         }

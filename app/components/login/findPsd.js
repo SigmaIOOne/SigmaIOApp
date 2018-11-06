@@ -42,11 +42,9 @@ export default class FindPsd extends React.Component {
             await checkCode(phoneCode);
             let result = await checkPhoneCode(account, phoneCode);
             result = result.data;
-            if (result.status === 200) {
-                this.props.navigation.navigate('SetNewPsd', {origin: 'findPsd', loginGoTarget: origin})
-            } else {
-                this.toast.show(result.msg);
-            }
+            result.status === 200
+                ? this.props.navigation.navigate('SetNewPsd', {origin: 'findPsd', loginGoTarget: origin})
+                : await Promise.reject(result.msg);
         }
         catch (err) {
             this.toast.show(err);
@@ -77,9 +75,7 @@ export default class FindPsd extends React.Component {
                     count: 60,
                     firstSendCode: false,
                 });
-            } else {
-                this.toast.show(result.msg);
-            }
+            } else await Promise.reject(result.msg)
         }
         catch (err) {
             this.toast.show(err);
@@ -135,7 +131,7 @@ export default class FindPsd extends React.Component {
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
                         onPress={() => this._clickToNext()}
                     />
-                    <Toast onRef={toast => this.toast = toast}/>
+                    <Toast modalType='white' onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );

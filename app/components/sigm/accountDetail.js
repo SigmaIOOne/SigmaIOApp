@@ -438,6 +438,5 @@ const styles = StyleSheet.create({
         width: scaleSize(300),
         height: scaleSize(42),
         borderBottomWidth: 0,
-        // flexDirection: 'row'
     }
 });

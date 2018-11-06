@@ -15,7 +15,17 @@ const getMessageList = async () => {
     return axios.post('/Home/Api/distribute?apiid=news_list');
 }
 
+// 安全中心 -> 身份认证
+const certificatePerson = async (numberid, name) => {
+    const body = {
+        numberid,
+        name
+    };
+    return axios.post('/Home/Api/distribute?apiid=numberid', body);
+}
+
 export {
+    certificatePerson,
     getMessageList,
     sendSuggest,
 }

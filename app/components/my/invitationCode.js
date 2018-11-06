@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView, Clipboard, TouchableOpacity } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { I18n } from '../../../language/i18n';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
+import Toast from '../../utils/myToast';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { getRCode, bindRCode, getBinders } from '../../api/bind';
 class InvitationCode extends React.Component {
@@ -47,10 +48,10 @@ class InvitationCode extends React.Component {
 		Clipboard.setString(this.state.code);
 		try {
 			var content = await Clipboard.getString();
-			this.refs.toast.show(I18n.t('public.copySuccess'));
+			this.toast.show(I18n.t('public.copySuccess'));
 		} catch (e) {
 			// console.log(e)
-			this.refs.toast.show(I18n.t('public.copyFailed'));
+			this.toast.show(I18n.t('public.copyFailed'));
 		}
 	}
 	_setBindInCode = () => {
@@ -99,8 +100,7 @@ class InvitationCode extends React.Component {
                         </View>
                     }
                 </View>
-				<Toast ref="toast" position="center" />
-
+                <Toast onRef={toast => this.toast = toast}/>
 			</View>
 		);
 	}

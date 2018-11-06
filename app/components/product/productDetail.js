@@ -24,7 +24,7 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import ProductDetailTable from '../public/productDetailTable';
 import monthSelector from '../public/monthSelector';
-import Toast from '../../utils/myToastOld';
+import Toast from '../../utils/myToast';
 
 class ProductDetail extends Component {
     static propTypes = {

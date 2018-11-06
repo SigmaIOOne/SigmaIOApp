@@ -23,7 +23,8 @@ import abi from '../../utils/abi';
 import { I18n } from '../../../language/i18n';
 import { checkVersion } from '../../api/index';
 import { getUser } from '../../api/bind';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
+import Toast from '../../utils/myToast';
 var DeviceInfo = require('react-native-device-info');
 
 class CurrencyList extends Component {
@@ -201,7 +202,7 @@ class Assets extends Component {
     //     }
 	// 	this.lastBackPressed = Date.now();
 	// 	Alert.alert(null, this.props.navigation.state.routeName)
-    //     this.refs.toast.show('再点击一次退出');
+    //     this.toast.show('再点击一次退出');
         
     //     return true;
         
@@ -287,7 +288,7 @@ class Assets extends Component {
                         {/* </View> */}
                     </ImageBackground>
                 </View>
-				<Toast ref="toast" position="center" />
+                <Toast onRef={toast => this.toast = toast}/>
 				<Text style={styles.title}>{I18n.t('assets._title')}</Text>
 				<ScrollView
 					style={styles.scrollview}

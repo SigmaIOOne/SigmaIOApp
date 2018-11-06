@@ -111,7 +111,7 @@ class SetNewPsd extends React.Component {
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
                         onPress={() => this._clickToFinish()}
                     />
-                    <Toast onRef={toast => this.toast = toast}/>
+                    <Toast modalType='white' onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );

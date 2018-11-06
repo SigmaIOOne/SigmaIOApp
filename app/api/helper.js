@@ -6,7 +6,7 @@ import axios from 'axios';
 import store from '../store/index';
 import { serverUrl } from '../utils/config';
 // axios 配置
-// axios.defaults.timeout = 5000;
+axios.defaults.timeout = 5000;
 axios.defaults.baseURL = serverUrl;
 // http request 拦截器
 axios.interceptors.request.use(
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
                 time,
                 ...config.data
             };
-            console.log('config ', config);
+            console.log('config ------- ', config);
         }
         return config;
     },
@@ -36,6 +36,7 @@ axios.interceptors.response.use(
             type: 'dbc/netInfo/CHANGE_NET_CONNECT_STATE',
             payload: {newState: true}
         });
+        console.log('response ----- ', response.data);
         return response;
     },
     error => {

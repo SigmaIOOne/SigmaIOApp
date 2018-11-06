@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import Toast from '../../utils/myToastOld';
+import Toast from '../../utils/myToast';
 import { logout } from '../../api/login';
 import { changeLoginState, setUserInfo } from '../../store/reducers/login';
 import { setTransactionRecord, setAllOrder } from '../../store/reducers/data';

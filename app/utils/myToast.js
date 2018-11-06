@@ -10,6 +10,7 @@
  *   通过this.toast.show('hello world')使用。
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
     StyleSheet,
     Text,
@@ -19,6 +20,11 @@ import Modal from 'react-native-modalbox';
 import {scaleSize} from "./ScreenUtil";
 
 export default class MyToast extends React.Component {
+    static propTypes = {
+        modalType: PropTypes.string,
+        onRef: PropTypes.func,
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -39,6 +45,8 @@ export default class MyToast extends React.Component {
         }, this.state.duration);
     }
     render() {
+        // 默认toast蓝底白字
+        const modalType = this.props.modalType || 'blue';
         return (
             <Modal
                 {...this.props}
@@ -49,8 +57,8 @@ export default class MyToast extends React.Component {
                 backdropOpacity={0}
                 animationDuration={0}
             >
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTxt}>{this.state.modalTxt}</Text>
+                <View style={[styles.modalContent, modalType === 'blue' ? styles.modalContentBlue : styles.modalContentWhite]}>
+                    <Text style={modalType === 'blue' ? styles.modalTxtWhite : styles.modalTxtBlue}>{this.state.modalTxt}</Text>
                 </View>
             </Modal>
         );
@@ -65,15 +73,24 @@ const styles = StyleSheet.create({
         height: scaleSize(70),
     },
     modalContent: {
-        backgroundColor: '#FFFFFF',
         paddingTop: scaleSize(12),
         paddingBottom: scaleSize(12),
         paddingRight: scaleSize(40),
         paddingLeft: scaleSize(40),
         borderRadius: scaleSize(8),
     },
-    modalTxt: {
+    modalContentBlue: {
+        backgroundColor: '#4A90E2',
+    },
+    modalContentWhite: {
+        backgroundColor: '#FFFFFF',
+    },
+    modalTxtBlue: {
         color: '#4A90E2',
         fontSize: scaleSize(34),
-    }
+    },
+    modalTxtWhite: {
+        color: '#FFFFFF',
+        fontSize: scaleSize(34),
+    },
 });

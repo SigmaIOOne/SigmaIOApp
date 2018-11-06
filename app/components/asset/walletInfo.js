@@ -4,7 +4,8 @@ import { Button, Input } from 'react-native-elements';
 import { withNavigation, NavigationActions, StackActions } from 'react-navigation';
 import Modal from 'react-native-modalbox';
 import Loading from 'react-native-whc-loading';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
+import Toast from '../../utils/myToast';
 import { I18n } from '../../../language/i18n';
 import Icon from '../../pages/iconSets';
 import { scaleSize } from '../../utils/ScreenUtil';
@@ -154,14 +155,14 @@ class WalletInfo extends Component {
 			Alert.alert(null, I18n.t('public.copySuccess'))
 			// this.refs.toast.show(I18n.t('public.copySuccess'));
 		} catch (e) {
-			this.refs.toast.show(I18n.t('public.copyFailed'));
+			this.toast.show(I18n.t('public.copyFailed'));
 		}
 	};
 
 	render() {
 		return (
 			<View style={styles.container}>
-				<Toast ref="toast" position="center" />
+                <Toast onRef={toast => this.toast = toast}/>
 				<View style={styles.walletInfo}>
 					<Image style={styles.walletAvatar} source={require('../../assets/images/asset/head_2x.png')} />
 					<View style={styles.walletInfo_item}>

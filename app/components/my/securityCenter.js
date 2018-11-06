@@ -2,6 +2,8 @@
  * 我的 -> 安全中心
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     Image,
     StyleSheet,
@@ -13,10 +15,14 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import BindPhone from "./bindPhone";
 
-export default class SecurityCenter extends Component {
-    _renderItem = (data) => {
+class SecurityCenter extends Component {
+    static propTypes = {
+        securityCenterData: PropTypes.object,
+    }
+
+    _renderItem = (data, index) => {
         return (
-            <TouchableOpacity onPress={() => { data.hasPressFunc && data.pressFunc() }} style={styles.item}>
+            <TouchableOpacity key={index} disabled={!data.hasPressFunc} onPress={() => { data.pressFunc() }} style={styles.item}>
                 <Text style={styles.itemTitle}>{I18n.t(data.title)}</Text>
                 <View style={styles.itemRight}>
                     <Text style={data.hasPressFunc ? styles.itemTxtRed : styles.itemTxtGray}>{I18n.t(data.txt)}</Text>
@@ -27,30 +33,40 @@ export default class SecurityCenter extends Component {
     }
 
     render() {
+        const securityCenterData = this.props.securityCenterData;
+        console.log('data ', securityCenterData);
+        const { bindPhone, hasCertificated } = securityCenterData;
+        const list = [
+            {
+                // 绑定手机
+                title: 'my.securityPart.bindPhone',
+                txt: bindPhone ? 'my.securityPart.bindTxt2' : 'my.securityPart.bindTxt1',
+                hasPressFunc: !bindPhone,
+                pressFunc: () => bindPhone ? {} : this.props.navigation.navigate('BindPhone'),
+            },
+            {
+                // 认证身份
+                title: 'my.securityPart.certificate',
+                txt: hasCertificated ? 'my.securityPart.certificateTxt2' : 'my.securityPart.certificateTxt1',
+                hasPressFunc: !hasCertificated,
+                pressFunc: () => this.props.navigation.navigate('Certificate'),
+            }
+        ];
         return (
             <View style={styles.container}>
                 {
-                    // 绑定手机
-                    this._renderItem({
-                        title: 'my.securityPart.bindPhone',
-                        txt: 'my.securityPart.bindTxt1',
-                        hasPressFunc: true,
-                        pressFunc: () => this.props.navigation.navigate('BindPhone'),
-                    })
-                }
-                {
-                    // 认证身份
-                    this._renderItem({
-                        title: 'my.securityPart.certificate',
-                        txt: 'my.securityPart.certificateTxt2',
-                        hasPressFunc: true,
-                        pressFunc: () => this.props.navigation.navigate('Certificate'),
-                    })
+                    list.map((data, index) => this._renderItem(data, index))
                 }
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        securityCenterData: state.data.securityCenterData
+    })
+)(SecurityCenter)
 
 const styles = StyleSheet.create({
     container: {

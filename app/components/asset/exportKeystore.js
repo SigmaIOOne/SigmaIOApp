@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Clipboard, TouchableHighlight } from 'react-native';
 import { Button } from 'react-native-elements';
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
+import Toast from '../../utils/myToast';
 import QRCode from 'react-native-qrcode';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
@@ -29,9 +30,9 @@ export default class ExportKeystore extends Component {
 		Clipboard.setString(this.state.keystoreV3);
 		try {
 			var content = await Clipboard.getString();
-			this.refs.toast.show(I18n.t('public.copySuccess'));
+			this.toast.show(I18n.t('public.copySuccess'));
 		} catch (e) {
-			this.refs.toast.show(I18n.t('public.copyFailed'));
+			this.toast.show(I18n.t('public.copyFailed'));
 		}
 	};
 
@@ -75,7 +76,7 @@ export default class ExportKeystore extends Component {
 							onPress={this._setClipboardContent.bind(this)}
 							buttonStyle={styles.buttonStyle}
 						/>
-						<Toast ref="toast" position="center" />
+                        <Toast onRef={toast => this.toast = toast}/>
 					</ScrollView>
 				</View>
 				<View tabLabel={I18n.t('assets.walletInfo.qrcode')} style={styles.container}>

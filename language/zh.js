@@ -423,6 +423,11 @@ export default {
                 leftBtn: '分享邀请链接',
                 rightBtn: '分享邀请海报',
             }
+        },
+        share: {
+	        shareLink: '分享链接',
+            wechat: '微信好友',
+            friends: '朋友圈',
         }
     },
     product: {

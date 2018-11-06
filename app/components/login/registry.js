@@ -183,7 +183,7 @@ class Registry extends React.Component {
                             <Text style={[styles.loginBottomText]}>{I18n.t('sigm.loginPart.registerBtn')}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Toast onRef={toast => this.toast = toast}/>
+                    <Toast modalType='white' onRef={toast => this.toast = toast}/>
                 </ImageBackground>
             </ScrollView>
         );

@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 const SET_TRANSACTION_RECORD = 'dbc/data/SET_TRANSACTION_RECORD';
 const SET_ALL_ORDER = 'dbc/data/SET_ALL_ORDER';
 const SET_MESSAGE_LIST = 'dbc/data/SET_MESSAGE_LIST';
+const CHANGE_SECURITY_STATE = 'dbc/data/CHANGE_SECURITY_STATE';
 
 // ---------reducer---------
 const initialState = {
@@ -16,6 +17,10 @@ const initialState = {
     allOrder: [], // 全部订单信息
     hasMessageCache: false, // 是否有全部消息的缓存，同理上面
     messageList: [], // 全部消息信息
+    securityCenterData: {
+        bindPhone: false, // 绑定手机状态，用来后退刷新用，不然安全中心页面不会刷新
+        hasCertificated: false, // 认证身份状态，同上
+    }
 };
 
 export default function data(state = initialState, action = {}) {
@@ -39,6 +44,13 @@ export default function data(state = initialState, action = {}) {
             return update(state, {
                 hasMessageCache: { $set: action.payload.hasCache },
                 messageList: { $set: data },
+            });
+        }
+        case CHANGE_SECURITY_STATE: {
+            const data = JSON.parse(JSON.stringify(state.securityCenterData));
+            data[action.payload.target] = action.payload.state;
+            return update(state, {
+                securityCenterData: { $set: data },
             });
         }
         default: return state;
@@ -74,6 +86,17 @@ export function setMessageList(data, hasCache = true){
         payload: {
             data,
             hasCache,
+        }
+    };
+}
+
+// 改变安全中心对应状态
+export function changeSecurityState(target, state){
+    return {
+        type: CHANGE_SECURITY_STATE,
+        payload: {
+            target,
+            state,
         }
     };
 }

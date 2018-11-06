@@ -3,7 +3,8 @@ import { View, Text, Image, Dimensions, StyleSheet, Clipboard, Alert } from 'rea
 import { I18n } from '../../../language/i18n';
 import { Input, Button } from 'react-native-elements';
 import QRCode from 'react-native-qrcode';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
+import Toast from '../../utils/myToast';
 import { scaleSize } from '../../utils/ScreenUtil';
 const screen = Dimensions.get('window');
 
@@ -38,16 +39,16 @@ export default class Receipt extends Component {
 		Clipboard.setString(this.state.walletAddress);
 		try {
 			var content = await Clipboard.getString();
-			this.refs.toast.show(I18n.t('public.copySuccess'));
+			this.toast.show(I18n.t('public.copySuccess'));
 		} catch (e) {
-			this.refs.toast.show(I18n.t('public.copyFailed'));
+			this.toast.show(I18n.t('public.copyFailed'));
 		}
 	};
 
 	render() {
 		return (
 			<View style={styles.container}>
-				<Toast ref="toast" position="center" />
+                <Toast onRef={toast => this.toast = toast}/>
 				{/* <View style={styles.bg} /> */}
 				<View style={styles.avatar}>
 					<Image style={styles.avatar_item} source={require('../../assets/images/asset/head_2x.png')} />

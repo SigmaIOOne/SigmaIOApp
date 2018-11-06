@@ -12,6 +12,8 @@ import { Input, Button } from 'react-native-elements';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import { bindCar } from '../../api/sigm';
+import Toast from '../../utils/myToast';
 
 export default class BindCar extends React.Component {
     constructor(props) {
@@ -51,15 +53,45 @@ export default class BindCar extends React.Component {
                         onChangeText={(newVal) => this.setState({[data.val]: newVal})}
                     />
                 </View>
-
             </View>
         );
     }
-    _clickToCheck = () => {
-
+    _clickToCheck = async () => {
+        try {
+            const {carId, carColor, engineId, carriageId, insuranceCompany, insuranceId, insurancePeople, insurancePeopleId, area} = this.state;
+            if (
+                !carId
+                || !carColor
+                || !engineId
+                || !carriageId
+                || !insuranceCompany
+                || !insuranceId
+                || !insurancePeople
+                || !insurancePeopleId
+                || !area
+            ) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
+            else {
+                let result = await bindCar({
+                    car_id: carId,
+                    car_colour: carColor,
+                    engine_number: engineId,
+                    frame_number: carriageId,
+                    Insurance_company: insuranceCompany,
+                    policy_number: insuranceId,
+                    name: insurancePeople,
+                    numberid: insurancePeopleId,
+                    region: area
+                });
+                result = result.data;
+                console.log('res ', result);
+                result.status == 200 ? this.props.navigation.goBack() : await Promise.reject(result.msg);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
     render() {
-        // const {carId, carColor, engineId, carriageId, insuranceCompany, insuranceId, insurancePeople, insurancePeopleId, area} = this.state;
         return (
             <ScrollView>
                 {
@@ -67,22 +99,26 @@ export default class BindCar extends React.Component {
                         tips: 'sigm.miningPart.bindCar.listTips1',
                         list: [
                             {
+                                // 车牌号
                                 name: 'sigm.miningPart.bindCar.carId',
                                 placeholder: 'sigm.miningPart.bindCar.carIdPlaceholder',
                                 val: 'carId'
                             },
                             {
+                                // 车牌颜色
                                 name: 'sigm.miningPart.bindCar.carColor',
                                 placeholder: 'sigm.miningPart.bindCar.carColorPlaceholder',
                                 val: 'carColor',
                                 extraStyle: 'extraContainerStyle'
                             },
                             {
+                                // 发动机号
                                 name: 'sigm.miningPart.bindCar.engineId',
                                 placeholder: 'sigm.miningPart.bindCar.engineIdPlaceholder',
                                 val: 'engineId'
                             },
                             {
+                                // 车架号
                                 name: 'sigm.miningPart.bindCar.carriageId',
                                 placeholder: 'sigm.miningPart.bindCar.carriageIdPlaceholder',
                                 val: 'carriageId'
@@ -95,26 +131,31 @@ export default class BindCar extends React.Component {
                         tips: 'sigm.miningPart.bindCar.listTips2',
                         list: [
                             {
+                                // 保险公司
                                 name: 'sigm.miningPart.bindCar.insuranceCompany',
                                 placeholder: 'sigm.miningPart.bindCar.insuranceCompanyPlaceholder',
                                 val: 'insuranceCompany'
                             },
                             {
+                                // 保单号
                                 name: 'sigm.miningPart.bindCar.insuranceId',
                                 placeholder: 'sigm.miningPart.bindCar.insuranceIdPlaceholder',
                                 val: 'insuranceId'
                             },
                             {
+                                // 被保险人名称
                                 name: 'sigm.miningPart.bindCar.insurancePeople',
                                 placeholder: 'sigm.miningPart.bindCar.insurancePeoplePlaceholder',
                                 val: 'insurancePeople'
                             },
                             {
+                                // 被保险人身份证号码 或单位组织机构代码
                                 name: 'sigm.miningPart.bindCar.insurancePeopleId',
                                 placeholder: 'sigm.miningPart.bindCar.insurancePeopleIdPlaceholder',
                                 val: 'insurancePeopleId'
                             },
                             {
+                                // 地区
                                 name: 'sigm.miningPart.bindCar.area',
                                 placeholder: 'sigm.miningPart.bindCar.areaPlaceholder',
                                 val: 'area'
@@ -129,6 +170,8 @@ export default class BindCar extends React.Component {
                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
                     onPress={() => this._clickToCheck()}
                 />
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </ScrollView>
         );
     }
@@ -162,12 +205,12 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         fontSize: scaleSize(30),
-        color: '#E8E8E8',
+        color: '#555555',
         textAlign: 'right',
     },
     inputContainerStyle: {
         width: scaleSize(390),
-        height: scaleSize(30),
+        height: scaleSize(34),
         borderBottomWidth: 0,
         marginTop: scaleSize(34),
         marginBottom: scaleSize(26),

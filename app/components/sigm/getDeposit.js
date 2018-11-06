@@ -17,7 +17,7 @@ import { scaleSize } from '../../utils/ScreenUtil';
 export default class GetDeposit extends React.Component {
     _renderListItem = (data) => {
         return (
-            <View style={styles.listItem}>
+            <View style={[styles.listItem, data.hasNoBorder ? {} : styles.listItemBorder]}>
                 <View style={[styles.flexRow]}>
                     <Image style={styles.itemIcon} source={data.iconImg}/>
                     <View>
@@ -59,6 +59,7 @@ export default class GetDeposit extends React.Component {
                             description2: 'sigm.miningPart.getDepositPart.bindCarDescription2',
                             btnTxt: 'sigm.miningPart.getDepositPart.bindCarBtn1',
                             disabled: false,
+                            hasNoBorder: true,
                             pressFunc: () => { this.props.navigation.navigate('BindCar') }
                         })
                     }
@@ -76,17 +77,17 @@ export default class GetDeposit extends React.Component {
                         })
                     }
                     {/* 邀请好友 */}
-                    {/*{*/}
-                        {/*this._renderListItem({*/}
-                            {/*iconImg: require('../../assets/images/sigm/friends.png'),*/}
-                            {/*title: 'sigm.miningPart.getDepositPart.inviteFriends',*/}
-                            {/*description1: 'sigm.miningPart.getDepositPart.inviteDescription1',*/}
-                            {/*description2: 'sigm.miningPart.getDepositPart.inviteDescription2',*/}
-                            {/*btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',*/}
-                            {/*disabled: false,*/}
-                            {/*pressFunc: () => { this.props.navigation.navigate('InviteFriends') }*/}
-                        {/*})*/}
-                    {/*}*/}
+                    {
+                        this._renderListItem({
+                            iconImg: require('../../assets/images/sigm/friends.png'),
+                            title: 'sigm.miningPart.getDepositPart.inviteFriends',
+                            description1: 'sigm.miningPart.getDepositPart.inviteDescription1',
+                            description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
+                            btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
+                            disabled: false,
+                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
+                        })
+                    }
                     {/* 认证身份 */}
                     {
                         this._renderListItem({
@@ -139,6 +140,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingLeft: scaleSize(40),
         paddingRight: scaleSize(40),
+    },
+    listItemBorder: {
         borderBottomWidth: scaleSize(1),
         borderBottomColor: '#9B9B9B',
     },

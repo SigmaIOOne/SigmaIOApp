@@ -11,24 +11,78 @@ import {
 import { Button, CheckBox, Input } from 'react-native-elements';
 import {I18n} from "../../../language/i18n";
 import { scaleSize } from '../../utils/ScreenUtil';
-import ServerPolicies from "./serverPolicies";
+import { checkPhone, checkCode } from '../../utils/valiServices';
+import {getPhoneCode} from '../../api/login';
+import Toast from '../../utils/myToast';
+import Timer from '../../utils/timer';
 
 export default class BindPhone extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             account: '',
-            code: '',
+            phoneCode: '',
             mnemonisAgree: false,
+            count: 60,
+            canSendCode: true, // 可以点击发送验证码
+            firstSendCode: true, // 第一次发送验证码
         }
     }
 
-    _clickToCheck = () => {
-
+    _onTimer = () => {
+        if (!this.state.canSendCode) {
+            if (this.state.count > 0) {
+                this.setState({
+                    count: this.state.count - 1,
+                });
+                if(this.state.count === 0){
+                    this.setState({ canSendCode: true });
+                }
+            }
+        }
     }
 
+    // 获取手机号验证码
+    _getPhoneCode = async () => {
+        try {
+            const { account } = this.state;
+            await checkPhone(account);
+            let result = await getPhoneCode(account, 'modify');
+            result = result.data;
+            if (result.status === 200) {
+                this.setState({
+                    canSendCode: false,
+                    count: 60,
+                    firstSendCode: false,
+                });
+            } else await Promise.reject(result.msg)
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+
+    _clickToCheck = async () => {
+        try {
+            const { account, phoneCode, mnemonisAgree } = this.state;
+            if (!account || !phoneCode) await Promise.reject(I18n.t('error.orderNotFill')); // 您当前的信息未填写完全
+            else if (!mnemonisAgree) await Promise.reject(I18n.t('error.pleaseSelectAgree')); // 未勾选我同意
+            else {
+                await checkPhone(account);
+                await checkCode(phoneCode);
+                // 待定
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     render() {
-        const { account, code, mnemonisAgree } = this.state;
+        const { account, phoneCode, mnemonisAgree, canSendCode, firstSendCode, count } = this.state;
+        let getCodeTxt = '';
+        if(firstSendCode) getCodeTxt = I18n.t('public.getCode'); // 获取验证码
+        else if(!canSendCode) getCodeTxt = count + I18n.t('public.getCodeWait'); // s后重新获取
+        else getCodeTxt = I18n.t('public.getCodeAgain'); // 重新获取
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -53,13 +107,14 @@ export default class BindPhone extends React.Component {
                                 placeholderTextColor="#BEBEBE"
                                 inputContainerStyle={styles.inputContainerStyle}
                                 inputStyle={styles.inputStyle}
-                                value={code}
-                                onChangeText={(code) => { console.log('@@@ ', code); this.setState({code}) }}
+                                value={phoneCode}
+                                onChangeText={(phoneCode) => { console.log('@@@ ', phoneCode); this.setState({phoneCode}) }}
                             />
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity disabled={!canSendCode} onPress={() => this._getPhoneCode()}>
                             <View>
-                                <Text style={styles.codeTxt}>{I18n.t('public.getCode')}</Text>
+                                <Timer interval={1000} onTimer={this._onTimer}/>
+                                <Text style={styles.codeTxt}>{getCodeTxt}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -96,6 +151,8 @@ export default class BindPhone extends React.Component {
                         onPress={() => this._clickToCheck()}
                     />
                 </View>
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </ScrollView>
         );
     }

@@ -142,19 +142,14 @@ export function checkSuggestContent(content) {
     })
 }
 
-/**
- * 备注说明下下面这些不加空验证，是因为这些都是用在订单填写里的，
- * 订单填写有很多参数，我统一在代码前面就做了验证空的判断，
- * 格式验证我这里只打算验证其中几个参数，另外的一些参数就不进行格式验证了
- * by LXY
- */
 // 验证手机号码, 只用做11位的长度判断
 export function checkPhone(phone) {
     const regExp = /^1\d{10}$/;
     phone = phone.trim();
     return new Promise(function(res, rej) {
-        if (regExp.test(phone)) res();
-        else rej('手机格式错误');
+        if (!phone.length) rej('手机号不能为空');
+        else if (!regExp.test(phone)) rej('手机格式错误');
+        else res();
     });
 }
 
@@ -163,8 +158,9 @@ export function checkEmail(email) {
     const regExp = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
     email = email.trim();
     return new Promise(function(res, rej) {
-        if (regExp.test(email)) res();
-        else rej('邮箱格式错误');
+        if (!email.length) rej('邮箱不能为空');
+        else if (!regExp.test(email)) rej('邮箱格式错误');
+        else res();
     });
 }
 
@@ -173,8 +169,9 @@ export function checkIDNumber(id) {
     const regExp = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
     id = id.trim();
     return new Promise(function(res, rej) {
-        if (regExp.test(id)) res();
-        else rej('身份证格式错误');
+        if (!id.length) rej('身份证不能为空');
+        else if (!regExp.test(id)) rej('身份证格式错误');
+        else res();
     });
 }
 

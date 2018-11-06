@@ -23,15 +23,39 @@ const getMiningData = async () => {
     return axios.post('/Home/Api/distribute?apiid=Mining');
 }
 
+// SIGM -> 挖矿账户 -> 获取算力
+const getDeposit = async () => {
+    return axios.post('/Home/Api/distribute?apiid=security');
+}
+
+// SIGM -> 挖矿账户 -> 获取算力 -> 绑定车辆信息
+const bindCar = async (body) => {
+    return axios.post('/Home/Api/distribute?apiid=opinion', body);
+}
+
+// SIGM -> 挖矿账户 -> 获取算力 -> 邀请好友页面信息
+const getInviteFriendsData = async () => {
+    return axios.post('/Home/Api/distribute?apiid=user_in');
+}
+
 // 获取交易记录
 const getTransactionRecord = async () => {
     return axios.post('/Home/Api/distribute?apiid=allorder');
 }
 
+// 用户签到
+const userSignIn = async () => {
+    return axios.post('/Home/Api/distribute?apiid=usersign');
+}
+
 export {
+    bindCar,
     getAccountDetail,
+    getDeposit,
+    getInviteFriendsData,
     getMiningData,
     getSigmTab,
     getTransactionRecord,
     transferAmount,
+    userSignIn,
 }
