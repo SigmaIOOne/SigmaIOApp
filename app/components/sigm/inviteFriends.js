@@ -18,6 +18,7 @@ import {
 import { Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import Modal from 'react-native-modalbox';
+import * as WeChat from 'react-native-wechat';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
@@ -34,6 +35,7 @@ class InviteFriends extends React.Component {
         this.state = {
             code: '',
             qc: '',
+            shareTarget: '', // 分享类型
         };
     }
 
@@ -69,15 +71,80 @@ class InviteFriends extends React.Component {
         try {
             await Clipboard.setString(this.state.code);
             this.toast.show(I18n.t('public.copySuccess'));
-        } catch (e) {
+        }
+        catch (err) {
             this.toast.show(I18n.t('public.copyFailed'));
         }
     };
+
+    // 渲染分享item项
+    _renderShareItem = (data, index) => {
+        return (
+            <TouchableOpacity key={index} style={[styles.shareIconArea]} onPress={() => data.pressFunc()}>
+                <Image style={styles.shareIcon} source={data.img}/>
+                <Text style={styles.shareIconTxt}>{I18n.t('sigm.share.' + data.title)}</Text>
+            </TouchableOpacity>
+        );
+    }
+
+    // 打开分享弹窗
+    _openShareModal = (shareTarget) => {
+        this.setState({shareTarget});
+        this.shareModal.open();
+    }
+
+    // 点击进行分享到对应的微信好友/朋友圈
+    _clickToShare = async (target) => {
+        // try {
+        //     const uri = await captureRef(this.poster, {
+        //         format: 'jpg',
+        //         quality: 1,
+        //         result: 'tmpfile',
+        //     });
+        //     console.log('uri ', uri);
+        //     // const isInstalled = await WeChat.isWXAppInstalled();
+        //     // if (!isInstalled) await Promise.reject(I18n.t('error.wechatNotInstall')); // 没有安装微信
+        //     // if (target === 'wechat') {
+        //     //     await WeChat.shareToSession({
+        //     //         // title: obj.title,
+        //     //         // description: obj.summary,
+        //     //         // thumbImage: encodeURI(obj.pic),
+        //     //         // type: 'news',
+        //     //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
+        //     //     })
+        //     // } else {
+        //     //     await WeChat.shareToTimeline({
+        //     //         // title: obj.title,
+        //     //         // description: obj.summary,
+        //     //         // thumbImage: encodeURI(obj.pic),
+        //     //         // type: 'news',
+        //     //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
+        //     //     })
+        //     // }
+        // }
+        // catch (err) {
+        //     this.toast.show(err);
+        // }
+    }
 
     render() {
         const {code, qc} = this.state;
         const {netInfo} = this.props;
         const isConnected = netInfo.isConnected;
+        const shareItemList = [
+            {
+                // 微信好友
+                title: 'wechat',
+                img: require('../../assets/images/sigm/wechat.png'),
+                pressFunc: () => this._clickToShare('wechat')
+            },
+            {
+                // 朋友圈
+                title: 'friends',
+                img: require('../../assets/images/sigm/wechat_friends.png'),
+                pressFunc: () => this._clickToShare('friends')
+            }
+        ];
         return(
             <View>
                 {
@@ -85,7 +152,7 @@ class InviteFriends extends React.Component {
                     ? <ScrollView>
                         <View style={styles.container}>
                             <View style={styles.blueArea}></View>
-                            <ImageBackground style={styles.bigImg} source={require('../../assets/images/sigm/invite_friends.png')}>
+                            <ImageBackground ref={(poster) => this.poster = poster} style={styles.bigImg} source={require('../../assets/images/sigm/invite_friends.png')}>
                                 {
                                     !!qc && <Image style={styles.codeImg} source={{uri: qc}}/>
                                 }
@@ -128,14 +195,14 @@ class InviteFriends extends React.Component {
                                     title={I18n.t('sigm.miningPart.inviteFriends.leftBtn')}
                                     buttonStyle={[styles.btnStyle, styles.leftBtnStyle]}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
-                                    onPress={() => this.shareModal.open()}
+                                    onPress={() => this._openShareModal('link')}
                                 />
                                 {/* 分享邀请海报 */}
                                 <Button
                                     title={I18n.t('sigm.miningPart.inviteFriends.rightBtn')}
                                     buttonStyle={[styles.btnStyle, styles.rightBtnStyle]}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
-                                    onPress={() => {}}
+                                    onPress={() => this._openShareModal('img')}
                                 />
                             </View>
                         </View>
@@ -151,14 +218,9 @@ class InviteFriends extends React.Component {
                                     <Text style={styles.shareModalTitle}>{I18n.t('sigm.share.shareLink')}</Text>
                                 </View>
                                 <View style={styles.shareArea}>
-                                    <TouchableOpacity style={[styles.shareIconArea]}>
-                                        <Image style={styles.shareIcon} source={require('../../assets/images/sigm/wechat.png')}/>
-                                        <Text style={styles.shareIconTxt}>{I18n.t('sigm.share.wechat')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.shareIconArea}>
-                                        <Image style={styles.shareIcon} source={require('../../assets/images/sigm/wechat_friends.png')}/>
-                                        <Text style={styles.shareIconTxt}>{I18n.t('sigm.share.friends')}</Text>
-                                    </TouchableOpacity>
+                                    {
+                                        shareItemList.map((data, index) => this._renderShareItem(data, index))
+                                    }
                                 </View>
                             </View>
                             <TouchableOpacity style={styles.cancelShareBtn} onPress={() => this.shareModal.close()}>

@@ -568,8 +568,11 @@ const mapStateToProps = state => ({
 const AppNavigator = connect(mapStateToProps)(AppWithNavigationState);
 export { RootNavigator, middleware }
 
+import * as WeChat from 'react-native-wechat';
+
 class App extends Component {
 	componentDidMount() {
+        WeChat.registerApp('wx8860e5f0619520b1');
         BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
     }
     componentWillUnmount() {
