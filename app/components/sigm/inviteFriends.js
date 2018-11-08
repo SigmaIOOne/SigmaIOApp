@@ -18,6 +18,7 @@ import {
 import { Button } from 'react-native-elements';
 import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 import Modal from 'react-native-modalbox';
+import { captureRef } from "react-native-view-shot";
 import * as WeChat from 'react-native-wechat';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
@@ -95,36 +96,37 @@ class InviteFriends extends React.Component {
 
     // 点击进行分享到对应的微信好友/朋友圈
     _clickToShare = async (target) => {
-        // try {
-        //     const uri = await captureRef(this.poster, {
-        //         format: 'jpg',
-        //         quality: 1,
-        //         result: 'tmpfile',
-        //     });
-        //     console.log('uri ', uri);
-        //     // const isInstalled = await WeChat.isWXAppInstalled();
-        //     // if (!isInstalled) await Promise.reject(I18n.t('error.wechatNotInstall')); // 没有安装微信
-        //     // if (target === 'wechat') {
-        //     //     await WeChat.shareToSession({
-        //     //         // title: obj.title,
-        //     //         // description: obj.summary,
-        //     //         // thumbImage: encodeURI(obj.pic),
-        //     //         // type: 'news',
-        //     //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
-        //     //     })
-        //     // } else {
-        //     //     await WeChat.shareToTimeline({
-        //     //         // title: obj.title,
-        //     //         // description: obj.summary,
-        //     //         // thumbImage: encodeURI(obj.pic),
-        //     //         // type: 'news',
-        //     //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
-        //     //     })
-        //     // }
-        // }
-        // catch (err) {
-        //     this.toast.show(err);
-        // }
+        console.log('***********');
+        try {
+            const uri = await captureRef(this.refs.posterArea, {
+                format: 'jpg',
+                quality: 1,
+                result: 'tmpfile',
+            });
+            console.log('uri ', uri);
+            // const isInstalled = await WeChat.isWXAppInstalled();
+            // if (!isInstalled) await Promise.reject(I18n.t('error.wechatNotInstall')); // 没有安装微信
+            // if (target === 'wechat') {
+            //     await WeChat.shareToSession({
+            //         // title: obj.title,
+            //         // description: obj.summary,
+            //         // thumbImage: encodeURI(obj.pic),
+            //         // type: 'news',
+            //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
+            //     })
+            // } else {
+            //     await WeChat.shareToTimeline({
+            //         // title: obj.title,
+            //         // description: obj.summary,
+            //         // thumbImage: encodeURI(obj.pic),
+            //         // type: 'news',
+            //         // webpageUrl: 'http://m.fengchao666.com/article/' + this.state.articleId,
+            //     })
+            // }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
 
     render() {
@@ -152,11 +154,13 @@ class InviteFriends extends React.Component {
                     ? <ScrollView>
                         <View style={styles.container}>
                             <View style={styles.blueArea}></View>
-                            <ImageBackground ref={(poster) => this.poster = poster} style={styles.bigImg} source={require('../../assets/images/sigm/invite_friends.png')}>
-                                {
-                                    !!qc && <Image style={styles.codeImg} source={{uri: qc}}/>
-                                }
-                            </ImageBackground>
+                            <View ref='posterArea' style={styles.posterArea}>
+                                <ImageBackground style={styles.bigImg} source={require('../../assets/images/sigm/invite_friends.png')}>
+                                    {
+                                        !!qc && <Image style={styles.codeImg} source={{uri: qc}}/>
+                                    }
+                                </ImageBackground>
+                            </View>
                             <View style={styles.graySplitLine}></View>
                             <View style={styles.codeArea}>
                                 <View style={styles.codeAreaLeft}>
@@ -223,7 +227,8 @@ class InviteFriends extends React.Component {
                                     }
                                 </View>
                             </View>
-                            <TouchableOpacity style={styles.cancelShareBtn} onPress={() => this.shareModal.close()}>
+                            {/*<TouchableOpacity style={styles.cancelShareBtn} onPress={() => this.shareModal.close()}>*/}
+                            <TouchableOpacity style={styles.cancelShareBtn} onPress={() => {}}>
                                 <Text style={styles.cancelShareTxt}>{I18n.t('public.cancel')}</Text>
                             </TouchableOpacity>
                         </Modal>
@@ -248,7 +253,7 @@ const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
         backgroundColor: '#FFFFFF',
-        position: 'relative',
+        // position: 'relative',
         alignItems: 'center',
     },
     blueArea: {
@@ -258,12 +263,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#4A90E2',
         marginTop: scaleSize(98),
     },
-    bigImg: {
+    posterArea: {
         position: 'absolute',
         width: scaleSize(400),
         height: scaleSize(712),
         top: scaleSize(40),
         left: scaleSize(175),
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'green',
+    },
+    bigImg: {
+        // position: 'absolute',
+        width: scaleSize(400),
+        height: scaleSize(712),
+        // top: scaleSize(40),
+        // left: scaleSize(175),
+        margin: 0,
+        padding: 0,
         alignItems: 'center',
     },
     codeImg: {

@@ -18,7 +18,7 @@ const initialState = {
     hasMessageCache: false, // 是否有全部消息的缓存，同理上面
     messageList: [], // 全部消息信息
     securityCenterData: {
-        bindPhone: false, // 绑定手机状态，用来后退刷新用，不然安全中心页面不会刷新
+        bindPhone: true, // 绑定手机状态，用来后退刷新用，不然安全中心页面不会刷新
         hasCertificated: false, // 认证身份状态，同上
     }
 };

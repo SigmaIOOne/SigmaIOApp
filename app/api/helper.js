@@ -5,6 +5,8 @@
 import axios from 'axios';
 import store from '../store/index';
 import { serverUrl } from '../utils/config';
+import { I18n } from '../../language/i18n';
+
 // axios 配置
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = serverUrl;
@@ -24,7 +26,8 @@ axios.interceptors.request.use(
     },
     err => {
         // 请求超时
-        return Promise.reject(err)
+        console.log('request err ', err);
+        return Promise.reject(I18n.t('error.requestTimeOut'))
     },
 )
 

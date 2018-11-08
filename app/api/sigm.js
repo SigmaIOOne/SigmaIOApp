@@ -30,7 +30,7 @@ const getDeposit = async () => {
 
 // SIGM -> 挖矿账户 -> 获取算力 -> 绑定车辆信息
 const bindCar = async (body) => {
-    return axios.post('/Home/Api/distribute?apiid=opinion', body);
+    return axios.post('/Home/Api/distribute?apiid=vehicle_information', body);
 }
 
 // SIGM -> 挖矿账户 -> 获取算力 -> 邀请好友页面信息

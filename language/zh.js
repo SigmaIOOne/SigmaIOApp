@@ -670,5 +670,6 @@ export default {
         pleaseSelectAgree: '请勾选我同意',
         orderNotFill: '您当前的信息未填写完全',
         wechatNotInstall: '没有安装微信软件，请您安装微信之后再试',
+        requestTimeOut: '请求超时',
     }
 };
