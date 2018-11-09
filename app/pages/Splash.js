@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // import { I18n } from '../../language/i18n';
 import { changeWalletImportState, updateWalletInfo } from '../store/reducers/wallet';
 import { changeLoginState, setUserInfo } from '../store/reducers/login';
+import { getLoginMsg } from '../api/login';
 
 const maxHeight = Dimensions.get('window').height;
 const maxWidth = Dimensions.get('window').width;
@@ -38,13 +39,23 @@ class Splash extends React.Component {
 				mnemonic: false
 			})
 		})
-        storage.load({ key: 'login'}).then(res => {
-            console.log('login ', res);
-            this.props.changeLoginState(true);
-            this.props.setUserInfo(res);
-        }).catch((err) => {
-            console.log('login err ', err);
-        })
+        // storage.load({ key: 'login'}).then(res => {
+        //     console.log('login ', res);
+        //     this.props.changeLoginState(true);
+        //     this.props.setUserInfo(res);
+        // }).catch((err) => {
+        //     console.log('login err ', err);
+        // })
+        getLoginMsg()
+            .then(res => {
+                const result = res.data;
+                if(result.status == '200') {
+                    this.props.changeLoginState(true);
+                    this.props.setUserInfo(result.data);
+                }
+            }).catch((err) => {
+                console.log('login err ', err);
+            })
 		setTimeout(() => {
 			storage
 				.load({

@@ -50,8 +50,14 @@ const logout = async () => {
     return axios.post('/Home/Api/distribute?apiid=UserSignOut');
 }
 
+// 获取用户是否登录以及登录的状态是否过期了
+const getLoginMsg = async () => {
+    return axios.post('/Home/Api/distribute?apiid=userphone');
+}
+
 export {
     checkPhoneCode,
+    getLoginMsg,
     getPhoneCode,
     login,
     logout,

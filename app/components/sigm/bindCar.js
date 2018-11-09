@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
         borderRadius: scaleSize(44),
         marginTop: scaleSize(62),
         marginLeft: scaleSize(48),
+        marginBottom: scaleSize(48),
     },
     extraContainerStyle: {
         width: scaleSize(480),

@@ -39,9 +39,10 @@ export default class MyToast extends React.Component {
     // 模态框打开，过一段时间再消失
     show = (modalTxt) => {
         this.setState({modalTxt});
-        this.toast.open();
+        const _this = this;
+        this.myToast.open();
         setTimeout(() => {
-            this.toast.close();
+            _this.myToast.close();
         }, this.state.duration);
     }
     render() {
@@ -50,7 +51,7 @@ export default class MyToast extends React.Component {
         return (
             <Modal
                 {...this.props}
-                ref={toast => this.toast = toast}
+                ref={toast => this.myToast = toast}
                 style={styles.modal}
                 position={'center'}
                 coverScreen={true}

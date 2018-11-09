@@ -32,12 +32,16 @@ export default function monthSelector (currMoment) {
         const nextYear = nextMoment.get('year');
         const nextMonth = nextMoment.get('month');
         const startMomentArr = _calculateStartTime(currYear, currMonth, nextYear, nextMonth);
+        console.log('startMomentArr ', startMomentArr);
         let year = startMomentArr[0];
         let month = startMomentArr[1];
         const EndYear = year + showYearsNum;
         while (year < EndYear) {
             month++;
-            const currStr = year + month.toString().padStart(2, '0');
+            // 打包的时候padStart报错,所以不能用padStart
+            // const currStr = year + month.toString().padStart(2, '0');
+            month = month.toString().length > 1 ? month.toString() : ('0' + month);
+            const currStr = year + month;
             nextMoment = moment().year(year).month(month);
             year = nextMoment.get('year');
             month = nextMoment.get('month');

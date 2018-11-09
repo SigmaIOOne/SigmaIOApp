@@ -63,10 +63,12 @@ class Login extends React.Component {
                 });
                 this.props.navigation.navigate(origin);
             } else {
+                console.log('#');
                 await Promise.reject(result.msg);
             }
         }
         catch (err) {
+            console.log('login err ', err);
             this.toast.show(err);
         }
     }

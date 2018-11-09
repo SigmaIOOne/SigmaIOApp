@@ -2,6 +2,8 @@
  * SIGM -> 总资产 -> 账户详情 -> 交易记录
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     View,
     Image,
@@ -9,14 +11,11 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
 import { getSigmTab } from '../../api/sigm';
-// 测试用
-import { changeLoginState } from '../../store/reducers/login';
 
 class Sigm extends React.Component {
     static propTypes = {
@@ -43,12 +42,19 @@ class Sigm extends React.Component {
     // }
     componentDidMount() {
         console.log('sigm did ', this.props.navigation.state.params);
-        this._asyncGetSigm();
+        this._init();
     }
+
+    _init = () => {
+        this.props.login.login && this._asyncGetSigm();
+    }
+
     componentWillReceiveProps(nextProps) {
         console.log('sigm will ', nextProps.navigation.state.params);
-        if (nextProps.login.login) this._asyncGetSigm();
-        else this._resetSigmData(); // 说明退出了登录
+        const curLogin = this.props.login.login;
+        const nextLogin = nextProps.login.login;
+        if( !curLogin && nextLogin ) this._asyncGetSigm();
+        else if(curLogin && !nextLogin) this._resetSigmData(); // 说明退出了登录
     }
     componentDidUpdate() {
         // 网络未连接
@@ -107,74 +113,81 @@ class Sigm extends React.Component {
         const login = this.props.login.login;
         // const isConnected = this.props.netInfo.isConnected;
         console.log('netInfo ', this.props.netInfo);
+        const isConnected = this.props.netInfo.isConnected;
         const { all, dollar, income, miningaccount, charged } = this.state;
         return (
-            <View style={styles.container}>
-                <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>
-                <View style={styles.content}>
-                    <View style={[styles.header, styles.spaceBetween]}>
-                        <View style={styles.headerLeft}>
-                            <Image style={styles.headerLeftImg} source={require('../../assets/images/sigm/sigm_title.png')}/>
-                            <Text style={styles.headerLeftText}>SigmalO</Text>
-                        </View>
-                        {
-                            !login &&
-                                <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login', {origin: 'Sigm'})}>
-                                    <Text style={styles.headerRightText}>{I18n.t('sigm.login')}</Text>
-                                </TouchableOpacity>
-                        }
-                    </View>
-                    {/* 卡片 */}
-                    {/* 总资产 */}
-                    <View style={styles.perCard}>
-                        <View style={[styles.cardRow1, styles.spaceBetween]}>
-                            <View style={[styles.cardTitle, styles.spaceBetween]}>
-                                <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_1.png')}/>
-                                <Text style={styles.cardTitleText}>{I18n.t('sigm.totalAsset')}</Text>
+            <View style={styles.main}>
+                {
+                    (isConnected || (!isConnected && !login))
+                    ? <View style={styles.container}>
+                            <Image style={styles.sigmBg} source={require('../../assets/images/sigm/sigm_bg.png')}/>
+                            <View style={styles.content}>
+                                <View style={[styles.header, styles.spaceBetween]}>
+                                    <View style={styles.headerLeft}>
+                                        <Image style={styles.headerLeftImg} source={require('../../assets/images/sigm/sigm_title.png')}/>
+                                        <Text style={styles.headerLeftText}>SigmalO</Text>
+                                    </View>
+                                    {
+                                        !login &&
+                                        <TouchableOpacity style={styles.headerRight} onPress={() => this.props.navigation.navigate('Login', {origin: 'Sigm'})}>
+                                            <Text style={styles.headerRightText}>{I18n.t('sigm.login')}</Text>
+                                        </TouchableOpacity>
+                                    }
+                                </View>
+                                {/* 卡片 */}
+                                {/* 总资产 */}
+                                <View style={styles.perCard}>
+                                    <View style={[styles.cardRow1, styles.spaceBetween]}>
+                                        <View style={[styles.cardTitle, styles.spaceBetween]}>
+                                            <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_1.png')}/>
+                                            <Text style={styles.cardTitleText}>{I18n.t('sigm.totalAsset')}</Text>
+                                        </View>
+                                        <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('AccountDetail')}>
+                                            <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={[styles.cardRow2, styles.spaceBetween]}>
+                                        <View style={[styles.spaceBetween]}>
+                                            <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{all}</Text>
+                                            <Text style={styles.cardRow2LeftText}>SIGM</Text>
+                                        </View>
+                                        <Text style={styles.cardRow2Right}>≈{dollar}$</Text>
+                                    </View>
+                                    <View style={[styles.cardRow3, styles.spaceBetween]}>
+                                        <Text style={styles.cardRow3Left}>{I18n.t('sigm.totalProfit')}</Text>
+                                        <Text style={styles.cardRow3Right}>{income}</Text>
+                                    </View>
+                                </View>
+                                {/* 挖矿账户 */}
+                                <View style={styles.perCard}>
+                                    <View style={[styles.cardRow1, styles.spaceBetween]}>
+                                        <View style={[styles.cardTitle, styles.spaceBetween]}>
+                                            <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_2.png')}/>
+                                            <Text style={styles.cardTitleText}>{I18n.t('sigm.minerAccount')}</Text>
+                                        </View>
+                                        <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('MiningPart')}>
+                                            <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={[styles.cardRow2, styles.flexRow]}>
+                                        <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{miningaccount}</Text>
+                                        <Text style={styles.cardRow2LeftText}>SIGM</Text>
+                                    </View>
+                                    <View style={[styles.cardRow3, styles.spaceBetween]}>
+                                        <View style={[styles.spaceBetween]}>
+                                            <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{I18n.t('sigm.waitingGet')}</Text>
+                                            <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{charged}</Text>
+                                        </View>
+                                        {/* 马上收取 */}
+                                        <TouchableOpacity style={styles.card2Row3Right} onPress={() => this._getImmediately()}>
+                                            <Text style={styles.card2Row3RightText}>{I18n.t('sigm.immediatelyGet')}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                             </View>
-                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('AccountDetail')}>
-                                <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
-                            </TouchableOpacity>
                         </View>
-                        <View style={[styles.cardRow2, styles.spaceBetween]}>
-                            <View style={[styles.spaceBetween]}>
-                                <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{all}</Text>
-                                <Text style={styles.cardRow2LeftText}>SIGM</Text>
-                            </View>
-                            <Text style={styles.cardRow2Right}>≈{dollar}$</Text>
-                        </View>
-                        <View style={[styles.cardRow3, styles.spaceBetween]}>
-                            <Text style={styles.cardRow3Left}>{I18n.t('sigm.totalProfit')}</Text>
-                            <Text style={styles.cardRow3Right}>{income}</Text>
-                        </View>
-                    </View>
-                    {/* 挖矿账户 */}
-                    <View style={styles.perCard}>
-                        <View style={[styles.cardRow1, styles.spaceBetween]}>
-                            <View style={[styles.cardTitle, styles.spaceBetween]}>
-                                <Image style={styles.cardIcon} source={require('../../assets/images/sigm/icon_2.png')}/>
-                                <Text style={styles.cardTitleText}>{I18n.t('sigm.minerAccount')}</Text>
-                            </View>
-                            <TouchableOpacity style={styles.rightArrowView} onPress={() => this._cardPress('MiningPart')}>
-                                <Image style={styles.rightArrow} source={require('../../assets/images/sigm/right_arrow.png')}/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={[styles.cardRow2, styles.flexRow]}>
-                            <Text style={[styles.cardRow2LeftText, styles.cardRow2LeftTextVal]}>{miningaccount}</Text>
-                            <Text style={styles.cardRow2LeftText}>SIGM</Text>
-                        </View>
-                        <View style={[styles.cardRow3, styles.spaceBetween]}>
-                            <View style={[styles.spaceBetween]}>
-                                <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{I18n.t('sigm.waitingGet')}</Text>
-                                <Text style={[styles.cardRow3Left, styles.card2Row3LeftText]}>{charged}</Text>
-                            </View>
-                            {/* 马上收取 */}
-                            <TouchableOpacity style={styles.card2Row3Right} onPress={() => this._getImmediately()}>
-                                <Text style={styles.card2Row3RightText}>{I18n.t('sigm.immediatelyGet')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
+                }
                 {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
             </View>
@@ -186,9 +199,7 @@ export default connect(
     state => ({
         login: state.login,
         netInfo: state.netInfo,
-    }),{
-        changeLoginState,
-    }
+    })
 )(Sigm)
 
 const styles = StyleSheet.create({
@@ -198,6 +209,10 @@ const styles = StyleSheet.create({
     },
     flexRow: {
         flexDirection: 'row',
+    },
+    main: {
+        flex: 1,
+        alignItems: 'center',
     },
     container: {
         flex: 1,

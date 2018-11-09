@@ -58,9 +58,9 @@ class My extends Component {
             this.props.changeLoginState(false);
             this.props.setUserInfo({});
             this.props.resetDataRedux();
-            storage.remove({
-                key: 'login'
-            });
+            // storage.remove({
+            //     key: 'login'
+            // });
         } else {
             this.toast.show(result.msg);
         }

@@ -3,6 +3,8 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     Dimensions,
     Image,
@@ -10,14 +12,25 @@ import {
     Text,
     View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import Toast from '../../utils/myToast';
 
-export default class NoNetworkPage extends React.Component {
+class NoNetworkPage extends React.Component {
     static propTypes = {
+        netInfo: PropTypes.object,
         tryAgainFunc: PropTypes.func.isRequired, // 刷新重试按钮
+    }
+    componentDidUpdate() {
+        // 网络未连接
+        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+        // toast也就不会触发
+        const {netInfo} = this.props;
+        if (netInfo.noNetworkClickNum) {
+            console.log('# ');
+            this.toast.show(netInfo.errMsg);
+        }
     }
     render() {
         return (
@@ -31,10 +44,18 @@ export default class NoNetworkPage extends React.Component {
                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(34)}}
                     onPress={() => this.props.tryAgainFunc()}
                 />
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+    })
+)(NoNetworkPage)
 
 const styles = StyleSheet.create({
     container: {

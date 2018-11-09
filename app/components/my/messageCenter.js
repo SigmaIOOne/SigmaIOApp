@@ -64,7 +64,7 @@ class MessageCenter extends Component {
     }
     _renderListItem = (data, index) => {
         return (
-            <View style={styles.item} key={index}>
+            <View style={[styles.item, index === 0 ? {} : styles.itemBorder]} key={index}>
                 {/*<Text style={[styles.itemContent, data.success ? {} : styles.itemContentRed]}>{data.content}</Text>*/}
                 <Text style={[styles.itemContent]}>{data.text}</Text>
                 <Text style={styles.date}>{data.time}</Text>
@@ -132,23 +132,29 @@ const styles = StyleSheet.create({
     },
     item: {
         // height: scaleSize(104),
+        width: scaleSize(670),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    itemBorder: {
         borderTopWidth: scaleSize(1),
         borderTopColor: '#9B9B9B',
     },
     itemContent: {
-        maxWidth: scaleSize(500),
+        // maxWidth: scaleSize(440),
+        flex: 1,
         color: '#4A4A4A',
         fontSize: scaleSize(28),
         marginTop: scaleSize(32),
         marginBottom: scaleSize(32),
+        marginRight: scaleSize(20),
     },
     itemContentRed: {
         color: '#D0021B'
     },
     date: {
+        width: scaleSize(230),
         color: '#9B9B9B',
         fontSize: scaleSize(24),
         marginTop: scaleSize(4),
