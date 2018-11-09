@@ -50,6 +50,7 @@ class MessageCenter extends Component {
         try {
             let result = await getMessageList();
             result = result.data;
+            console.log('res ', result);
             if (result.status == 200) {
                 this.props.setMessageList(result.data);
                 this.setState({

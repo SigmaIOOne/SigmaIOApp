@@ -4,10 +4,11 @@
  */
 import update from 'immutability-helper';
 
-const SET_TRANSACTION_RECORD = 'dbc/data/SET_TRANSACTION_RECORD';
+const CHANGE_SECURITY_STATE = 'dbc/data/CHANGE_SECURITY_STATE';
+const RESET_DATA_REDUX = 'dbc/data/RESET_DATA_REDUX';
 const SET_ALL_ORDER = 'dbc/data/SET_ALL_ORDER';
 const SET_MESSAGE_LIST = 'dbc/data/SET_MESSAGE_LIST';
-const CHANGE_SECURITY_STATE = 'dbc/data/CHANGE_SECURITY_STATE';
+const SET_TRANSACTION_RECORD = 'dbc/data/SET_TRANSACTION_RECORD';
 
 // ---------reducer---------
 const initialState = {
@@ -20,6 +21,8 @@ const initialState = {
     securityCenterData: {
         bindPhone: true, // 绑定手机状态，用来后退刷新用，不然安全中心页面不会刷新
         hasCertificated: false, // 认证身份状态，同上
+        bindCar: false, // 绑定车辆，同上
+        hasSigned: false, // 签到情况，同上
     }
 };
 
@@ -51,6 +54,24 @@ export default function data(state = initialState, action = {}) {
             data[action.payload.target] = action.payload.state;
             return update(state, {
                 securityCenterData: { $set: data },
+            });
+        }
+        case RESET_DATA_REDUX: {
+            return update(state, {
+                hasTransactionRecord: { $set: false },
+                transactionRecord: { $set: [] },
+                hasAllOrderCache: { $set: false },
+                allOrder: { $set: [] },
+                hasMessageCache: { $set: false },
+                messageList: { $set: [] },
+                securityCenterData: {
+                    $set: {
+                        bindPhone: true,
+                        hasCertificated: false,
+                        bindCar: false,
+                        hasSigned: false,
+                    }
+                },
             });
         }
         default: return state;
@@ -99,4 +120,11 @@ export function changeSecurityState(target, state){
             state,
         }
     };
+}
+
+// 重置data里的所有缓存，退出登录用
+export function resetDataRedux() {
+    return {
+        type: RESET_DATA_REDUX,
+    }
 }

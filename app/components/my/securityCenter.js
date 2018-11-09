@@ -13,11 +13,40 @@ import {
 } from 'react-native';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import BindPhone from "./bindPhone";
+import { getDeposit } from '../../api/sigm';
+import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
+import { changeSecurityState } from '../../store/reducers/data';
 
 class SecurityCenter extends Component {
     static propTypes = {
+        changeSecurityState: PropTypes.func,
+        netInfo: PropTypes.object,
         securityCenterData: PropTypes.object,
+    }
+
+    componentDidMount() {
+        this._init();
+    }
+
+    // 初始化和刷新用
+    _init = () => {
+        this._getPageData();
+    }
+
+    // 获取页面数据信息
+    _getPageData = async () => {
+        try {
+            let result = await getDeposit();
+            result = result.data;
+            console.log('res ', result);
+            if (result.status == 200) {
+                this.props.changeSecurityState('hasCertificated', !!result.data.numberid);
+            }else await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
     }
 
     _renderItem = (data, index) => {
@@ -33,7 +62,9 @@ class SecurityCenter extends Component {
     }
 
     render() {
-        const securityCenterData = this.props.securityCenterData;
+        const { netInfo, securityCenterData } = this.props;
+        console.log('netInfo ', netInfo);
+        const isConnected = netInfo.isConnected;
         console.log('data ', securityCenterData);
         const { bindPhone, hasCertificated } = securityCenterData;
         const list = [
@@ -53,10 +84,18 @@ class SecurityCenter extends Component {
             }
         ];
         return (
-            <View style={styles.container}>
+            <View>
                 {
-                    list.map((data, index) => this._renderItem(data, index))
+                    isConnected
+                    ? <View style={styles.container}>
+                        {
+                            list.map((data, index) => this._renderItem(data, index))
+                        }
+                    </View>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
@@ -64,8 +103,11 @@ class SecurityCenter extends Component {
 
 export default connect(
     state => ({
+        netInfo: state.netInfo,
         securityCenterData: state.data.securityCenterData
-    })
+    }), {
+        changeSecurityState
+    }
 )(SecurityCenter)
 
 const styles = StyleSheet.create({

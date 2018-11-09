@@ -2,6 +2,8 @@
  * SIGM -> 挖矿账户 -> 获取算力 -> 绑定车辆信息
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     View,
     Text,
@@ -14,8 +16,13 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import { bindCar } from '../../api/sigm';
 import Toast from '../../utils/myToast';
+import { changeSecurityState } from "../../store/reducers/data";
 
-export default class BindCar extends React.Component {
+class BindCar extends React.Component {
+    static propTypes = {
+        changeSecurityState: PropTypes.func,
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -84,7 +91,10 @@ export default class BindCar extends React.Component {
                 });
                 result = result.data;
                 console.log('res ', result);
-                result.status == 200 ? this.props.navigation.goBack() : await Promise.reject(result.msg);
+                if (result.status == 200) {
+                    this.props.changeSecurityState('bindCar', true);
+                    this.props.navigation.goBack();
+                } else await Promise.reject(result.msg);
             }
         }
         catch (err) {
@@ -176,6 +186,12 @@ export default class BindCar extends React.Component {
         );
     }
 }
+
+export default connect(
+    null, {
+        changeSecurityState,
+    }
+)(BindCar)
 
 const styles = StyleSheet.create({
     listTips: {

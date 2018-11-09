@@ -2,6 +2,8 @@
  * SIGM -> 挖矿账户 -> 获取算力
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     View,
     Image,
@@ -10,11 +12,77 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
+import {getDeposit, userSignIn} from '../../api/sigm';
+import Toast from '../../utils/myToast';
+import NoNetworkPage from '../public/noNetworkPage';
+import { changeSecurityState } from "../../store/reducers/data";
 
-export default class GetDeposit extends React.Component {
+class GetDeposit extends React.Component {
+    static propTypes = {
+        changeSecurityState: PropTypes.func,
+        netInfo: PropTypes.object,
+        securityCenterData: PropTypes.object,
+    }
+
+    constructor(props) {
+        super(props);
+        // 绑定车辆, 认证身份防止后退不刷新，所以存在redux里
+        this.state = {
+            calculation: '', // 我的实时算力, 通过路由传来
+            hasSigned: false, // 签到情况，通过路由传来
+        };
+    }
+
+    componentDidMount() {
+        this._init();
+    }
+
+    // 初始化和刷新用
+    _init = () => {
+        this._getPageDataFromRouter();
+        this._getPageDataAsync();
+    }
+
+    // 通过路由获取的数据信息
+    _getPageDataFromRouter = () => {
+        const { calculation, hasSigned } = this.props.navigation.state.params;
+        this.setState({calculation, hasSigned});
+    }
+
+    // 获取页面数据信息
+    _getPageDataAsync = async () => {
+        try {
+            let result = await getDeposit();
+            result = result.data;
+            if (result.status == 200) {
+                // 1是已绑定， 0是未绑定
+                const { car, numberid } = result.data;
+                this.setState({
+                    bindCar: car == 1,
+                    certificate: numberid == 1,
+                });
+            }else await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+
+    // 用户签到
+    _userSignIn = async () => {
+        try {
+            let result = await userSignIn();
+            result = result.data;
+            result.status == 200 ? this.props.changeSecurityState('hasSigned', true) : await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+
+    // 渲染列表里的每一项
     _renderListItem = (data) => {
         return (
             <View style={[styles.listItem, data.hasNoBorder ? {} : styles.listItemBorder]}>
@@ -28,94 +96,110 @@ export default class GetDeposit extends React.Component {
                         </View>
                     </View>
                 </View>
-                <View>
-                    {
-                        data.disabled
-                            ? <View style={[styles.itemRight, styles.itemRightDisabled]}>
-                                <Text style={styles.itemRightTxt}>{I18n.t(data.btnTxt)}</Text>
-                            </View>
-                            : <TouchableOpacity style={styles.itemRight} onPress={() => data.pressFunc()}>
-                                <Text style={styles.itemRightTxt}>{I18n.t(data.btnTxt)}</Text>
-                            </TouchableOpacity>
-                    }
-                </View>
+                <TouchableOpacity disabled={data.disabled} style={[styles.itemRight, data.disabled ? styles.itemRightDisabled : {}]} onPress={() => data.pressFunc()}>
+                    <Text style={styles.itemRightTxt}>{I18n.t(data.btnTxt)}</Text>
+                </TouchableOpacity>
             </View>
         );
     }
     render() {
+        const { calculation } = this.state;
+        const { netInfo, securityCenterData } = this.props;
+        const { bindCar, certificate, hasSigned } = securityCenterData;
+        const isConnected = netInfo.isConnected;
         return (
             <View>
-                <View style={styles.header}>
-                    <Text style={styles.headerTxt}>{I18n.t('sigm.miningPart.realTimeDeposit')}</Text>
-                    <Text style={styles.headerTxt}>137</Text>
-                </View>
-                <View style={styles.item1}>
-                    {/* 绑定车辆 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/car.png'),
-                            title: 'sigm.miningPart.getDepositPart.bindCar',
-                            description1: 'sigm.miningPart.getDepositPart.bindCarDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.bindCarDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.bindCarBtn1',
-                            disabled: false,
-                            hasNoBorder: true,
-                            pressFunc: () => { this.props.navigation.navigate('BindCar') }
-                        })
-                    }
-                </View>
-                <View style={styles.itemList}>
-                    {/* 每日签到 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/daily.png'),
-                            title: 'sigm.miningPart.getDepositPart.daylySignIn',
-                            description1: 'sigm.miningPart.getDepositPart.daylyDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.daylyDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.daylyBtn2',
-                            disabled: true,
-                        })
-                    }
-                    {/* 邀请好友 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/friends.png'),
-                            title: 'sigm.miningPart.getDepositPart.inviteFriends',
-                            description1: 'sigm.miningPart.getDepositPart.inviteDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
-                            disabled: false,
-                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
-                        })
-                    }
-                    {/* 认证身份 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/certificate.png'),
-                            title: 'sigm.miningPart.getDepositPart.certificate',
-                            description1: 'sigm.miningPart.getDepositPart.certificateDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.certificateDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.certificateBtn1',
-                            disabled: false,
-                            pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
-                        })
-                    }
-                    {/* 注册用户 */}
-                    {
-                        this._renderListItem({
-                            iconImg: require('../../assets/images/sigm/registry.png'),
-                            title: 'sigm.miningPart.getDepositPart.registry',
-                            description1: 'sigm.miningPart.getDepositPart.registryDescription1',
-                            description2: 'sigm.miningPart.getDepositPart.registryDescription2',
-                            btnTxt: 'sigm.miningPart.getDepositPart.registryBtn1',
-                            disabled: true,
-                        })
-                    }
-                </View>
+                {
+                    isConnected
+                    ? <View>
+                        <View style={styles.header}>
+                            <Text style={styles.headerTxt}>{I18n.t('sigm.miningPart.realTimeDeposit')}</Text>
+                            <Text style={styles.headerTxt}>{calculation}</Text>
+                        </View>
+                        <View style={styles.item1}>
+                            {/* 绑定车辆 */}
+                            {
+                                this._renderListItem({
+                                    iconImg: require('../../assets/images/sigm/car.png'),
+                                    title: 'sigm.miningPart.getDepositPart.bindCar',
+                                    description1: 'sigm.miningPart.getDepositPart.bindCarDescription1',
+                                    description2: 'sigm.miningPart.getDepositPart.bindCarDescription2',
+                                    btnTxt: 'sigm.miningPart.getDepositPart.bindCarBtn1',
+                                    disabled: bindCar,
+                                    hasNoBorder: true,
+                                    pressFunc: () => { this.props.navigation.navigate('BindCar') }
+                                })
+                            }
+                        </View>
+                        <View style={styles.itemList}>
+                            {/* 每日签到 */}
+                            {
+                                this._renderListItem({
+                                    iconImg: require('../../assets/images/sigm/daily.png'),
+                                    title: 'sigm.miningPart.getDepositPart.daylySignIn',
+                                    description1: 'sigm.miningPart.getDepositPart.daylyDescription1',
+                                    description2: 'sigm.miningPart.getDepositPart.daylyDescription2',
+                                    btnTxt: 'sigm.miningPart.getDepositPart.daylyBtn2',
+                                    disabled: hasSigned,
+                                    pressFunc: () => this._userSignIn()
+                                })
+                            }
+                            {/* 邀请好友 */}
+                            {/* 好友是可以无限邀请的 */}
+                            {
+                                this._renderListItem({
+                                    iconImg: require('../../assets/images/sigm/friends.png'),
+                                    title: 'sigm.miningPart.getDepositPart.inviteFriends',
+                                    description1: 'sigm.miningPart.getDepositPart.inviteDescription1',
+                                    description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
+                                    btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
+                                    disabled: false,
+                                    pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
+                                })
+                            }
+                            {/* 认证身份 */}
+                            {
+                                this._renderListItem({
+                                    iconImg: require('../../assets/images/sigm/certificate.png'),
+                                    title: 'sigm.miningPart.getDepositPart.certificate',
+                                    description1: 'sigm.miningPart.getDepositPart.certificateDescription1',
+                                    description2: 'sigm.miningPart.getDepositPart.certificateDescription2',
+                                    btnTxt: 'sigm.miningPart.getDepositPart.certificateBtn1',
+                                    disabled: certificate,
+                                    pressFunc: () => { this.props.navigation.navigate('Certificate') }
+                                })
+                            }
+                            {/* 注册用户 */}
+                            {/* 用户都是已注册的 */}
+                            {
+                                this._renderListItem({
+                                    iconImg: require('../../assets/images/sigm/registry.png'),
+                                    title: 'sigm.miningPart.getDepositPart.registry',
+                                    description1: 'sigm.miningPart.getDepositPart.registryDescription1',
+                                    description2: 'sigm.miningPart.getDepositPart.registryDescription2',
+                                    btnTxt: 'sigm.miningPart.getDepositPart.registryBtn1',
+                                    disabled: true,
+                                })
+                            }
+                        </View>
+                    </View>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
+                }
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
         );
     }
 }
+
+export default connect(
+    state => ({
+        netInfo: state.netInfo,
+        securityCenterData: state.data.securityCenterData
+    }), {
+        changeSecurityState
+    }
+)(GetDeposit)
 
 const styles = StyleSheet.create({
     flexRow: {

@@ -305,17 +305,17 @@ export default {
             setPsdAgain: '请再次输入密码',
             twoPsdNoSame: '两次输入密码不同',
             findPsdPart: {
-                accountPlaceholder: '请输入您的注册时的邮箱或手机号',
-                codePlaceholder: '请输入邮箱或手机验证码',
+                accountPlaceholder: '请输入您的手机号',
+                codePlaceholder: '请输入手机验证码',
                 getCode: '获取验证码',
                 newPsdPlaceholder: '请设置新的登录密码',
                 checkPsdPlaceholder: '请再次输入密码',
                 finishBtn: '完成',
             },
             registryPart: {
-                accountPlaceholder: '请输入您的邮箱或手机号',
+                accountPlaceholder: '请输入您的手机号',
                 imgCode: '请输入图片验证码',
-                phoneCode: '请输入邮箱或手机验证码',
+                phoneCode: '请输入手机验证码',
                 registryBtn: '立即注册'
             }
         },

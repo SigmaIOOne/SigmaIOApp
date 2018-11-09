@@ -23,10 +23,13 @@ import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
 import { getMiningData, transferAmount, userSignIn } from '../../api/sigm';
 import NoNetworkPage from '../public/noNetworkPage';
+import { changeSecurityState } from "../../store/reducers/data";
 
 class MiningPart extends React.Component {
     static propTypes = {
+        changeSecurityState: PropTypes.func,
         netInfo: PropTypes.object,
+        securityCenterData: PropTypes.object,
     }
     constructor(props) {
 		super(props);
@@ -42,7 +45,6 @@ class MiningPart extends React.Component {
             charged: '', // 待收取
             ranking: '', // 算⼒排名
             miningaccount: '', // 挖矿资产
-            sign: '', // 签到情况0 未签到 1已签到
             total: '', // 全⽹总算⼒
             transferVal: '', // 划转数值
         };
@@ -87,9 +89,9 @@ class MiningPart extends React.Component {
                     charged,
                     ranking,
                     miningaccount,
-                    sign,
                     total,
                 });
+                this.props.changeSecurityState('hasSigned', sign == '1'); // 今日签到会涉及到后退不刷新的问题，所以存在redux里
             } else {
                 await Promise.reject(result.msg);
             }
@@ -127,7 +129,7 @@ class MiningPart extends React.Component {
         try {
             let result = await userSignIn();
             result = result.data;
-            result.status == 200 ? this._init() : await Promise.reject(result.msg);
+            result.status == 200 ? this.props.changeSecurityState('hasSigned', true) : await Promise.reject(result.msg);
         }
         catch (err) {
             this.toast.show(err);
@@ -179,16 +181,17 @@ class MiningPart extends React.Component {
     }
 
     render() {
-        const isConnected = this.props.netInfo.isConnected;
+        const { netInfo, securityCenterData } = this.props;
+        const isConnected = netInfo.isConnected;
         const {
             calculation,
             charged,
             ranking,
             miningaccount,
-            sign,
             total,
             transferVal,
         } = this.state;
+        const hasSigned = securityCenterData.hasSigned;
         return (
             <View>
                 {
@@ -286,7 +289,7 @@ class MiningPart extends React.Component {
                                     icon={
                                         <Image style={styles.signInIcon} source={require('../../assets/images/sigm/signIn_icon.png')}/>
                                     }
-                                    disabled={sign == '1'}
+                                    disabled={hasSigned}
                                     disabledStyle={[styles.signInBtn, styles.signInGrayBtn]}
                                     buttonStyle={[styles.signInBtn, styles.signInBlueBtn]}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(36)}}
@@ -300,7 +303,7 @@ class MiningPart extends React.Component {
                                     }
                                     buttonStyle={styles.getDepositBtn}
                                     titleStyle={{color: '#4A90E2', fontSize: scaleSize(36)}}
-                                    onPress={() => this.props.navigation.navigate('GetDeposit')}
+                                    onPress={() => this.props.navigation.navigate('GetDeposit', {calculation})}
                                 />
                             </View>
                         </View>
@@ -387,7 +390,9 @@ class MiningPart extends React.Component {
 export default connect(
     state => ({
         netInfo: state.netInfo,
+        securityCenterData: state.data.securityCenterData,
     }),{
+        changeSecurityState
     }
 )(MiningPart)
 

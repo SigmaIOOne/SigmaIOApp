@@ -15,15 +15,14 @@ import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
 import { logout } from '../../api/login';
 import { changeLoginState, setUserInfo } from '../../store/reducers/login';
-import { setTransactionRecord, setAllOrder } from '../../store/reducers/data';
+import { resetDataRedux } from '../../store/reducers/data';
 
 class My extends Component {
     static propTypes = {
         changeLoginState: PropTypes.func,
         login: PropTypes.object,
         netInfo: PropTypes.object,
-        setAllOrder: PropTypes.func,
-        setTransactionRecord: PropTypes.func,
+        resetDataRedux: PropTypes.func,
         setUserInfo: PropTypes.func,
     }
     componentDidUpdate() {
@@ -58,8 +57,7 @@ class My extends Component {
         if (result.status == 200) {
             this.props.changeLoginState(false);
             this.props.setUserInfo({});
-            this.props.setAllOrder([], false);
-            this.props.setTransactionRecord([], false);
+            this.props.resetDataRedux();
             storage.remove({
                 key: 'login'
             });
@@ -166,8 +164,7 @@ export default connect(
         netInfo: state.netInfo,
     }), {
         changeLoginState,
-        setAllOrder,
-        setTransactionRecord,
+        resetDataRedux,
         setUserInfo,
     }
 )(My)

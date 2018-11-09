@@ -232,11 +232,11 @@ class InviteFriends extends React.Component {
                                 <Text style={styles.cancelShareTxt}>{I18n.t('public.cancel')}</Text>
                             </TouchableOpacity>
                         </Modal>
-                        {/* 点击发生网络未连接或者别的报错状况 */}
-                        <Toast onRef={toast => this.toast = toast}/>
                     </ScrollView>
                     : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
+                {/* 点击发生网络未连接或者别的报错状况 */}
+                <Toast onRef={toast => this.toast = toast}/>
             </View>
 
         );
