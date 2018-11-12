@@ -34,7 +34,6 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        // return response
         store.dispatch({
             type: 'dbc/netInfo/CHANGE_NET_CONNECT_STATE',
             payload: {newState: true}

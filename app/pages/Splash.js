@@ -64,7 +64,10 @@ class Splash extends React.Component {
                 .then(res => {
                     this.props.changeWalletImportState(true);
                     this.props.updateWalletInfo(res);
-                });
+                })
+                .catch((err) => {
+                    console.log('walletInfo err ', err);
+                })
 			// 	.then((res) => {
 			// 		if(this.state.mnemonic) {
 			// 			this.props.navigation.replace('Guide');

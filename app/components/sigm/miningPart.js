@@ -25,6 +25,9 @@ import { getMiningData, transferAmount, userSignIn } from '../../api/sigm';
 import NoNetworkPage from '../public/noNetworkPage';
 import { changeSecurityState } from "../../store/reducers/data";
 
+// test
+import { changeNetConnectState } from "../../store/reducers/netInfo";
+
 class MiningPart extends React.Component {
     static propTypes = {
         changeSecurityState: PropTypes.func,
@@ -392,7 +395,8 @@ export default connect(
         netInfo: state.netInfo,
         securityCenterData: state.data.securityCenterData,
     }),{
-        changeSecurityState
+        changeSecurityState,
+        changeNetConnectState
     }
 )(MiningPart)
 

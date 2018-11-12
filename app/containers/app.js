@@ -112,6 +112,13 @@ storage
 	})
 	.catch((e) => {
 		console.log(e, '首次获取系统语言');
+		storage.save({
+			key: 'localLanguage',
+			data: {
+				localLanguage: 'zh'
+			},
+			expires: null
+		});
 	});
 
 const Web3 = require('web3');

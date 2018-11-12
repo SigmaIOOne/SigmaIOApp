@@ -30,6 +30,7 @@ export default class MyToast extends React.Component {
         this.state = {
             duration: 2500, // 模态框持续时间
             modalTxt: '',
+            isDisabled: false, // Disable any action on the modal (open, close, swipe)
         }
     }
     componentDidMount() {
@@ -39,15 +40,20 @@ export default class MyToast extends React.Component {
     // 模态框打开，过一段时间再消失
     show = (modalTxt) => {
         this.setState({modalTxt});
-        const _this = this;
         this.myToast.open();
+        this.setState({
+            isDisabled: true
+        });
         setTimeout(() => {
-            _this.myToast.close();
+            this.setState({
+                isDisabled: false
+            }, () => this.myToast.close());
         }, this.state.duration);
     }
     render() {
         // 默认toast蓝底白字
         const modalType = this.props.modalType || 'blue';
+        const { isDisabled } = this.state;
         return (
             <Modal
                 {...this.props}
@@ -57,6 +63,7 @@ export default class MyToast extends React.Component {
                 coverScreen={true}
                 backdropOpacity={0}
                 animationDuration={0}
+                isDisabled={isDisabled}
             >
                 <View style={[styles.modalContent, modalType === 'blue' ? styles.modalContentBlue : styles.modalContentWhite]}>
                     <Text style={modalType === 'blue' ? styles.modalTxtWhite : styles.modalTxtBlue}>{this.state.modalTxt}</Text>
