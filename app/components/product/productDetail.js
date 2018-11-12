@@ -297,7 +297,6 @@ class ProductDetail extends Component {
     // 立即购买
     _buyProduct = () => {
         const { type } = this.props.navigation.state.params;
-        console.log('type   ', type);
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
         !login ? navigate('Login', {origin: 'ProductDetail'}) : navigate('WriteOrder', {type, month: this.state.selectedYearMonthValue});
@@ -318,7 +317,6 @@ class ProductDetail extends Component {
         ];
         const { type } = this.props.navigation.state.params;
         const { yearMonthSelectList, buyValue } = this.state;
-        console.log('type ', type, typeof type);
         return (
             <Container>
                 <KeyboardAwareScrollView>

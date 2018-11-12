@@ -44,7 +44,6 @@ class My extends Component {
     _logout = async () => {
         let result = await logout();
         result = result.data;
-        console.log('logout ', result);
         if (result.status == 200) {
             this.props.changeLoginState(false);
             this.props.setUserInfo({});

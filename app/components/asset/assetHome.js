@@ -17,7 +17,6 @@ class AssetHome extends React.Component {
     // componentDidMount() {
         // storage.load({ key: 'walletInfo'})
         //     .then((res) => {
-        //         // console.log('$$$ ', res);
         //         if(res.logged) {
         //             this.setState({
         //                 logged: true
@@ -35,7 +34,6 @@ class AssetHome extends React.Component {
     // }
 
     componentWillMount() {
-        console.log('will ', this.props.wallet);
         this._changeLoginState(this.props.wallet.walletImport);
     }
 

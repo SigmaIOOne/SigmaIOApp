@@ -54,7 +54,6 @@ class AccountDetail extends React.Component {
         try {
             let result = await getAccountDetail();
             result = result.data;
-            console.log('accountDetail ', result);
             if (result.status == 200) {
                 const { wallet, dollar, mainaccount, miningaccount } = result.data;
                 this.setState({
@@ -138,7 +137,6 @@ class AccountDetail extends React.Component {
             const transferVal = this.state.transferVal;
             let result = await transferAmount(transferVal);
             result = result.data;
-            console.log('transfer ', result);
             if (result.status == 200) {
                 this.transfer.close();
             } else {

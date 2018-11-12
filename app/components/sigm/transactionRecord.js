@@ -37,7 +37,6 @@ class TransactionRecord extends React.Component {
         try {
             let result = await getTransactionRecord();
             result = result.data;
-            console.log('record ', result);
             if (result.status == 200) {
                 this.props.setTransactionRecord(result.data);
             } else {
@@ -63,7 +62,6 @@ class TransactionRecord extends React.Component {
         );
     }
     render() {
-        console.log('data ', this.props.data);
         const { transactionRecord, hasTransactionRecord } = this.props.data;
         const isConnected = this.props.netInfo.isConnected;
         return (

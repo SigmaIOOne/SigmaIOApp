@@ -71,7 +71,6 @@ class MiningPart extends React.Component {
         try {
             let result = await getMiningData();
             result = result.data;
-            console.log('all ', result);
             if (result.status == 200) {
                 const {
                     calculation,
@@ -149,7 +148,6 @@ class MiningPart extends React.Component {
             const transferVal = this.state.transferVal;
             let result = await transferAmount(transferVal);
             result = result.data;
-            console.log('transfer ', result);
             if (result.status == 200) {
                 this.transfer.close();
             } else {
@@ -171,19 +169,22 @@ class MiningPart extends React.Component {
             result = result.data;
             if (result.status == 200) {
                 await this.setState({
+                    miningaccount: result.data.miningaccount,
                     getCoinVal: '已领取' + result.data.charged + 'SIGM',
                 });
                 this._circleAnimate();
                 setTimeout(() => {
                     this.setState({
-                        getCoinDisable: false
+                        getCoinDisable: false,
+                        getCoinVal: '',
                     });
                 }, this.state.animateDuration)
             } else await Promise.reject(result.msg);
         }
         catch (err) {
             this.setState({
-                getCoinDisable: false
+                getCoinDisable: false,
+                getCoinVal: '',
             });
             this.toast.show(err);
         }
@@ -267,7 +268,7 @@ class MiningPart extends React.Component {
                         </View>
                         <View style={styles.content}>
                             <View style={styles.floor1}>
-                                <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#F2F2F5'}}>
+                                <Animated.Text style={{ position: 'absolute', top: this.state.top, opacity: this.state.fadeAnim, color: '#4A4A4A'}}>
                                     {/*已领取0.02343SIGM*/}
                                     {getCoinVal}
                                 </Animated.Text>

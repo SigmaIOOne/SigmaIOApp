@@ -90,7 +90,6 @@ class BindCar extends React.Component {
                     region: area
                 });
                 result = result.data;
-                console.log('res ', result);
                 if (result.status == 200) {
                     this.props.changeSecurityState('bindCar', true);
                     this.props.navigation.goBack();

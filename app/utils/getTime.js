@@ -7,6 +7,5 @@ export function getTime(time) {
   // if (date === now) {
   //   date = moment.unix(_time).format('HH:mm');
   // }
-  // console.log(date);
   return date;
 }

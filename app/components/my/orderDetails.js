@@ -48,7 +48,6 @@ class OrderDetails extends Component {
             const { id } = this.props.navigation.state.params;
             let result = await getOrderdetails(id);
             result = result.data;
-            console.log('orderDetail ', result);
             if (result.status == 200) {
                 // this.props.setAllOrder(result.data);
                 const productType = ['账户安全', '航空宝', '降雨宝'];
@@ -265,7 +264,6 @@ class OrderDetails extends Component {
         const { product, isLoaded } = this.state;
         const { netInfo } = this.props;
         const isConnected = netInfo.isConnected;
-        console.log('type ', product);
         const productList = ['productInsurance', 'productNavigation', 'productRaining'];
         return (
             <View>

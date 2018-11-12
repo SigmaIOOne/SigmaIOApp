@@ -205,7 +205,6 @@ const TabBarPage = createBottomTabNavigator(
                     <Image style={{ width: scaleSize(52), height: scaleSize(74), marginTop: scaleSize(16) }} source={focused ? require('../assets/images/common/sigm_selected.png') : require('../assets/images/common/sigm.png')} />
                 ),
                 tabBarOnPress: () => {
-                    console.log('#### ');
                     navigation.navigate('Sigm', { randomNum: Math.random()});
                 }
                 // tabBarIcon: ({ focused, tintColor }) => <Icon name="icon-zichan" size={30} color={tintColor} />

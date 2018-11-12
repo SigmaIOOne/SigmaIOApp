@@ -39,7 +39,6 @@ class SecurityCenter extends Component {
         try {
             let result = await getDeposit();
             result = result.data;
-            console.log('res ', result);
             if (result.status == 200) {
                 this.props.changeSecurityState('hasCertificated', !!result.data.numberid);
             }else await Promise.reject(result.msg);
@@ -63,9 +62,7 @@ class SecurityCenter extends Component {
 
     render() {
         const { netInfo, securityCenterData } = this.props;
-        console.log('netInfo ', netInfo);
         const isConnected = netInfo.isConnected;
-        console.log('data ', securityCenterData);
         const { bindPhone, hasCertificated } = securityCenterData;
         const list = [
             {

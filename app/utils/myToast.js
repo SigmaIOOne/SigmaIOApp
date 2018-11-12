@@ -28,7 +28,7 @@ export default class MyToast extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            duration: 2500, // 模态框持续时间
+            duration: 1500, // 模态框持续时间
             modalTxt: '',
             isDisabled: false, // Disable any action on the modal (open, close, swipe)
         }

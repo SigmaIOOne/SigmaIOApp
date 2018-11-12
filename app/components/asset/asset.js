@@ -111,7 +111,6 @@ class Assets extends Component {
 				walletName: newProps.wallet.walletName
 			})
 		}
-		// console.log(newProps.wallet.walletName)
 	}
 	// componentWillMount(){
 	// 	BackHandler.removeEventListener("hardwareBackPress", this.onBackPress)
@@ -195,8 +194,6 @@ class Assets extends Component {
 		// 	});
 	}
 	// onBackPress = () => {
-	// 	console.log('ddddddd')
-	// 	console.log(this.props.navigation)
 	// 	if(this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()){
     //         return false
     //     }
@@ -214,7 +211,6 @@ class Assets extends Component {
 			})
 			.then((res) => {
 				let walletName = res.walletName;
-                console.log('res ', res);
                 this.setState({
 					walletName: walletName
 				});

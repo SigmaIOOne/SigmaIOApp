@@ -57,7 +57,6 @@ class SetNewPsd extends React.Component {
                 } else await Promise.reject(result.msg);
             } else {
                 let result = await userResetPsd(psd1);
-                console.log('res   ', result);
                 result = result.data;
                 if (result.status == 200) {
                     this.props.navigation.navigate('Login', {origin: loginGoTarget});
@@ -65,7 +64,6 @@ class SetNewPsd extends React.Component {
             }
         }
         catch (err) {
-            console.log('err ', err);
             this.toast.show(err);
         }
     }

@@ -40,7 +40,6 @@ class Splash extends React.Component {
 			})
 		})
         // storage.load({ key: 'login'}).then(res => {
-        //     console.log('login ', res);
         //     this.props.changeLoginState(true);
         //     this.props.setUserInfo(res);
         // }).catch((err) => {

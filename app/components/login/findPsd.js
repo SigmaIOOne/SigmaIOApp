@@ -101,7 +101,7 @@ export default class FindPsd extends React.Component {
                         inputContainerStyle={styles.inputContainerStyle}
                         inputStyle={styles.inputStyle}
                         value={account}
-                        onChangeText={(account) => { console.log('@ ', account); this.setState({account}) }}
+                        onChangeText={(account) => { this.setState({account}) }}
                     />
                     <Input
                         placeholder={I18n.t('sigm.loginPart.findPsdPart.codePlaceholder')}

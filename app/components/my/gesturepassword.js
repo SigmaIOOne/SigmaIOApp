@@ -17,7 +17,6 @@ export class GesturePassword extends Component {
     }
 
     onEnd(password) { //手势解锁动作停止，手指离开屏幕时
-        console.log(password);
         if (password == '123') {
             this.setState({
                 status: 'right',

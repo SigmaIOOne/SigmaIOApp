@@ -13,10 +13,6 @@ export class AboutUs extends Component {
 	}
 
 	componentDidMount() {
-		// this.setState({
-		// 	currentVersion: DeviceInfo.getVersion().replace(/\./g, '')
-		// });
-		// console.log(DeviceInfo.getVersion())
 		storage
 			.load({
 				key: 'localLanguage'

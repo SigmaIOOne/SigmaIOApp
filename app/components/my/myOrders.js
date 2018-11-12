@@ -51,7 +51,6 @@ class MyOrders extends Component {
         try {
             let result = await getAllOrder();
             result = result.data;
-            console.log('all ', result);
             if (result.status == 200) {
                 this.props.setAllOrder(result.data);
                 this.setState({

@@ -95,7 +95,6 @@ export default class ChangePwd extends React.Component {
 	_clickTocomfirm = () => {
 		// this.props.navigation.navigate('setNewPwd',{ userId: this.state.userId})
 		checkCode(this.state.phone, this.state.pwd).then((res) => {
-			// console.log(res)
 			if(res.data.status === 'success'){
 				this.props.navigation.navigate('setNewPwd',{ userId: res.data.message})
 			} else {

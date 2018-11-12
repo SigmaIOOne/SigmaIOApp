@@ -50,7 +50,6 @@ class InvitationCode extends React.Component {
 			var content = await Clipboard.getString();
 			this.toast.show(I18n.t('public.copySuccess'));
 		} catch (e) {
-			// console.log(e)
 			this.toast.show(I18n.t('public.copyFailed'));
 		}
 	}

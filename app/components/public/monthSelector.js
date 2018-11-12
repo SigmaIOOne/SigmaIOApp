@@ -27,12 +27,12 @@ export default function monthSelector (currMoment) {
         const nextMoment = moment().year(currYear).month(currMonth).date(nextDate);
         _getDateList(currYear, currMonth, nextMoment);
     }
+
     // 获得可以选择的时间列表
     function _getDateList(currYear, currMonth, nextMoment) {
         const nextYear = nextMoment.get('year');
         const nextMonth = nextMoment.get('month');
         const startMomentArr = _calculateStartTime(currYear, currMonth, nextYear, nextMonth);
-        console.log('startMomentArr ', startMomentArr);
         let year = startMomentArr[0];
         let month = startMomentArr[1];
         const EndYear = year + showYearsNum;
@@ -48,22 +48,16 @@ export default function monthSelector (currMoment) {
             dateList.push(currStr);
         }
     }
+
     // 计算可以选择的初始时间
     function _calculateStartTime(currYear, currMonth, nextYear, nextMonth) {
         const result = [];
-        if ((currYear === nextYear) && (currMonth === nextMonth)) {
-            // 从今年下个月开始
-            result.push(nextYear, currMonth + 1);
-        } else if ((currYear === nextYear) && (currMonth + 1 === nextMonth)) {
-            // 从今年下下个月开始
-            result.push(nextYear, nextMonth + 1);
-        } else if ((currYear + 1 === nextYear)) {
-            // 跨年了
-            // 0 是1月， 1是2月
-            result.push(nextYear, 1);
-        }
+        if ((currYear === nextYear) && (currMonth === nextMonth)) result.push(nextYear, currMonth + 1); // 从今年下个月开始
+        else if ((currYear === nextYear) && (currMonth + 1 === nextMonth)) result.push(nextYear, nextMonth + 1); // 从今年下下个月开始
+        else if ((currYear + 1 === nextYear)) result.push(nextYear, 1); // 跨年了, 0 是1月， 1是2月
         return result;
     }
+
     _init();
     return dateList;
 }

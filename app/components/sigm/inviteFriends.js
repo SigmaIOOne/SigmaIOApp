@@ -53,7 +53,6 @@ class InviteFriends extends React.Component {
         try {
             let result = await getInviteFriendsData();
             result = result.data;
-            console.log('result ', result);
             if (result.status == 200) {
                 result = result.data;
                 this.setState({
@@ -96,7 +95,6 @@ class InviteFriends extends React.Component {
 
     // 点击进行分享到对应的微信好友/朋友圈
     _clickToShare = async (target) => {
-        console.log('***********');
         try {
             const uri = await captureRef(this.refs.posterArea, {
                 format: 'jpg',

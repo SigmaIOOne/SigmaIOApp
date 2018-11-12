@@ -28,7 +28,6 @@ class Registry extends React.Component {
         netInfo: PropTypes.object,
     }
     constructor(props) {
-        console.log('prop ');
         super(props);
         this.state = {
             account: '',

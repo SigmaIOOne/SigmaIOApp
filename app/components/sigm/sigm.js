@@ -37,11 +37,9 @@ class Sigm extends React.Component {
         // if (this.props.netInfo.noNetworkClickNum) {
             // this.toast.show(I18n.t('error.noNetwork'));
             // 在这里的时候，下面的toast弹窗还没渲染出来，所以不能在这里设置
-            // console.log('nnn ', nextProps.netInfo, this.toast);
         // }
     // }
     componentDidMount() {
-        console.log('sigm did ', this.props.navigation.state.params);
         this._init();
     }
 
@@ -50,7 +48,6 @@ class Sigm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('sigm will ', nextProps.navigation.state.params);
         const curLogin = this.props.login.login;
         const nextLogin = nextProps.login.login;
         if( !curLogin && nextLogin ) this._asyncGetSigm();
@@ -72,7 +69,6 @@ class Sigm extends React.Component {
     }
     // 用户退出登录后重置tab信息
     _resetSigmData = () => {
-        console.log('reset');
         this.setState({
             all: '0.00', // 总资产
             dollar: '0.00', // 约等于多少钱
@@ -111,8 +107,6 @@ class Sigm extends React.Component {
     }
     render() {
         const login = this.props.login.login;
-        // const isConnected = this.props.netInfo.isConnected;
-        console.log('netInfo ', this.props.netInfo);
         const isConnected = this.props.netInfo.isConnected;
         const { all, dollar, income, miningaccount, charged } = this.state;
         return (

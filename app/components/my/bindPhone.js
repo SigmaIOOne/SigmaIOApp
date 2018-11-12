@@ -95,7 +95,7 @@ export default class BindPhone extends React.Component {
                                 inputContainerStyle={styles.inputContainerStyle}
                                 inputStyle={styles.inputStyle}
                                 value={account}
-                                onChangeText={(account) => { console.log('@ ', account); this.setState({account}) }}
+                                onChangeText={(account) => { this.setState({account}) }}
                             />
                         </View>
                     </View>
@@ -108,7 +108,7 @@ export default class BindPhone extends React.Component {
                                 inputContainerStyle={styles.inputContainerStyle}
                                 inputStyle={styles.inputStyle}
                                 value={phoneCode}
-                                onChangeText={(phoneCode) => { console.log('@@@ ', phoneCode); this.setState({phoneCode}) }}
+                                onChangeText={(phoneCode) => { this.setState({phoneCode}) }}
                             />
                         </View>
                         <TouchableOpacity disabled={!canSendCode} onPress={() => this._getPhoneCode()}>
