@@ -48,6 +48,7 @@ axios.interceptors.response.use(
                 type: 'dbc/netInfo/CHANGE_NET_CONNECT_STATE',
                 payload: {newState: false}
             });
+            return Promise.reject('网络未连接');
         }
         // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
         // return Promise.reject(error.response.data)

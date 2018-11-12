@@ -38,15 +38,6 @@ class AccountDetail extends React.Component {
             errMsg: '', // 存放错误信息，因为
         }
     }
-    componentDidUpdate() {
-        // 网络未连接
-        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
-        // toast也就不会触发
-        const {netInfo} = this.props;
-        if (netInfo.noNetworkClickNum) {
-            this.toast.show(netInfo.errMsg);
-        }
-    }
     componentDidMount() {
         this._init();
     }

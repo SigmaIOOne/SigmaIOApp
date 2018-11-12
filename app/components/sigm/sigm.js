@@ -56,15 +56,15 @@ class Sigm extends React.Component {
         if( !curLogin && nextLogin ) this._asyncGetSigm();
         else if(curLogin && !nextLogin) this._resetSigmData(); // 说明退出了登录
     }
-    componentDidUpdate() {
-        // 网络未连接
-        // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
-        // toast也就不会触发
-        const {netInfo} = this.props;
-        if (netInfo.noNetworkClickNum) {
-            this.toast.show(netInfo.errMsg);
-        }
-    }
+    // componentDidUpdate() {
+    //     // 网络未连接
+    //     // 不能用isConnected来判断，因为如果之前是没网，现在还是没网，就不会渲染，
+    //     // toast也就不会触发
+    //     const {netInfo} = this.props;
+    //     if (netInfo.noNetworkClickNum) {
+    //         this.toast.show(netInfo.errMsg);
+    //     }
+    // }
     _cardPress = (target) => {
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
