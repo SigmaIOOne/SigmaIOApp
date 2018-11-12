@@ -21,7 +21,7 @@ import Modal from 'react-native-modalbox';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
-import { getMiningData, transferAmount, userSignIn } from '../../api/sigm';
+import { getMiningData, transferAmount, userGetCoin, userSignIn } from '../../api/sigm';
 import NoNetworkPage from '../public/noNetworkPage';
 import { changeSecurityState } from "../../store/reducers/data";
 
@@ -43,6 +43,9 @@ class MiningPart extends React.Component {
             show: true,
             anim: new Animated.Value(0),
             compositeAnim: new Animated.Value(0),
+            getCoinVal: '', // 用户点击一次所能收取的币
+            getCoinDisable: false, // 用户点击过程中禁止再次点击
+            animateDuration: 2000, // 动画持续时间为2秒
             // 上面是动画效果用,下面的命名来自接口返回参数
             calculation: '', // 当前算⼒
             charged: '', // 待收取
@@ -97,11 +100,11 @@ class MiningPart extends React.Component {
     /**
      * 渲染floor2的item
      */
-    _renderFloor2Item = (title, value, hasRightBorder = true) => {
+    _renderFloor2Item = (data, index) => {
         return (
-            <View style={[styles.floor2Item, hasRightBorder ? {borderRightColor: '#D8D8D8', borderRightWidth: scaleSize(1)} : {}]}>
-                <Text style={styles.floor2Title}>{title}</Text>
-                <Text style={styles.floor2Value}>{value}</Text>
+            <View key={index} style={[styles.floor2Item, data.hasRightBorder ? {borderRightColor: '#D8D8D8', borderRightWidth: scaleSize(1)} : {}]}>
+                <Text style={styles.floor2Title}>{I18n.t('sigm.miningPart.' + data.title)}</Text>
+                <Text style={styles.floor2Value}>{data.value}</Text>
             </View>
         );
     }
@@ -157,35 +160,93 @@ class MiningPart extends React.Component {
             this.toast.show(err);
         }
     }
-    _onPress = () => {
+
+    // 点击圆圈收取币
+    _onClickCircle = async () => {
+        try {
+            this.setState({
+                getCoinDisable: true
+            });
+            let result = await userGetCoin();
+            result = result.data;
+            if (result.status == 200) {
+                await this.setState({
+                    getCoinVal: '已领取' + result.data.charged + 'SIGM',
+                });
+                this._circleAnimate();
+                setTimeout(() => {
+                    this.setState({
+                        getCoinDisable: false
+                    });
+                }, this.state.animateDuration)
+            } else await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.setState({
+                getCoinDisable: false
+            });
+            this.toast.show(err);
+        }
+    }
+
+    // 开始动画效果
+    _circleAnimate = () => {
+        const { animateDuration } = this.state;
         Animated.spring(this.state.anim, {
-            toValue: 0,   
-            velocity: 7,  
-            tension: -20, 
-            friction: 3,  
-          }).start();
+            toValue: 0,
+            velocity: 7,
+            tension: -20,
+            friction: 3,
+        }).start();
         Animated.timing(
             this.state.fadeAnim,
-            {toValue: 0, duration: 2000}
-        ).start();
+            {toValue: 0, duration: animateDuration}
+        ).start(() => {
+            this.setState({
+                fadeAnim: new Animated.Value(1),
+            })
+        });
         Animated.timing(
             this.state.top,
-            {toValue: scaleSize(0), duration: 2000},
-        ).start();
+            {toValue: scaleSize(0), duration: animateDuration},
+        ).start(() => {
+            this.setState({
+                top: new Animated.Value(scaleSize(220)),
+            })
+        });
     }
 
     render() {
         const { netInfo, securityCenterData } = this.props;
-        const isConnected = netInfo.isConnected;
         const {
             calculation,
-            charged,
+            getCoinDisable,
+            getCoinVal,
             ranking,
             miningaccount,
             total,
             transferVal,
         } = this.state;
+        const isConnected = netInfo.isConnected;
         const hasSigned = securityCenterData.hasSigned;
+        const floor2List = [
+            {
+                // 我的实时算力
+                title: 'realTimeDeposit',
+                value: calculation,
+            },
+            {
+                // 全网算力
+                title: 'allDeposit',
+                value: total,
+            },
+            {
+                // 我的算力排行
+                title: 'depositRank',
+                value: ranking,
+                hasRightBorder: true,
+            },
+        ];
         return (
             <View>
                 {
@@ -206,34 +267,12 @@ class MiningPart extends React.Component {
                         </View>
                         <View style={styles.content}>
                             <View style={styles.floor1}>
-                                <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#666'}}>
-                                    已领取0.02343SIGM
+                                <Animated.Text style={{ position: 'relative', top: this.state.top, opacity: this.state.fadeAnim, color: '#F2F2F5'}}>
+                                    {/*已领取0.02343SIGM*/}
+                                    {getCoinVal}
                                 </Animated.Text>
                                 <ImageBackground style={styles.outerCircle} source={require('../../assets/images/sigm/outer_circle.png')}>
-                                    <TouchableOpacity onPress={()=>{
-                                        Animated.spring(this.state.anim, {
-                                            toValue: 0,
-                                            velocity: 7,
-                                            tension: -20,
-                                            friction: 3,
-                                        }).start();
-                                        Animated.timing(
-                                            this.state.fadeAnim,
-                                            {toValue: 0, duration: 2000}
-                                        ).start(() => {
-                                            this.setState({
-                                                fadeAnim: new Animated.Value(1),
-                                            })
-                                        });
-                                        Animated.timing(
-                                            this.state.top,
-                                            {toValue: scaleSize(0), duration: 2000},
-                                        ).start(() => {
-                                            this.setState({
-                                                top: new Animated.Value(scaleSize(220)),
-                                            })
-                                        });
-                                    }}>
+                                    <TouchableOpacity disabled={getCoinDisable} style={styles.animateTouchOpacity} onPress={()=> this._onClickCircle()}>
                                         <Animated.View
                                             style={[styles.content1, {
                                                 transform: [
@@ -253,27 +292,8 @@ class MiningPart extends React.Component {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.floor2}>
-                                {/* 我的实时算力 */}
                                 {
-                                    this._renderFloor2Item(
-                                        I18n.t('sigm.miningPart.realTimeDeposit'),
-                                        calculation,
-                                    )
-                                }
-                                {/* 全网算力 */}
-                                {
-                                    this._renderFloor2Item(
-                                        I18n.t('sigm.miningPart.allDeposit'),
-                                        total,
-                                    )
-                                }
-                                {/* 我的算力排行 */}
-                                {
-                                    this._renderFloor2Item(
-                                        I18n.t('sigm.miningPart.depositRank'),
-                                        ranking,
-                                        false
-                                    )
+                                    floor2List.map((data, index) => this._renderFloor2Item(data, index))
                                 }
                             </View>
                             <View style={[styles.flexRow, {alignItems: 'center'}]}>
@@ -450,6 +470,26 @@ const styles = StyleSheet.create({
         height: scaleSize(260),
         marginTop: scaleSize(82),
         marginBottom: scaleSize(40),
+        alignItems: 'center',
+    },
+    animateTouchOpacity: {
+        width: scaleSize(260),
+        height: scaleSize(260),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    content1: {
+        // backgroundColor: 'green',
+        // borderWidth: 1,
+        // padding: 5,
+        // margin: 20,
+        alignItems: 'center',
+        // width: scaleSize(192),
+        // width: scaleSize(260),
+        // height: scaleSize(260),
+        // backgroundColor: '#89d645',
+        // marginTop: scaleSize(34),
+        // marginLeft: scaleSize(34)
     },
     innerCircle: {
         width: scaleSize(192),
@@ -595,15 +635,4 @@ const styles = StyleSheet.create({
         borderRadius: scaleSize(44),
         marginLeft: scaleSize(72),
     },
-    content1: {
-        // backgroundColor: 'green',
-        // borderWidth: 1,
-        // padding: 5,
-        // margin: 20,
-        alignItems: 'center',
-        width: scaleSize(192),
-        height: scaleSize(192),
-        marginTop: scaleSize(34),
-        marginLeft: scaleSize(34)
-      },
 });

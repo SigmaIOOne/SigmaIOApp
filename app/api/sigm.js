@@ -48,6 +48,11 @@ const userSignIn = async () => {
     return axios.post('/Home/Api/distribute?apiid=usersign');
 }
 
+// 挖矿页面 里的 那个动画圆圈 收取币
+const userGetCoin = async () => {
+    return axios.post('/Home/Api/distribute?apiid=harvest');
+}
+
 export {
     bindCar,
     getAccountDetail,
@@ -57,5 +62,6 @@ export {
     getSigmTab,
     getTransactionRecord,
     transferAmount,
+    userGetCoin,
     userSignIn,
 }
