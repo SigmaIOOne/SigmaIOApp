@@ -31,14 +31,10 @@ import SysSet from '../components/my/sysset'; //我的 -> 系统设置
 import SysLanguage from '../components/my/sysLanguage'; //我的 -> 系统设置 -> 语言
 // import SetGesturePassword from '../components/my/setgesturepassword'; // 我的 -> 系统设置 -> 设置手势密码 未用到
 // import WebSetting from '../components/my/webSetting'; //我的 -> 系统设置 -> web3设置
-import HelperCenter from '../components/my/helpercenter'; // 我的 -> 帮助中心
 import KnowledgePoint from '../components/my/knowledgePoint'; // 我的 -> 帮助中心 -> 内容详情页
 import UserPolicy from '../components/my/userpolicy'; //我的 -> 关于我们 -> 用户协议
 import Versions from '../components/my/versions'; //我的 -> 关于我们 -> 版本日志
 
-import BindingPhone from '../components/my/bindingPhone'; // 我的 -> 绑定手机
-import GoBindPhone from '../components/my/goBindPhone'; //我的 -> 去绑定手机号
-import VCode from '../components/my/verificationCode'; //我的 -> 验证码
 import InvitationCode from '../components/my/invitationCode'; //我的 -> 邀请码
 import BindInCode from '../components/my/bindInCode'; //我的 -> 绑定邀请码
 
@@ -344,17 +340,8 @@ const RootNavigator = createStackNavigator(
 				headerTitle: () => <Text>{I18n.t('my.home.Versions._title')}</Text>
 			}
 		},
-		HelperCenter: {
-			screen: HelperCenter,
-			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('my.home.helpCenter._title')}</Text>
-			}
-		},
 		InvitationCode,
 		BindInCode,
-		BindingPhone,
-		VCode,
-		GoBindPhone,
 		changePwd,
 		setNewPwd,
 		SysSet: {
