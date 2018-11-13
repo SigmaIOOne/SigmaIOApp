@@ -63,7 +63,8 @@ class SecurityCenter extends Component {
     render() {
         const { netInfo, securityCenterData } = this.props;
         const isConnected = netInfo.isConnected;
-        const { bindPhone, hasCertificated } = securityCenterData;
+        const { hasCertificated } = securityCenterData;
+        const bindPhone = true; // 不支持邮箱注册了，所以绑定手机功能没了
         const list = [
             {
                 // 绑定手机

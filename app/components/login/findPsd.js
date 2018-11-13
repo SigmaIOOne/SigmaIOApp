@@ -18,7 +18,7 @@ import { ImageBackground } from 'react-native-vector-icons/lib/react-native';
 
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
-import { checkAccount, checkCode } from '../../utils/valiServices';
+import { checkPhone, checkCode } from '../../utils/valiServices';
 import Toast from '../../utils/myToast';
 import Timer from '../../utils/timer';
 import {getPhoneCode, checkPhoneCode} from '../../api/login';
@@ -38,7 +38,7 @@ export default class FindPsd extends React.Component {
         try {
             const { account, phoneCode } = this.state;
             const { origin } = this.props.navigation.state.params;
-            await checkAccount(account);
+            await checkPhone(account);
             await checkCode(phoneCode);
             let result = await checkPhoneCode(account, phoneCode);
             result = result.data;
@@ -66,7 +66,7 @@ export default class FindPsd extends React.Component {
     _getPhoneCode = async () => {
         try {
             const { account } = this.state;
-            await checkAccount(account);
+            await checkPhone(account);
             let result = await getPhoneCode(account, 'modify');
             result = result.data;
             if (result.status === 200) {

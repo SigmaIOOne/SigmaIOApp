@@ -295,7 +295,7 @@ export default {
         waitingGet: '待领取',
         immediatelyGet: '马上收取',
         loginPart: {
-	        phonePlaceholder: '请输入您的邮箱或手机号',
+	        phonePlaceholder: '请输入您的手机号',
             psdPlaceholder: '请输入密码',
             loginBtn: '立即登录',
             findPsdBtn: '忘记密码',

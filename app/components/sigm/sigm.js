@@ -16,11 +16,15 @@ import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
 import NoNetworkPage from '../public/noNetworkPage';
 import { getSigmTab } from '../../api/sigm';
+import { getLoginMsg } from '../../api/login';
+import { changeLoginState, setUserInfo } from '../../store/reducers/login';
 
 class Sigm extends React.Component {
     static propTypes = {
+        changeLoginState: PropTypes.func,
         login: PropTypes.object,
         netInfo: PropTypes.object,
+        setUserInfo: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -44,7 +48,7 @@ class Sigm extends React.Component {
     }
 
     _init = () => {
-        this.props.login.login && this._asyncGetSigm();
+        this.props.login.login ? this._asyncGetSigm() : this._getLoginMsg();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,6 +66,21 @@ class Sigm extends React.Component {
     //         this.toast.show(netInfo.errMsg);
     //     }
     // }
+
+    // 防止在Splash的时候没有获取到接口返回值，在tab页里重新都试一下
+    _getLoginMsg = async () => {
+        try {
+            let result = await getLoginMsg();
+            result = result.data;
+            if (result.status == 200) {
+                this.props.changeLoginState(true);
+                this.props.setUserInfo(result.data);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
     _cardPress = (target) => {
         const login = this.props.login.login;
         const navigate = this.props.navigation.navigate;
@@ -193,7 +212,10 @@ export default connect(
     state => ({
         login: state.login,
         netInfo: state.netInfo,
-    })
+    }), {
+        changeLoginState,
+        setUserInfo
+    }
 )(Sigm)
 
 const styles = StyleSheet.create({

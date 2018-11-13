@@ -53,7 +53,7 @@ export default class Banner extends Component {
     }
 
     render() {
-        
+
         return (
             <View style={{ height: scaleSize(514) }}>
                 <Carousel

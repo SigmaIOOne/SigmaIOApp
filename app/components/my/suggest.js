@@ -12,7 +12,7 @@ import { Input, Button } from 'react-native-elements';
 
 import { I18n } from "../../../language/i18n";
 import { scaleSize } from '../../utils/ScreenUtil';
-import { checkAccount, checkSuggestContent } from '../../utils/valiServices';
+import { checkSuggestAccount, checkSuggestContent } from '../../utils/valiServices';
 import Toast from '../../utils/myToast';
 import TextWidget from '../public/textWidget/textWidget';
 import { sendSuggest } from '../../api/my';
@@ -29,7 +29,7 @@ export default class Suggest extends React.Component {
     _sendSuggest = async () => {
         try {
             const { account, content } = this.state;
-            await checkAccount(account);
+            await checkSuggestAccount(account);
             await checkSuggestContent(content);
             let result = await sendSuggest(account, content);
             result = result.data;

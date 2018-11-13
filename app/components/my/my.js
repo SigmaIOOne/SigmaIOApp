@@ -13,7 +13,8 @@ import { connect } from 'react-redux';
 import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 import Toast from '../../utils/myToast';
-import { logout } from '../../api/login';
+import NoNetworkPage from '../public/noNetworkPage';
+import {getLoginMsg, logout} from '../../api/login';
 import { changeLoginState, setUserInfo } from '../../store/reducers/login';
 import { resetDataRedux } from '../../store/reducers/data';
 
@@ -25,6 +26,30 @@ class My extends Component {
         resetDataRedux: PropTypes.func,
         setUserInfo: PropTypes.func,
     }
+
+    componentDidMount() {
+        this._init();
+    }
+
+    _init = () => {
+        !this.props.login.login && this._getLoginMsg();
+    }
+
+    // 防止在Splash的时候没有获取到接口返回值，在tab页里重新都试一下
+    _getLoginMsg = async () => {
+        try {
+            let result = await getLoginMsg();
+            result = result.data;
+            if (result.status == 200) {
+                this.props.changeLoginState(true);
+                this.props.setUserInfo(result.data);
+            }
+        }
+        catch (err) {
+            this.toast.show(err);
+        }
+    }
+
     _renderSelectItem = (data) => {
 	    return (
             <TouchableOpacity
@@ -57,92 +82,101 @@ class My extends Component {
     }
 	render() {
         const { login, userInfo } = this.props.login;
+        const isConnected = this.props.netInfo.isConnected;
         const phone = login ? userInfo.account : '';
         const formatPhone = login && phone ? phone.replace(phone.slice(3, 7), '****') : '';
 		return (
-			<View style={ login ? styles.container : {}}>
+		    <View>
                 {
-                    login
-                    ? <View>
-                            <View style={styles.top}>
-                                <View style={styles.topLeft}>
-                                    <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
-                                    <Text style={styles.topTxt}>{formatPhone}</Text>
-                                </View>
-                                <TouchableOpacity onPress={() => this._logout()}>
-                                    <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.graySplitLine}></View>
-                            {/* 消息中心 */}
+                    isConnected
+                    ? <View style={ login ? styles.container : {}}>
                             {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/message.png'),
-                                    title: 'my.message',
-                                    pressFunc: () => this.props.navigation.navigate('MessageCenter'),
-                                    hasNoBorder: true,
-                                })
+                                login
+                                    ? <View>
+                                        <View style={styles.top}>
+                                            <View style={styles.topLeft}>
+                                                <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
+                                                <Text style={styles.topTxt}>{formatPhone}</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => this._logout()}>
+                                                <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.graySplitLine}></View>
+                                        {/* 消息中心 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/message.png'),
+                                                title: 'my.message',
+                                                pressFunc: () => this.props.navigation.navigate('MessageCenter'),
+                                                hasNoBorder: true,
+                                            })
+                                        }
+                                        <View style={styles.graySplitLine}></View>
+                                        {/* 我的订单 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/order.png'),
+                                                title: 'my.order',
+                                                pressFunc: () => this.props.navigation.navigate('MyOrders'),
+                                                hasNoBorder: true,
+                                            })
+                                        }
+                                        {/* 申请理赔 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/apply.png'),
+                                                title: 'my.applyCompensation',
+                                                pressFunc: () => this.props.navigation.navigate('ApplyCompensation')
+                                            })
+                                        }
+                                        {/* 数据上传记录 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/upload.png'),
+                                                title: 'my.uploadRecord',
+                                                pressFunc: () => this.props.navigation.navigate('UploadRecord')
+                                            })
+                                        }
+                                        {/* 安全中心 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/security.png'),
+                                                title: 'my.security',
+                                                pressFunc: () => this.props.navigation.navigate('SecurityCenter')
+                                            })
+                                        }
+                                        {/* 关于我们 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/about.png'),
+                                                title: 'my.aboutUs',
+                                                pressFunc: () => this.props.navigation.navigate('AboutUs')
+                                            })
+                                        }
+                                        {/* 意见反馈 */}
+                                        {
+                                            this._renderSelectItem({
+                                                icon: require('../../assets/images/my/suggest.png'),
+                                                title: 'my.suggest',
+                                                pressFunc: () => this.props.navigation.navigate('Suggest')
+                                            })
+                                        }
+                                    </View>
+                                    : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login', {origin: 'My'})}>
+                                        <View style={styles.topLeft}>
+                                            <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
+                                            <Text style={styles.topTxt}>{I18n.t('my.login')}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                             }
-                            <View style={styles.graySplitLine}></View>
-                            {/* 我的订单 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/order.png'),
-                                    title: 'my.order',
-                                    pressFunc: () => this.props.navigation.navigate('MyOrders'),
-                                    hasNoBorder: true,
-                                })
-                            }
-                            {/* 申请理赔 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/apply.png'),
-                                    title: 'my.applyCompensation',
-                                    pressFunc: () => this.props.navigation.navigate('ApplyCompensation')
-                                })
-                            }
-                            {/* 数据上传记录 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/upload.png'),
-                                    title: 'my.uploadRecord',
-                                    pressFunc: () => this.props.navigation.navigate('UploadRecord')
-                                })
-                            }
-                            {/* 安全中心 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/security.png'),
-                                    title: 'my.security',
-                                    pressFunc: () => this.props.navigation.navigate('SecurityCenter')
-                                })
-                            }
-                            {/* 关于我们 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/about.png'),
-                                    title: 'my.aboutUs',
-                                    pressFunc: () => this.props.navigation.navigate('AboutUs')
-                                })
-                            }
-                            {/* 意见反馈 */}
-                            {
-                                this._renderSelectItem({
-                                    icon: require('../../assets/images/my/suggest.png'),
-                                    title: 'my.suggest',
-                                    pressFunc: () => this.props.navigation.navigate('Suggest')
-                                })
-                            }
-                    </View>
-                    : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login', {origin: 'My'})}>
-                        <View style={styles.topLeft}>
-                            <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
-                            <Text style={styles.topTxt}>{I18n.t('my.login')}</Text>
                         </View>
-                    </TouchableOpacity>
+                    : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
+                {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
-			</View>
+            </View>
+
 		);
 	}
 }

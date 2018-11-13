@@ -142,6 +142,19 @@ export function checkSuggestContent(content) {
     })
 }
 
+// 验证意见反馈的发起用户：qq/手机号/邮箱
+export function checkSuggestAccount(account) {
+    return new Promise((res, rej) => {
+        account = account.trim();
+        const phone = /^1\d{10}$/;
+        const email = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+        const qq = /^[1-9]\d{3,9}$/;
+        if (account.length === 0) rej('用户联系方式必填');
+        else if (phone.test(account) || email.test(account) || qq.test(account)) res();
+        else rej('联系方式的格式不正确');
+    });
+}
+
 // 验证手机号码, 只用做11位的长度判断
 export function checkPhone(phone) {
     const regExp = /^1\d{10}$/;
