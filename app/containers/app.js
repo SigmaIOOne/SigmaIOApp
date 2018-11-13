@@ -32,7 +32,6 @@ import SysLanguage from '../components/my/sysLanguage'; //我的 -> 系统设置
 // import SetGesturePassword from '../components/my/setgesturepassword'; // 我的 -> 系统设置 -> 设置手势密码 未用到
 // import WebSetting from '../components/my/webSetting'; //我的 -> 系统设置 -> web3设置
 import KnowledgePoint from '../components/my/knowledgePoint'; // 我的 -> 帮助中心 -> 内容详情页
-import UserPolicy from '../components/my/userpolicy'; //我的 -> 关于我们 -> 用户协议
 import Versions from '../components/my/versions'; //我的 -> 关于我们 -> 版本日志
 
 import InvitationCode from '../components/my/invitationCode'; //我的 -> 邀请码
@@ -326,12 +325,6 @@ const RootNavigator = createStackNavigator(
 			screen: AboutUs,
 			navigationOptions: {
                 headerTitle: I18n.t('my.aboutUs')
-			}
-		},
-		UserPolicy: {
-			screen: UserPolicy,
-			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('my.home.aboutUs.useAgreement')}</Text>
 			}
 		},
 		Versions:{

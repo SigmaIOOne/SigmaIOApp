@@ -131,7 +131,7 @@ export class AboutUs extends Component {
 						underlayColor={'#ddd'}
 						activeOpacity={0.5}
 						onPress={() =>
-							this.props.navigation.navigate('UserPolicy', {
+							this.props.navigation.navigate('ServerPolicies', {
 								service_source: this.state.service_source
 							})}
 					>
@@ -151,7 +151,7 @@ export class AboutUs extends Component {
 						underlayColor={'#ddd'}
 						activeOpacity={0.5}
 						onPress={() =>
-							this.props.navigation.navigate('UserPolicy', {
+							this.props.navigation.navigate('ServerPolicies', {
 								service_source: this.state.service_source
 							})}
 					>

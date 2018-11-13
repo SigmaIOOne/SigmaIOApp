@@ -240,7 +240,7 @@ class CreateWallet extends Component {
 						<Text
 							style={styles.color_aff}
 							onPress={() => {
-								this.props.navigation.navigate('UserPolicy', {
+								this.props.navigation.navigate('ServerPolicies', {
 									service_source: this.state.service_source
 								});
 							}}

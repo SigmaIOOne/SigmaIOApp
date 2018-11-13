@@ -6041,14 +6041,6 @@ react-native-os@^1.2.1:
   version "1.2.1"
   resolved "http://registry.npm.taobao.org/react-native-os/download/react-native-os-1.2.1.tgz#681c27b4b4340c96f6297cf50df00ba2f6fad7cb"
 
-react-native-pdf@^4.0.0:
-  version "4.0.0"
-  resolved "http://registry.npm.taobao.org/react-native-pdf/download/react-native-pdf-4.0.0.tgz#1fb27f20342424e125763907fcebbce2be28e8d6"
-  integrity sha1-H7J/IDQkJOEldjkH/Ou84r4o6NY=
-  dependencies:
-    crypto-js "^3.1.9-1"
-    prop-types "^15.5.10"
-
 react-native-qr-scanner@^1.2.4:
   version "1.2.4"
   resolved "http://registry.npm.taobao.org/react-native-qr-scanner/download/react-native-qr-scanner-1.2.4.tgz#0c5b1b079e15f8dbf06a77c91a87f8f1945c5d28"

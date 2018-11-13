@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import org.wonday.pdf.RCTPdfView;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
@@ -40,7 +39,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNViewShotPackage(),
             new RNDeviceInfo(),
-            new RCTPdfView(),
             new RNFetchBlobPackage(),
             new VectorIconsPackage(),
             new SvgPackage(),
