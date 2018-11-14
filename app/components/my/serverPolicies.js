@@ -1,3 +1,6 @@
+/**
+ * 我的 -> 关于我们 -> 隐私条款
+ */
 import React from 'react';
 import {
     Image,
@@ -16,7 +19,9 @@ export default class ServerPolicies extends React.Component {
                 <View style={styles.container}>
                     <Text style={styles.contentTitle}>{I18n.t('my.serverPoliciesPart._title1')}</Text>
                     <Text style={styles.contentTitle}>{I18n.t('my.serverPoliciesPart._title2')}</Text>
-                    <Image style={styles.img} source={require('../../assets/images/my/policy.png')}/>
+                    <Image style={[styles.img, styles.img1]} source={require('../../assets/images/my/policy1.png')}/>
+                    <Image style={[styles.img, styles.img2]} source={require('../../assets/images/my/policy2.png')}/>
+                    <Image style={[styles.img, styles.img3]} source={require('../../assets/images/my/policy3.png')}/>
                 </View>
             </ScrollView>
         );
@@ -35,8 +40,16 @@ const styles = StyleSheet.create({
         fontSize: scaleSize(28),
     },
     img: {
-        marginTop: scaleSize(40),
         width: scaleSize(750),
-        height: scaleSize(5768),
-    }
+    },
+    img1: {
+        marginTop: scaleSize(40),
+        height: scaleSize(1782),
+    },
+    img2: {
+        height: scaleSize(2262),
+    },
+    img3: {
+        height: scaleSize(1724),
+    },
 });
