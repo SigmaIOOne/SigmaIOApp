@@ -59,10 +59,8 @@ class GetDeposit extends React.Component {
             if (result.status == 200) {
                 // 1是已绑定， 0是未绑定
                 const { car, numberid } = result.data;
-                this.setState({
-                    bindCar: car == 1,
-                    certificate: numberid == 1,
-                });
+                this.props.changeSecurityState('bindCar', car == 1);
+                this.props.changeSecurityState('hasCertificated', numberid == 1);
             }else await Promise.reject(result.msg);
         }
         catch (err) {
@@ -89,15 +87,15 @@ class GetDeposit extends React.Component {
                 <View style={[styles.flexRow]}>
                     <Image style={styles.itemIcon} source={data.iconImg}/>
                     <View>
-                        <Text style={styles.itemTitle}>{I18n.t(data.title)}</Text>
+                        <Text style={styles.itemTitle}>{I18n.t('sigm.miningPart.getDepositPart.' + data.title)}</Text>
                         <View style={styles.flexRow}>
-                            <Text style={styles.itemTxt1}>{I18n.t(data.description1)}</Text>
-                            <Text style={styles.itemTxt2}>{I18n.t(data.description2)}</Text>
+                            <Text style={styles.itemTxt1}>{I18n.t('sigm.miningPart.getDepositPart.' + data.description1)}</Text>
+                            <Text style={styles.itemTxt2}>{I18n.t('sigm.miningPart.getDepositPart.' + data.description2)}</Text>
                         </View>
                     </View>
                 </View>
                 <TouchableOpacity disabled={data.disabled} style={[styles.itemRight, data.disabled ? styles.itemRightDisabled : {}]} onPress={() => data.pressFunc()}>
-                    <Text style={styles.itemRightTxt}>{I18n.t(data.btnTxt)}</Text>
+                    <Text style={styles.itemRightTxt}>{I18n.t('sigm.miningPart.getDepositPart.' + data.btnTxt)}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -121,10 +119,10 @@ class GetDeposit extends React.Component {
                             {
                                 this._renderListItem({
                                     iconImg: require('../../assets/images/sigm/car.png'),
-                                    title: 'sigm.miningPart.getDepositPart.bindCar',
-                                    description1: 'sigm.miningPart.getDepositPart.bindCarDescription1',
-                                    description2: 'sigm.miningPart.getDepositPart.bindCarDescription2',
-                                    btnTxt: 'sigm.miningPart.getDepositPart.bindCarBtn1',
+                                    title: 'bindCar',
+                                    description1: 'bindCarDescription1',
+                                    description2: 'bindCarDescription2',
+                                    btnTxt: bindCar ? 'bindCarBtn2' : 'bindCarBtn1',
                                     disabled: bindCar,
                                     hasNoBorder: true,
                                     pressFunc: () => { this.props.navigation.navigate('BindCar') }
@@ -136,10 +134,10 @@ class GetDeposit extends React.Component {
                             {
                                 this._renderListItem({
                                     iconImg: require('../../assets/images/sigm/daily.png'),
-                                    title: 'sigm.miningPart.getDepositPart.daylySignIn',
-                                    description1: 'sigm.miningPart.getDepositPart.daylyDescription1',
-                                    description2: 'sigm.miningPart.getDepositPart.daylyDescription2',
-                                    btnTxt: 'sigm.miningPart.getDepositPart.daylyBtn2',
+                                    title: 'daylySignIn',
+                                    description1: 'daylyDescription1',
+                                    description2: 'daylyDescription2',
+                                    btnTxt: hasSigned ? 'daylyBtn2' : 'daylyBtn1',
                                     disabled: hasSigned,
                                     pressFunc: () => this._userSignIn()
                                 })
@@ -149,10 +147,10 @@ class GetDeposit extends React.Component {
                             {
                                 this._renderListItem({
                                     iconImg: require('../../assets/images/sigm/friends.png'),
-                                    title: 'sigm.miningPart.getDepositPart.inviteFriends',
-                                    description1: 'sigm.miningPart.getDepositPart.inviteDescription1',
-                                    description2: 'sigm.miningPart.getDepositPart.inviteDescription2',
-                                    btnTxt: 'sigm.miningPart.getDepositPart.inviteBtn1',
+                                    title: 'inviteFriends',
+                                    description1: 'inviteDescription1',
+                                    description2: 'inviteDescription2',
+                                    btnTxt: 'inviteBtn1',
                                     disabled: false,
                                     pressFunc: () => { this.props.navigation.navigate('InviteFriends') }
                                 })
@@ -161,10 +159,10 @@ class GetDeposit extends React.Component {
                             {
                                 this._renderListItem({
                                     iconImg: require('../../assets/images/sigm/certificate.png'),
-                                    title: 'sigm.miningPart.getDepositPart.certificate',
-                                    description1: 'sigm.miningPart.getDepositPart.certificateDescription1',
-                                    description2: 'sigm.miningPart.getDepositPart.certificateDescription2',
-                                    btnTxt: 'sigm.miningPart.getDepositPart.certificateBtn1',
+                                    title: 'certificate',
+                                    description1: 'certificateDescription1',
+                                    description2: 'certificateDescription2',
+                                    btnTxt: certificate ? 'certificateBtn2' : 'certificateBtn1',
                                     disabled: certificate,
                                     pressFunc: () => { this.props.navigation.navigate('Certificate') }
                                 })
@@ -174,10 +172,10 @@ class GetDeposit extends React.Component {
                             {
                                 this._renderListItem({
                                     iconImg: require('../../assets/images/sigm/registry.png'),
-                                    title: 'sigm.miningPart.getDepositPart.registry',
-                                    description1: 'sigm.miningPart.getDepositPart.registryDescription1',
-                                    description2: 'sigm.miningPart.getDepositPart.registryDescription2',
-                                    btnTxt: 'sigm.miningPart.getDepositPart.registryBtn1',
+                                    title: 'registry',
+                                    description1: 'registryDescription1',
+                                    description2: 'registryDescription2',
+                                    btnTxt: 'registryBtn2',
                                     disabled: true,
                                 })
                             }

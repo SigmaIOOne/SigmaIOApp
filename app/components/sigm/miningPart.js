@@ -53,6 +53,7 @@ class MiningPart extends React.Component {
             miningaccount: '', // 挖矿资产
             total: '', // 全⽹总算⼒
             transferVal: '', // 划转数值
+            modalBtnDisabled: false, // 防止多次调接口
         };
 	}
     componentDidMount() {
@@ -146,15 +147,16 @@ class MiningPart extends React.Component {
         Keyboard.dismiss(); // 为了防止toast的位置因为键盘收起而移动，所以干脆先手动关闭键盘
         try {
             const transferVal = this.state.transferVal;
+            await this.setState({modalBtnDisabled: true});
             let result = await transferAmount(transferVal);
             result = result.data;
             if (result.status == 200) {
+                await this.setState({modalBtnDisabled: false});
                 this.transfer.close();
-            } else {
-                await Promise.reject(result.msg);
-            }
+            } else await Promise.reject(result.msg);
         }
         catch (err) {
+            await this.setState({modalBtnDisabled: false});
             this.toast.show(err);
         }
     }
@@ -225,6 +227,7 @@ class MiningPart extends React.Component {
             getCoinVal,
             ranking,
             miningaccount,
+            modalBtnDisabled,
             total,
             transferVal,
         } = this.state;
@@ -389,6 +392,7 @@ class MiningPart extends React.Component {
                                     buttonStyle={styles.transferModalBtn}
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(28)}}
                                     onPress={() => this._transferAmount()}
+                                    disabled={modalBtnDisabled}
                                 />
                             </View>
                         </Modal>
@@ -448,6 +452,7 @@ const styles = StyleSheet.create({
         borderRadius: scaleSize(22),
         backgroundColor: '#4A90E2',
         alignItems: 'center',
+        justifyContent: 'center',
         marginLeft: scaleSize(50),
     },
     transferTxt: {
