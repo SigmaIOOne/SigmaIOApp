@@ -230,7 +230,7 @@ class ImportWallet extends Component {
 		this.props.navigation.dispatch(resetAction);
 	}
 
-	_setSeed(option) {
+	_setSeed = (option) => {
 		option._this.refs.loading.show();
 		setTimeout(() => {
 			var words = option.mnemonic.split(' ');

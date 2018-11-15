@@ -292,13 +292,13 @@ const RootNavigator = createStackNavigator(
 		CreateWallet: {
 			screen: CreateWallet,
 			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('wallet.creatWallet')}</Text>
+				headerTitle: I18n.t('wallet.creatWallet')
 			}
 		},
 		ImportWallet: {
 			screen: ImportWallet,
 			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('guide.importWallet')}</Text>
+				headerTitle: I18n.t('guide.importWallet')
 			}
 		},
 		WalletInfo,
@@ -311,7 +311,8 @@ const RootNavigator = createStackNavigator(
 		ExportMnemonic: {
 			screen: ExportMnemonic,
 			navigationOptions: {
-				headerTitle: () => <Text>{I18n.t('assets.walletInfo.exportMnemonic')}</Text>
+				headerTitle: I18n.t('assets.walletInfo.exportMnemonic'),
+                headerLeft: <View/>,
 			}
 		},
 		ExportKeystore,

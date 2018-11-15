@@ -8,6 +8,9 @@ import { I18n } from '../../../language/i18n';
 import { scaleSize } from '../../utils/ScreenUtil';
 const screen = Dimensions.get('window');
 
+import { connect } from 'react-redux';
+import {changeWalletImportState} from "../../store/reducers/wallet";
+
 export class ExportMnemonic extends Component {
 	constructor(props) {
 		super(props);
@@ -34,16 +37,23 @@ export class ExportMnemonic extends Component {
 	componentDidMount() {
 		const { params } = this.props.navigation.state;
 		storage.save({ key: 'mnemonic', data: { mnemonic: true }, expires: null})
-		storage.load({ key: 'walletInfo' }).then((res) => {
-			let mneKeystore = lightwallet.keystore.deserialize(JSON.stringify(res.ks));
-			mneKeystore.keyFromPassword(params.walletPassword, (err, pwDerivedKey) => {
-				let Mnemonic = mneKeystore.getSeed(pwDerivedKey);
-				this.setState({
-					Mnemonic: Mnemonic
-				});
-			});
-		});
-
+		// storage.load({ key: 'walletInfo' }).then((res) => {
+		// 	let mneKeystore = lightwallet.keystore.deserialize(JSON.stringify(res.ks));
+		// 	mneKeystore.keyFromPassword(params.walletPassword, (err, pwDerivedKey) => {
+		// 		let Mnemonic = mneKeystore.getSeed(pwDerivedKey);
+		// 		this.setState({
+		// 			Mnemonic: Mnemonic
+		// 		});
+		// 	});
+		// });
+        const res = this.props.wallet.walletInfo;
+        let mneKeystore = lightwallet.keystore.deserialize(JSON.stringify(res.ks));
+        mneKeystore.keyFromPassword(params.walletPassword, (err, pwDerivedKey) => {
+            let Mnemonic = mneKeystore.getSeed(pwDerivedKey);
+            this.setState({
+                Mnemonic: Mnemonic
+            });
+        });
 		setTimeout(() => {
 			this.setState({
 				backupBtnText: I18n.t('public.next'),
@@ -69,7 +79,20 @@ export class ExportMnemonic extends Component {
 	confirmWords() {
 		if (this.state.selectWordsText == this.state.Mnemonic) {
 			// 助记词正确, 请妥善保管您的助记词！
-			Alert.alert(null, I18n.t('assets.mnemonic.mnemonicSuccess'), [
+            this.props.changeWalletImportState(true);
+            storage.save({
+                key: 'walletInfo',
+                data: this.props.wallet.walletInfo,
+                expires: null
+            });
+            storage.save({
+                key: 'walletName',
+                data: {
+                    walletName: this.props.wallet.walletInfo.walletName
+                },
+                expires: null
+            });
+            Alert.alert(null, I18n.t('assets.mnemonic.mnemonicSuccess'), [
 				{
 					text: 'OK',
 					onPress: () => {
@@ -183,7 +206,15 @@ export class ExportMnemonic extends Component {
 	}
 }
 
-export default withNavigation(ExportMnemonic);
+const ExportMnemonic2 = connect(
+    state => ({
+        wallet: state.wallet
+    }), {
+        changeWalletImportState,
+    }
+)(ExportMnemonic);
+
+export default withNavigation(ExportMnemonic2);
 
 const styles = StyleSheet.create({
 	color_999: {

@@ -128,8 +128,8 @@ class Assets extends Component {
 			})
 			.then((walletInfo) => {
 				let walletAddress = '';
-				if(this.props.wallet.address){
-					walletAddress = this.props.wallet.address
+				if(this.props.wallet.walletInfo.walletAddress){
+					walletAddress = this.props.wallet.walletInfo.walletAddress
 				} else {
 					walletAddress = walletInfo.walletAddress;
 				}
@@ -230,19 +230,19 @@ class Assets extends Component {
 
 	render() {
 		const currencyData = [
-			{
+            {
+                currency_name: 'SIGM',
+                balance: this.state.gog_banlance,
+                logo_url: require('../../assets/images/currency_logo/sigm_logo.png')
+            },
+		    {
 				currency_name: 'ETH',
 				balance: this.state.eth_banlance,
 				logo_url: require('../../assets/images/currency_logo/eth_logo.png')
-			},
-			{
-				currency_name: 'GOG',
-				balance: this.state.gog_banlance,
-				logo_url: require('../../assets/images/currency_logo/gog_logo.png')
 			}
 		];
-
-		return (
+        console.log('walletAddress ########### ', this.state.walletAddress);
+        return (
 			<View style={styles.container}>
                 <View style={{alignItems: 'center'}}>
                     <ImageBackground style={{ width: scaleSize(670), height: scaleSize(292), paddingLeft: scaleSize(50), paddingTop: scaleSize(26), borderRadius: scaleSize(50), backgroundColor: '#fff', marginBottom: scaleSize(40), marginTop: scaleSize(120) - this.state.minHeight }} source={require('../../assets/images/asset/asset-top.png')}>

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './helper';
 import { serverUrl } from '../utils/config';
 axios.defaults.baseURL = serverUrl;
 let forge = require('node-forge');
