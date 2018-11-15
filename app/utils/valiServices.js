@@ -155,13 +155,13 @@ export function checkSuggestAccount(account) {
     });
 }
 
-// 验证手机号码, 只用做11位的长度判断
+// 验证手机号码, 只用做11位的长度判断, 因为每个国家手机号长度不一样，现在只做非空判断
 export function checkPhone(phone) {
-    const regExp = /^1\d{10}$/;
+    // const regExp = /^1\d{10}$/;
     phone = phone.trim();
     return new Promise(function(res, rej) {
         if (!phone.length) rej('手机号不能为空');
-        else if (!regExp.test(phone)) rej('手机格式错误');
+        // else if (!regExp.test(phone)) rej('手机格式错误');
         else res();
     });
 }

@@ -1,6 +1,5 @@
 export default {
 	guide: {
-		welcome: '欢迎来到自游俱乐部',
 		importWallet: '导入钱包',
 		createWallet: '创建钱包',
 		importInstructions: '在已有钱包中导出助记词，点击“导入钱包”，输入导出的助记词；导入钱包后请立即备份助记词。',
