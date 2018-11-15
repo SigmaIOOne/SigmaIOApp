@@ -36,6 +36,7 @@ class AccountDetail extends React.Component {
             miningAccount: '', // 挖矿资产
             transferVal: '', // 划转数值
             errMsg: '', // 存放错误信息，因为
+            modalBtnDisabled: false, // 防止多次调接口
         }
     }
     componentDidMount() {
@@ -135,20 +136,21 @@ class AccountDetail extends React.Component {
         Keyboard.dismiss(); // 为了防止toast的位置因为键盘收起而移动，所以干脆先手动关闭键盘
         try {
             const transferVal = this.state.transferVal;
+            await this.setState({modalBtnDisabled: true});
             let result = await transferAmount(transferVal);
             result = result.data;
             if (result.status == 200) {
+                await this.setState({modalBtnDisabled: false});
                 this.transfer.close();
-            } else {
-                await Promise.reject(result.msg);
-            }
+            } else await Promise.reject(result.msg);
         }
         catch (err) {
+            await this.setState({modalBtnDisabled: false});
             this.toast.show(err);
         }
     }
     render() {
-        const { all, dollar, mainAccount, miningAccount, transferVal } = this.state;
+        const { all, dollar, mainAccount, miningAccount, modalBtnDisabled, transferVal } = this.state;
         const isConnected = this.props.netInfo.isConnected;
         return (
             <View>
@@ -263,6 +265,7 @@ class AccountDetail extends React.Component {
                                     titleStyle={{color: '#FFFFFF', fontSize: scaleSize(28)}}
                                     buttonStyle={styles.withdrawBtnStyle}
                                     onPress={() => this._transferAmount()}
+                                    disabled={modalBtnDisabled}
                                 />
                             </Modal>
                         </View>

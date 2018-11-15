@@ -150,11 +150,11 @@ class OrderDetails extends Component {
                 title: 'my.orderDetails.flight',
                 value: productDetail.flightnumber,
             },
-            {
-                // 北京首都
-                title: productDetail.city,
-                value: productDetail.province,
-            },
+            // {
+            //     // 北京首都
+            //     title: productDetail.city,
+            //     value: productDetail.province,
+            // },
             {
                 // 计划起飞时间
                 title: 'my.orderDetails.flightStartDate',
@@ -212,7 +212,8 @@ class OrderDetails extends Component {
             {
                 // 保障月份
                 title: 'my.orderDetails.guaranteeMonth',
-                value: productDetail.add_time.substr(0, 10) + '至' + productDetail.end_time.substr(0, 10),
+                // value: productDetail.add_time.substr(0, 10) + '至' + productDetail.end_time.substr(0, 10),
+                value: productDetail.add_month.substr(0, 6)
             },
             {
                 // 理赔阈值

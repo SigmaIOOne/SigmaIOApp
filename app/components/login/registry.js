@@ -43,21 +43,22 @@ class Registry extends React.Component {
     _getPhoneCode = async () => {
         try {
             const { account, imgCode } = this.state;
+            await this.setState({canSendCode: false});
             await checkPhone(account);
             await checkImgCode(imgCode);
             let result = await getPhoneCode(account, 'register', imgCode);
             result = result.data;
             if (result.status === 200) {
                 this.setState({
-                    canSendCode: false,
                     count: 60,
                     firstSendCode: false,
                 });
             } else {
-                this.toast.show(result.msg);
+                await Promise.reject(result.msg);
             }
         }
         catch (err) {
+            this.setState({canSendCode: true});
             this.toast.show(err);
         }
     }

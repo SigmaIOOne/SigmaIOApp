@@ -46,18 +46,19 @@ export default class BindPhone extends React.Component {
     _getPhoneCode = async () => {
         try {
             const { account } = this.state;
+            await this.setState({canSendCode: false});
             await checkPhone(account);
             let result = await getPhoneCode(account, 'modify');
             result = result.data;
             if (result.status === 200) {
                 this.setState({
-                    canSendCode: false,
                     count: 60,
                     firstSendCode: false,
                 });
             } else await Promise.reject(result.msg)
         }
         catch (err) {
+            this.setState({canSendCode: true});
             this.toast.show(err);
         }
     }

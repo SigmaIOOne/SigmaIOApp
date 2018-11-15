@@ -369,7 +369,12 @@ class WriteOrder extends Component {
                     <ScrollView>
                         <View>
                             {
-                                modalImg === 'insurance_guarantee_items' && <Image style={[styles.modalContentImg, {height: scaleSize(6022)}]} source={require('../../assets/images/product/insurance_guarantee_items.png')}/>
+                                modalImg === 'insurance_guarantee_items'
+                                && <View>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(2084)}]} source={require('../../assets/images/product/insurance_guarantee_items_1.png')}/>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(2002)}]} source={require('../../assets/images/product/insurance_guarantee_items_2.png')}/>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(1936)}]} source={require('../../assets/images/product/insurance_guarantee_items_3.png')}/>
+                                </View>
                             }
                             {
                                 modalImg === 'insurance_insure_should_know' && <Image style={[styles.modalContentImg, {height: scaleSize(564)}]} source={require('../../assets/images/product/insurance_insure_should_know.png')}/>
@@ -384,7 +389,12 @@ class WriteOrder extends Component {
                                 modalImg === 'raining_buy_should_know' && <Image style={[styles.modalContentImg, {height: scaleSize(608)}]} source={require('../../assets/images/product/raining_buy_should_know.png')}/>
                             }
                             {
-                                modalImg === 'raining_product_items' && <Image style={[styles.modalContentImg, {height: scaleSize(4894)}]} source={require('../../assets/images/product/raining_product_items.png')}/>
+                                modalImg === 'raining_product_items'
+                                && <View>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(1962)}]} source={require('../../assets/images/product/raining_product_items_1.png')}/>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(1740)}]} source={require('../../assets/images/product/raining_product_items_2.png')}/>
+                                    <Image style={[styles.modalContentImg, {height: scaleSize(1190)}]} source={require('../../assets/images/product/raining_product_items_3.png')}/>
+                                </View>
                             }
                         </View>
                     </ScrollView>

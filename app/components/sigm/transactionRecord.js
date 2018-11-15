@@ -5,6 +5,7 @@ import React from 'react';
 import {
     Dimensions,
     Image,
+    ScrollView,
     StyleSheet,
     Text,
     View,
@@ -68,7 +69,8 @@ class TransactionRecord extends React.Component {
             <View>
                 {
                     (isConnected || (!isConnected && hasTransactionRecord)) // 有网 或者 没网但是有缓存
-                    ? <View style={styles.container}>
+                    ? <ScrollView>
+                        <View style={styles.container}>
                             {
                                 transactionRecord.length
                                     ? transactionRecord.map((data, index) => this._renderListItem(data, index))
@@ -78,6 +80,7 @@ class TransactionRecord extends React.Component {
                                     </View>
                             }
                         </View>
+                    </ScrollView>
                     : <NoNetworkPage tryAgainFunc={this._init}/>
                 }
                 {/* 网络未连接或者别的报错状况 */}
@@ -102,7 +105,6 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: '#FFFFFF',
-        height: Dimensions.get('window').height,
         alignItems: 'center',
     },
     noRecordPage: {
