@@ -51,7 +51,6 @@ class AssetHome extends React.Component {
     }
 
     render() {
-        console.log('store ------- ', store.getState());
         return (
             <View style={styles.container}>
                 { !!this.state.login

@@ -38,6 +38,7 @@ class WriteOrder extends Component {
             showSelectView: false, // 是否显示证件类型下拉框
             modalTitle: '', // 弹窗标题
             modalImg: '', // 内容图片
+            btnDisabled: false, // 用来防止多次提交订单
         };
     }
 
@@ -196,6 +197,7 @@ class WriteOrder extends Component {
     _checkOrder = async () => {
         try {
             const { type } = this.props.navigation.state.params;
+            await this.setState({btnDisabled: true}); // 防止多次提交
             // 0：安全险，1：航空险，2：降雨险
             // 安全险
             if (type === 0) {
@@ -259,6 +261,7 @@ class WriteOrder extends Component {
             }
         }
         catch (err) {
+            this.setState({btnDisabled: false});
             this.toast.show(err);
         }
     }
@@ -332,7 +335,7 @@ class WriteOrder extends Component {
     }
     render() {
         const { type } = this.props.navigation.state.params;
-        const { modalTitle, modalImg } = this.state;
+        const { modalTitle, modalImg, btnDisabled } = this.state;
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -347,6 +350,7 @@ class WriteOrder extends Component {
                         titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
                         buttonStyle={styles.checkBtnStyle}
                         onPress={() => this._checkOrder()}
+                        disabled={btnDisabled}
                     />
                 </View>
                 <Modal
@@ -354,6 +358,7 @@ class WriteOrder extends Component {
                     position={'center'}
                     coverScreen={true}
                     ref={myModal => this.myModal = myModal}
+                    swipeArea={20} // 为了让scrollView能正常滚动
                 >
                     <View style={styles.modalTitle}>
                         <Text style={styles.modalTitleTxt}>{I18n.t('product.productDetail.writeOrder.' + modalTitle)}</Text>

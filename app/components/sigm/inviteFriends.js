@@ -214,6 +214,7 @@ class InviteFriends extends React.Component {
                             position={'bottom'}
                             coverScreen={true}
                             ref={shareModal => this.shareModal = shareModal}
+                            swipeArea={20}
                         >
                             <View style={styles.shareModalMain}>
                                 <View style={styles.shareModalTitleView}>

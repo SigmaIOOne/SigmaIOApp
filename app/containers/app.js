@@ -37,9 +37,6 @@ import Versions from '../components/my/versions'; //我的 -> 关于我们 -> �
 import InvitationCode from '../components/my/invitationCode'; //我的 -> 邀请码
 import BindInCode from '../components/my/bindInCode'; //我的 -> 绑定邀请码
 
-import changePwd from '../components/my/changePwd'; //我的 -> 修改交易密码
-import setNewPwd from '../components/my/setNewPwd'; //我的 -> 修改交易密码 -> 设置新交易密码
-
 import QRscanner from '../components/public/QRscanner'; //转账 -> 扫描二维码
 
 import Login from '../components/login/login'; // SIGM -> 登录
@@ -336,8 +333,6 @@ const RootNavigator = createStackNavigator(
 		},
 		InvitationCode,
 		BindInCode,
-		changePwd,
-		setNewPwd,
 		SysSet: {
 			screen: SysSet,
 			navigationOptions: {

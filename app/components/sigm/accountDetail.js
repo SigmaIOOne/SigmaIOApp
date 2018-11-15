@@ -193,6 +193,7 @@ class AccountDetail extends React.Component {
                                 position={'center'}
                                 coverScreen={true}
                                 ref={withdraw => this.withdraw = withdraw}
+                                swipeArea={20}
                             >
                                 <View style={styles.modalTitle}>
                                     <Text style={styles.modalTitleTxt}>{I18n.t('sigm.accountDetail.withdraw')}</Text>
@@ -233,6 +234,7 @@ class AccountDetail extends React.Component {
                                 position={'center'}
                                 coverScreen={true}
                                 ref={transfer => this.transfer = transfer}
+                                swipeArea={20}
                             >
                                 <View style={styles.modalTitle}>
                                     <Text style={styles.modalTitleTxt}>{I18n.t('sigm.accountDetail.transfer')}</Text>

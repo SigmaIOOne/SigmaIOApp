@@ -123,6 +123,7 @@ class ApplyCompensation extends Component {
                                                         position={'center'}
                                                         coverScreen={true}
                                                         ref={myModal => this.myModal = myModal}
+                                                        swipeArea={20}
                                                     >
                                                         <View style={styles.modalTitle}>
                                                             <Text style={styles.modalTitleTxt}>{I18n.t('my.applyCompensationContent._title')}</Text>

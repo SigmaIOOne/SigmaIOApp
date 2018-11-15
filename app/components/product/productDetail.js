@@ -359,6 +359,7 @@ class ProductDetail extends Component {
                     position={'center'}
                     coverScreen={true}
                     ref={monthSelectModal => this.monthSelectModal = monthSelectModal}
+                    swipeArea={20}
                 >
                     <ScrollView>
                         <View style={styles.monthSelectorListView}>

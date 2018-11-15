@@ -31,8 +31,7 @@ export default class Release extends React.Component {
             {
                 title: '1.0.0 beta版上线',
                 content: [
-                    '新UI设计',
-                    '增加官方消息通知',
+                    '暂无',
                 ]
             }
         ];

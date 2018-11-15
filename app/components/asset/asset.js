@@ -230,18 +230,17 @@ class Assets extends Component {
 
 	render() {
 		const currencyData = [
-            {
-                currency_name: 'SIGM',
-                balance: this.state.gog_banlance,
-                logo_url: require('../../assets/images/currency_logo/sigm_logo.png')
-            },
+            // {
+            //     currency_name: 'SIGM',
+            //     balance: this.state.gog_banlance,
+            //     logo_url: require('../../assets/images/currency_logo/sigm_logo.png')
+            // },
 		    {
 				currency_name: 'ETH',
 				balance: this.state.eth_banlance,
 				logo_url: require('../../assets/images/currency_logo/eth_logo.png')
 			}
 		];
-        console.log('walletAddress ########### ', this.state.walletAddress);
         return (
 			<View style={styles.container}>
                 <View style={{alignItems: 'center'}}>

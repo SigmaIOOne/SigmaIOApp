@@ -4,8 +4,9 @@
 import React from 'react';
 import {
     Dimensions,
-    StyleSheet,
     ScrollView,
+    StatusBar,
+    StyleSheet,
     View,
 } from 'react-native';
 import { Input, Button } from 'react-native-elements';
@@ -23,6 +24,7 @@ export default class Suggest extends React.Component {
         this.state = {
             account: '',
             content: '',
+            btnDisabled: false, // 用来防止多次发送意见
         }
     }
     // 发送意见
@@ -31,7 +33,9 @@ export default class Suggest extends React.Component {
             const { account, content } = this.state;
             await checkSuggestAccount(account);
             await checkSuggestContent(content);
+            await this.setState({btnDisabled: true});
             let result = await sendSuggest(account, content);
+            console.log('res ', result);
             result = result.data;
             // 别用===了，因为有些接口返回status是数字，有些是字符串
             if (result.status == 200) {
@@ -41,11 +45,12 @@ export default class Suggest extends React.Component {
             }
         }
         catch (err) {
+            this.setState({btnDisabled: false});
             this.toast.show(err);
         }
     }
     render() {
-        const { account, content } = this.state;
+        const { account, content, btnDisabled } = this.state;
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -76,6 +81,7 @@ export default class Suggest extends React.Component {
                         titleStyle={{color: '#FFFFFF', fontSize: scaleSize(32)}}
                         buttonStyle={styles.btnStyle}
                         onPress={() => this._sendSuggest()}
+                        disabled={btnDisabled}
                     />
                     <Toast onRef={toast => this.toast = toast}/>
                 </View>
@@ -87,9 +93,8 @@ export default class Suggest extends React.Component {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        paddingTop: scaleSize(40),
         backgroundColor: '#FFFFFF',
-        height: Dimensions.get('window').height - scaleSize(88),
+        height: Dimensions.get('window').height - StatusBar.currentHeight,
     },
     areaView: {
         marginTop: scaleSize(100),

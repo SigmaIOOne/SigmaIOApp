@@ -83,9 +83,9 @@ class My extends Component {
 	render() {
         const { login, userInfo } = this.props.login;
         const isConnected = this.props.netInfo.isConnected;
-        const phone = login ? userInfo.account : '';
+        const phone = login ? userInfo.phone.toString() : '';
         const formatPhone = login && phone ? phone.replace(phone.slice(3, 7), '****') : '';
-		return (
+        return (
 		    <View>
                 {
                     isConnected

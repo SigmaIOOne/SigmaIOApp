@@ -51,6 +51,7 @@ class AboutUs extends Component {
             {
                 // 更新新版本
                 title: 'my.aboutUsPart.update',
+                // pressFunc: () => this.myModal.open(),
                 pressFunc: () => this.myModal.open(),
                 rightTxt: '1.0.0',
             },
@@ -66,6 +67,7 @@ class AboutUs extends Component {
                     position={'center'}
                     coverScreen={true}
                     ref={myModal => this.myModal = myModal}
+                    swipeArea={20}
                 >
                     <View style={styles.modalTitle}>
                         <TouchableOpacity style={styles.closeBtnT} onPress={() => this.myModal.close()}>
