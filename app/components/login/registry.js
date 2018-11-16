@@ -53,6 +53,7 @@ class Registry extends React.Component {
                     count: 60,
                     firstSendCode: false,
                 });
+                this._refreshImgCode();
             } else {
                 await Promise.reject(result.msg);
             }
@@ -93,6 +94,10 @@ class Registry extends React.Component {
             this.toast.show(err);
         }
     }
+    // 刷新图形二维码
+    _refreshImgCode = () => {
+        this.setState({imgUrl: 'http://m.isong.xin/Admin/Index/verify?code=' + Math.random()});
+    }
     render() {
         const { account, imgCode, phoneCode, canSendCode, firstSendCode, count, imgUrl } = this.state;
         const { origin } = this.props.navigation.state.params;
@@ -127,7 +132,7 @@ class Registry extends React.Component {
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
                             <View>
-                                <TouchableOpacity style={styles.imgCode} onPress={() => this.setState({imgUrl: 'http://m.isong.xin/Admin/Index/verify?code=' + Math.random()})}>
+                                <TouchableOpacity style={styles.imgCode} onPress={() => this._refreshImgCode()}>
                                     <Image key='imgCode' style={{width: scaleSize(120), height: scaleSize(48)}} source={{uri:imgUrl}}/>
                                 </TouchableOpacity>
                             </View>
