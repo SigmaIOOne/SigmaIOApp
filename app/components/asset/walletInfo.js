@@ -87,6 +87,7 @@ class WalletInfo extends Component {
 	pwd = {
 		placeholder: I18n.t('public.inputPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (walletPassword) => {
 			this.setState({
@@ -98,6 +99,7 @@ class WalletInfo extends Component {
 	walletName = {
 		placeholder: I18n.t('assets.walletInfo.enterWalletName'), //'输入您的钱包名称',
 		inputContainerStyle: styles.walletNameStyle,
+        inputStyle: styles.textStyle,
 		onChangeText: (walletName) => {
 			this.setState({
 				newWalletName: walletName
@@ -685,6 +687,10 @@ const styles = StyleSheet.create({
 		paddingTop: scaleSize(10)
 		// backgroundColor: '#fafafa'
 	},
+    textStyle: {
+        fontSize: scaleSize(30),
+        color: '#BEBEBE',
+    },
 	bottom_fun: {
 		// position: 'absolute',
 		// bottom: 50,

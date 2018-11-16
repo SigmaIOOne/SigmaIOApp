@@ -71,6 +71,7 @@ class CreateWallet extends Component {
 	nameInput = {
 		placeholder: I18n.t('wallet.createWalletTip'), //'请输入钱包名称',
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		errorStyle: styles.errorStyle,
 		onChangeText: (walletName) => {
 			this.setState({
@@ -82,6 +83,7 @@ class CreateWallet extends Component {
 	pwd = {
 		placeholder: I18n.t('wallet.enterPwd'), //'密码不少于8位字符',
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		errorStyle: styles.errorStyle,
 		secureTextEntry: true,
 		onChangeText: (pwd) => {
@@ -94,6 +96,7 @@ class CreateWallet extends Component {
 	confirmPwd = {
 		placeholder: I18n.t('wallet.confirmPwd'), //'请再次输入密码',
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		errorStyle: styles.errorStyle,
 		secureTextEntry: true,
 		onChangeText: (confirmPwd) => {
@@ -291,6 +294,10 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderColor: '#e6e6e6'
 	},
+    textStyle: {
+        fontSize: scaleSize(32),
+        color: '#BEBEBE',
+    },
 	errorStyle: {
 		// paddingLeft: 10
 	},

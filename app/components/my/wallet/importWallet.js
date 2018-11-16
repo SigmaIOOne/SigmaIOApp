@@ -188,6 +188,7 @@ class ImportWallet extends Component {
 	privatePwd = {
 		placeholder: I18n.t('wallet.enterPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (privatePwd) => {
 			this.setState({
@@ -210,6 +211,7 @@ class ImportWallet extends Component {
 	confirmPrivatePwd = {
 		placeholder: I18n.t('wallet.confirmPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (confirmPrivatePwd) => {
 			this.setState({
@@ -727,6 +729,10 @@ const styles = StyleSheet.create({
 		padding: 0,
 		margin: 0
 	},
+    textStyle: {
+        fontSize: scaleSize(32),
+        color: '#BEBEBE',
+    },
 	padding_10: {
 		padding: scaleSize(32),
 		// flex: 1
