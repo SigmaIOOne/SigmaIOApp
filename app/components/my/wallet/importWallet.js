@@ -166,6 +166,7 @@ class ImportWallet extends Component {
 	mnemonicPwd = {
 		placeholder: I18n.t('wallet.enterPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (mnemonicPwd) => {
 			this.setState({
@@ -177,6 +178,7 @@ class ImportWallet extends Component {
 	keystorePwd = {
 		placeholder: I18n.t('wallet.enterPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (keystorePwd) => {
 			this.setState({
@@ -200,6 +202,7 @@ class ImportWallet extends Component {
 	confirmMnemonicPwd = {
 		placeholder: I18n.t('wallet.confirmPwd'),
 		inputContainerStyle: styles.textInput,
+        inputStyle: styles.textStyle,
 		secureTextEntry: true,
 		onChangeText: (confirmMnemonicPwd) => {
 			this.setState({

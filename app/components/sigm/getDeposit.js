@@ -74,7 +74,7 @@ class GetDeposit extends React.Component {
             let result = await userSignIn();
             result = result.data;
             if (result.status == 200) {
-                this.toast.show('sigm.miningPart.signSuccess');
+                this.toast.show(I18n.t('sigm.miningPart.signSuccess'));
                 this.props.changeSecurityState('hasSigned', true);
             } else await Promise.reject(result.msg);
         }
