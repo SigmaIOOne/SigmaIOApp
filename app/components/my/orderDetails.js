@@ -204,11 +204,11 @@ class OrderDetails extends Component {
     _renderProductRaining = () => {
         const productDetail = this.state.productDetail;
         const floor2List = [
-            {
-                // 保障城市
-                title: 'my.orderDetails.guaranteeCity',
-                value: productDetail.city,
-            },
+            // {
+            //     // 保障城市
+            //     title: 'my.orderDetails.guaranteeCity',
+            //     value: productDetail.city,
+            // },
             {
                 // 保障月份
                 title: 'my.orderDetails.guaranteeMonth',

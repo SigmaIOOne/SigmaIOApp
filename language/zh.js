@@ -354,6 +354,7 @@ export default {
             depositRank: '我的算力排行',
             signIn: '今日签到',
             hasSign: '已签到',
+            signSuccess: '签到成功',
             getDeposit: '获取算力',
             miningStrategyPart: {
                 whatDeposit: '什么是算力？',
