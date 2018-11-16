@@ -38,7 +38,9 @@ export default class Suggest extends React.Component {
             console.log('res ', result);
             result = result.data;
             // 别用===了，因为有些接口返回status是数字，有些是字符串
-            result.status == 200 ? this.props.navigation.goBack() : await Promise.reject(result.msg);
+            if (result.status == 200) {
+                this.toast.show(I18n.t('my.suggestPart.sendSuccess'), () => this.props.navigation.goBack());
+            } else await Promise.reject(result.msg);
         }
         catch (err) {
             this.setState({btnDisabled: false});

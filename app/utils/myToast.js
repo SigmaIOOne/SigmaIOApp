@@ -38,7 +38,7 @@ export default class MyToast extends React.Component {
         if (typeof onRef === 'function') onRef(this);
     }
     // 模态框打开，过一段时间再消失
-    show = (modalTxt) => {
+    show = (modalTxt, callback) => {
         this.setState({modalTxt});
         this.myToast.open();
         this.setState({
@@ -47,7 +47,10 @@ export default class MyToast extends React.Component {
         setTimeout(() => {
             this.setState({
                 isDisabled: false
-            }, () => this.myToast.close());
+            }, () => {
+                this.myToast.close();
+                callback && callback();
+            });
         }, this.state.duration);
     }
     render() {

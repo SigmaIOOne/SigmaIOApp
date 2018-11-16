@@ -38,7 +38,14 @@ class My extends Component {
         this._init();
     }
 
+    componentWillReceiveProps(nextProps) {
+        const curLogin = this.props.login.login;
+        const nextLogin = nextProps.login.login;
+        if( !curLogin && nextLogin ) this._init();
+    }
+
     _init = () => {
+        this.setState({logoutBtnDisabled: false});
         !this.props.login.login && this._getLoginMsg();
     }
 
@@ -98,96 +105,98 @@ class My extends Component {
         const { login, userInfo } = this.props.login;
         const { logoutBtnDisabled } = this.state;
         const isConnected = this.props.netInfo.isConnected;
-        const phone = login ? userInfo.phone.toString() : '';
+        const phone = login && userInfo.phone ? userInfo.phone.toString() : '';
         const formatPhone = login && phone ? phone.replace(phone.slice(3, 7), '****') : '';
         return (
 		    <View>
-                {
-                    isConnected
-                    ? <View style={ login ? styles.container : {}}>
-                            {
-                                login
-                                    ? <View>
-                                        <View style={styles.top}>
-                                            <View style={styles.topLeft}>
-                                                <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
-                                                <Text style={styles.topTxt}>{formatPhone}</Text>
+                <View style={ login ? styles.container : {}}>
+                    {
+                        login
+                            ? <View>
+                                {
+                                    isConnected
+                                        ? <View>
+                                            <View style={styles.top}>
+                                                <View style={styles.topLeft}>
+                                                    <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
+                                                    <Text style={styles.topTxt}>{formatPhone}</Text>
+                                                </View>
+                                                <TouchableOpacity disabled={logoutBtnDisabled} onPress={() => this._logout()}>
+                                                    <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
+                                                </TouchableOpacity>
                                             </View>
-                                            <TouchableOpacity disabled={logoutBtnDisabled} onPress={() => this._logout()}>
-                                                <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
-                                            </TouchableOpacity>
+                                            <View style={styles.graySplitLine}></View>
+                                            {/* 消息中心 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/message.png'),
+                                                    title: 'my.message',
+                                                    pressFunc: () => this.props.navigation.navigate('MessageCenter'),
+                                                    hasNoBorder: true,
+                                                })
+                                            }
+                                            <View style={styles.graySplitLine}></View>
+                                            {/* 我的订单 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/order.png'),
+                                                    title: 'my.order',
+                                                    pressFunc: () => this.props.navigation.navigate('MyOrders'),
+                                                    hasNoBorder: true,
+                                                })
+                                            }
+                                            {/* 申请理赔 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/apply.png'),
+                                                    title: 'my.applyCompensation',
+                                                    pressFunc: () => this.props.navigation.navigate('ApplyCompensation')
+                                                })
+                                            }
+                                            {/* 数据上传记录 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/upload.png'),
+                                                    title: 'my.uploadRecord',
+                                                    pressFunc: () => this.props.navigation.navigate('UploadRecord')
+                                                })
+                                            }
+                                            {/* 安全中心 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/security.png'),
+                                                    title: 'my.security',
+                                                    pressFunc: () => this.props.navigation.navigate('SecurityCenter')
+                                                })
+                                            }
+                                            {/* 关于我们 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/about.png'),
+                                                    title: 'my.aboutUs',
+                                                    pressFunc: () => this.props.navigation.navigate('AboutUs')
+                                                })
+                                            }
+                                            {/* 意见反馈 */}
+                                            {
+                                                this._renderSelectItem({
+                                                    icon: require('../../assets/images/my/suggest.png'),
+                                                    title: 'my.suggest',
+                                                    pressFunc: () => this.props.navigation.navigate('Suggest')
+                                                })
+                                            }
                                         </View>
-                                        <View style={styles.graySplitLine}></View>
-                                        {/* 消息中心 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/message.png'),
-                                                title: 'my.message',
-                                                pressFunc: () => this.props.navigation.navigate('MessageCenter'),
-                                                hasNoBorder: true,
-                                            })
-                                        }
-                                        <View style={styles.graySplitLine}></View>
-                                        {/* 我的订单 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/order.png'),
-                                                title: 'my.order',
-                                                pressFunc: () => this.props.navigation.navigate('MyOrders'),
-                                                hasNoBorder: true,
-                                            })
-                                        }
-                                        {/* 申请理赔 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/apply.png'),
-                                                title: 'my.applyCompensation',
-                                                pressFunc: () => this.props.navigation.navigate('ApplyCompensation')
-                                            })
-                                        }
-                                        {/* 数据上传记录 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/upload.png'),
-                                                title: 'my.uploadRecord',
-                                                pressFunc: () => this.props.navigation.navigate('UploadRecord')
-                                            })
-                                        }
-                                        {/* 安全中心 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/security.png'),
-                                                title: 'my.security',
-                                                pressFunc: () => this.props.navigation.navigate('SecurityCenter')
-                                            })
-                                        }
-                                        {/* 关于我们 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/about.png'),
-                                                title: 'my.aboutUs',
-                                                pressFunc: () => this.props.navigation.navigate('AboutUs')
-                                            })
-                                        }
-                                        {/* 意见反馈 */}
-                                        {
-                                            this._renderSelectItem({
-                                                icon: require('../../assets/images/my/suggest.png'),
-                                                title: 'my.suggest',
-                                                pressFunc: () => this.props.navigation.navigate('Suggest')
-                                            })
-                                        }
-                                    </View>
-                                    : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login', {origin: 'My'})}>
-                                        <View style={styles.topLeft}>
-                                            <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
-                                            <Text style={styles.topTxt}>{I18n.t('my.login')}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                            }
-                        </View>
-                    : <NoNetworkPage tryAgainFunc={this._init}/>
-                }
+                                        : <NoNetworkPage tryAgainFunc={this._init}/>
+                                }
+                            </View>
+                            : <TouchableOpacity style={styles.top} onPress={() => this.props.navigation.navigate('Login', {origin: 'My'})}>
+                                <View style={styles.topLeft}>
+                                    <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
+                                    <Text style={styles.topTxt}>{I18n.t('my.login')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                    }
+                </View>
                 {/* 点击发生网络未连接或者别的报错状况 */}
                 <Toast onRef={toast => this.toast = toast}/>
             </View>

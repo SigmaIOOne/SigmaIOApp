@@ -590,6 +590,7 @@ export default {
         suggestPart: {
 	        textAreaPlaceholder: '请提出您宝贵的意见，以便为您提供更好的服务',
             inputPlaceholder: 'QQ/手机号/邮箱',
+            sendSuccess: '发送成功',
         }
     },
 	public: {

@@ -31,7 +31,8 @@ class Login extends React.Component {
         super(props);
         this.state = {
             account: '',
-            psd: ''
+            psd: '',
+            btnDisabled: false, // 用来防止多次发请求
         }
     }
     _clickToLogin = async () => {
@@ -40,6 +41,7 @@ class Login extends React.Component {
             const { origin } = this.props.navigation.state.params;
             await checkPhone(account);
             await checkPwd(psd);
+            await this.setState({btnDisabled: true});
             let result = await login(account, psd);
             result = result.data;
             // 别用===了，因为有些接口返回status是数字，有些是字符串
@@ -56,11 +58,12 @@ class Login extends React.Component {
             } else await Promise.reject(result.msg);
         }
         catch (err) {
+            this.setState({btnDisabled: false});
             this.toast.show(err);
         }
     }
     render() {
-        const { account, psd } = this.state;
+        const { account, psd, btnDisabled } = this.state;
         const { origin } = this.props.navigation.state.params;
         return (
             <ScrollView>
@@ -97,6 +100,7 @@ class Login extends React.Component {
                         buttonStyle={styles.loginBtnStyle}
                         titleStyle={{color: '#4A90E2', fontSize: scaleSize(38)}}
                         onPress={() => this._clickToLogin()}
+                        disabled={btnDisabled}
                     />
                     <View style={[styles.flexRow]}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('FindPsd', {origin})}>
