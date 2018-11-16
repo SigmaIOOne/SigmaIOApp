@@ -131,7 +131,7 @@ class Registry extends React.Component {
                         }
                         leftIconContainerStyle={styles.leftIconContainerStyle}
                         rightIcon={
-                            <View>
+                            <View style={{marginRight: scaleSize(36)}}>
                                 <TouchableOpacity style={styles.imgCode} onPress={() => this._refreshImgCode()}>
                                     <Image key='imgCode' style={{width: scaleSize(120), height: scaleSize(48)}} source={{uri:imgUrl}}/>
                                 </TouchableOpacity>

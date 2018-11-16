@@ -27,6 +27,13 @@ class My extends Component {
         setUserInfo: PropTypes.func,
     }
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            logoutBtnDisabled: false, // 用来防止多次调接口
+        }
+    }
+
     componentDidMount() {
         this._init();
     }
@@ -50,6 +57,7 @@ class My extends Component {
         }
     }
 
+    // 渲染我的页面选项列表
     _renderSelectItem = (data) => {
 	    return (
             <TouchableOpacity
@@ -65,23 +73,30 @@ class My extends Component {
             </TouchableOpacity>
         );
     }
+
     // 退出登录
     _logout = async () => {
-        let result = await logout();
-        result = result.data;
-        if (result.status == 200) {
-            this.props.changeLoginState(false);
-            this.props.setUserInfo({});
-            this.props.resetDataRedux();
-            // storage.remove({
-            //     key: 'login'
-            // });
-        } else {
-            this.toast.show(result.msg);
+        try {
+            await this.setState({logoutBtnDisabled: true});
+            let result = await logout();
+            result = result.data;
+            if (result.status == 200) {
+                this.props.changeLoginState(false);
+                this.props.setUserInfo({});
+                this.props.resetDataRedux();
+                // storage.remove({
+                //     key: 'login'
+                // });
+            } else await Promise.reject(result.msg);
+        }
+        catch (err) {
+            this.setState({logoutBtnDisabled: false});
+            this.toast.show(err);
         }
     }
 	render() {
         const { login, userInfo } = this.props.login;
+        const { logoutBtnDisabled } = this.state;
         const isConnected = this.props.netInfo.isConnected;
         const phone = login ? userInfo.phone.toString() : '';
         const formatPhone = login && phone ? phone.replace(phone.slice(3, 7), '****') : '';
@@ -98,7 +113,7 @@ class My extends Component {
                                                 <Image style={styles.topIcon} source={require('../../assets/images/my/user.png')}/>
                                                 <Text style={styles.topTxt}>{formatPhone}</Text>
                                             </View>
-                                            <TouchableOpacity onPress={() => this._logout()}>
+                                            <TouchableOpacity disabled={logoutBtnDisabled} onPress={() => this._logout()}>
                                                 <Text style={styles.topTxt}>{I18n.t('my.logout')}</Text>
                                             </TouchableOpacity>
                                         </View>

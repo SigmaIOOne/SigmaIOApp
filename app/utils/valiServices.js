@@ -36,8 +36,6 @@ export function checkPwd(pwd) {
     const regExp = /\s/;
     if (pwd.length >= 6 && pwd.length <=18 && !regExp.test(pwd)) {
       resolve(pwd);
-    } else if (pwd.length === 0) {
-      reject(I18n.t('wallet.enterPwd'));
     } else if (pwd.length < 6) {
       reject('密码不能小于六位,请重新输入');
     } else if (pwd.length > 18) {

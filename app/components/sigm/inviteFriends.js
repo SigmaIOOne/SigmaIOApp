@@ -95,6 +95,7 @@ class InviteFriends extends React.Component {
 
     // 点击进行分享到对应的微信好友/朋友圈
     _clickToShare = async (target) => {
+        return;
         try {
             const uri = await captureRef(this.refs.posterArea, {
                 format: 'jpg',
@@ -227,7 +228,7 @@ class InviteFriends extends React.Component {
                                 </View>
                             </View>
                             {/*<TouchableOpacity style={styles.cancelShareBtn} onPress={() => this.shareModal.close()}>*/}
-                            <TouchableOpacity style={styles.cancelShareBtn} onPress={() => {}}>
+                            <TouchableOpacity style={styles.cancelShareBtn} onPress={() => this.shareModal.close()}>
                                 <Text style={styles.cancelShareTxt}>{I18n.t('public.cancel')}</Text>
                             </TouchableOpacity>
                         </Modal>
@@ -270,7 +271,6 @@ const styles = StyleSheet.create({
         left: scaleSize(175),
         margin: 0,
         padding: 0,
-        backgroundColor: 'green',
     },
     bigImg: {
         // position: 'absolute',
@@ -366,7 +366,6 @@ const styles = StyleSheet.create({
         width: scaleSize(100),
         marginRight: scaleSize(48),
         alignItems: 'center',
-        backgroundColor: '#abcdef',
     },
     shareIcon: {
         width: scaleSize(80),

@@ -103,7 +103,7 @@ class GetDeposit extends React.Component {
     render() {
         const { calculation } = this.state;
         const { netInfo, securityCenterData } = this.props;
-        const { bindCar, certificate, hasSigned } = securityCenterData;
+        const { bindCar, hasCertificated, hasSigned } = securityCenterData;
         const isConnected = netInfo.isConnected;
         return (
             <View>
@@ -162,8 +162,8 @@ class GetDeposit extends React.Component {
                                     title: 'certificate',
                                     description1: 'certificateDescription1',
                                     description2: 'certificateDescription2',
-                                    btnTxt: certificate ? 'certificateBtn2' : 'certificateBtn1',
-                                    disabled: certificate,
+                                    btnTxt: hasCertificated ? 'certificateBtn2' : 'certificateBtn1',
+                                    disabled: hasCertificated,
                                     pressFunc: () => { this.props.navigation.navigate('Certificate') }
                                 })
                             }

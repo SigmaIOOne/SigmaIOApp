@@ -53,9 +53,7 @@ class Login extends React.Component {
                     expires: null
                 });
                 this.props.navigation.navigate(origin);
-            } else {
-                await Promise.reject(result.msg);
-            }
+            } else await Promise.reject(result.msg);
         }
         catch (err) {
             this.toast.show(err);
